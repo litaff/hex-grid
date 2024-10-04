@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxjqmbw5cbne"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_jf7h1"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Player" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("CapsuleMesh_jf7h1")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, 0, 4.55972, 0)
+projection = 1
+size = 15.0

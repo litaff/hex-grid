@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvyi07qp410ei"]
+
+[ext_resource type="Script" path="res://addons/hex_grid_editor/View.cs" id="1_21wjd"]
+
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("ItemList")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_21wjd")
+ItemList = NodePath("ItemList")
+
+[node name="ItemList" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
