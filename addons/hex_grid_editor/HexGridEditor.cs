@@ -136,6 +136,8 @@ public partial class HexGridEditor : EditorPlugin
 	
 	private void OnItemSelectedHandler(long index)
 	{
+		OnDeselectRequestedHandler();
+		
 		isSelectionActive = true;
 		selectedMeshIndex = (int)index;
 		var mesh = hexGridMap.MeshLibrary.GetItemMesh((int)index);
