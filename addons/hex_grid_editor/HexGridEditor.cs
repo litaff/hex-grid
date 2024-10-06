@@ -144,6 +144,7 @@ public partial class HexGridEditor : EditorPlugin
 		instanceRid = RenderingServer.InstanceCreate();
 		RenderingServer.InstanceSetBase(instanceRid, mesh.GetRid());
 		RenderingServer.InstanceSetScenario(instanceRid, hexGridMap.GetWorld3D().Scenario);
+		OnHexCenterUpdatedHandler(inputHandler.HexCenter);
 		inputHandler.OnHexCenterUpdated += OnHexCenterUpdatedHandler;
 		inputHandler.OnLeftMouseButtonPressed += OnLeftMouseButtonPressedHandler;
 		inputHandler.OnRightMouseButtonPressed += OnRightMouseButtonPressedHandler;
