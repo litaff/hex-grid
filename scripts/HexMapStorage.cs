@@ -11,6 +11,13 @@ public class HexMapStorage
     {
         map = new Dictionary<int, CubeHex>();
     }
+
+    public CubeHex Add(CubeHexVector position)
+    {
+        var hex = new CubeHex(position.Q, position.R);
+        Add(hex);
+        return hex;
+    }
     
     public void Add(CubeHex value)
     {

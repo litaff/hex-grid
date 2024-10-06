@@ -28,8 +28,9 @@ public partial class HexGridMap : Node3D
     
     private List<MeshInstance3D> meshInstances = new();
     private MeshInstance3D currentMesh;
-    private HexMapStorage storage = new();
-    
+
+    // TODO: how to mod but keep???
+    public HexMapStorage Storage { get; private set; }
     public float HexWidth => 3f / 2f * cellSize;
     public float HexHeight => Mathf.Sqrt(3) * cellSize;
     public Vector2 QBasis => new(3f / 2f, Mathf.Sqrt(3) / 2f);
