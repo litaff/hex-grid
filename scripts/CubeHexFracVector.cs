@@ -12,4 +12,9 @@ public struct CubeHexFracVector
         R = r;
         S = -q - r;
     }
+    
+    public override string ToString()
+    {
+        return $"({Q}, {R}, {S})";
+    }
 }
