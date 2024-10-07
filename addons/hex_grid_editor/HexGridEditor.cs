@@ -3,7 +3,9 @@ namespace hex_grid.addons.hex_grid_editor;
 
 using Godot;
 using scripts;
+using scripts.hex_grid;
 using scripts.utils;
+using HexGridMap = scripts.hex_grid.HexGridMap;
 
 [Tool]
 public partial class HexGridEditor : EditorPlugin

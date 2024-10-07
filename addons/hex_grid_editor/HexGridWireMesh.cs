@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using scripts;
+using scripts.hex_grid;
+using scripts.hex_grid.vector;
 using scripts.utils;
 using Array = Godot.Collections.Array;
+using HexGridMap = scripts.hex_grid.HexGridMap;
 
 public class HexGridWireMesh
 {

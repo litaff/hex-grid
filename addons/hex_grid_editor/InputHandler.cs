@@ -3,6 +3,9 @@ namespace hex_grid.addons.hex_grid_editor;
 using System;
 using Godot;
 using scripts;
+using scripts.hex_grid;
+using scripts.hex_grid.vector;
+using HexGridMap = scripts.hex_grid.HexGridMap;
 
 public class InputHandler
 {

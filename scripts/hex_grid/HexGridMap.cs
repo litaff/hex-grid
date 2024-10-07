@@ -1,8 +1,10 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid;
 
 using System;
 using System.Collections.Generic;
 using Godot;
+using mesh;
+using vector;
 
 [GlobalClass]
 #if TOOLS
@@ -35,7 +37,7 @@ public partial class HexGridMap : Node3D
     private List<MeshInstance3D> meshInstances = new();
     private MeshInstance3D currentMesh;
     private HexMapStorage storage;
-    private DefaultGridMeshGenerator defaultMeshGenerator;
+    private PrimitiveHexGridMesh primitiveHexMesh;
 
     public float HexWidth => 3f / 2f * cellSize;
     public float HexHeight => Mathf.Sqrt(3) * cellSize;
@@ -156,8 +158,8 @@ public partial class HexGridMap : Node3D
     
     public void UpdateMesh()
     {
-        defaultMeshGenerator ??= new DefaultGridMeshGenerator(this, defaultMaterial);
-        defaultMeshGenerator.UpdateMesh(storage.GetMap());
+        primitiveHexMesh ??= new PrimitiveHexGridMesh(this, defaultMaterial);
+        primitiveHexMesh.UpdateMesh(storage.GetMap());
     }
 
     /// <summary>
