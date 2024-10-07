@@ -19,18 +19,24 @@ public partial class HexGridMap : Node3D
     [Export]
     private float cellSize;
     [Export]
+    public int ChunkSize { get; private set; }
+    [Export]
+    private Material defaultMaterial;
+    [Export]
     public MeshLibrary MeshLibrary { get; private set; }
 
     [Export, ExportGroup(EDITOR)]
     public int EditorGridSize { get; private set; } = 5;
     [Export, ExportGroup(EDITOR)]
     public bool EditorGridAlphaFalloff { get; private set; } = true;
+    [Export, ExportGroup(EDITOR)]
+    public bool DisplayChunks { get; private set; } = true;
     
     private List<MeshInstance3D> meshInstances = new();
     private MeshInstance3D currentMesh;
+    private HexMapStorage storage;
+    private DefaultGridMeshGenerator defaultMeshGenerator;
 
-    // TODO: how to mod but keep???
-    public HexMapStorage Storage { get; private set; }
     public float HexWidth => 3f / 2f * cellSize;
     public float HexHeight => Mathf.Sqrt(3) * cellSize;
     public Vector2 QBasis => new(3f / 2f, Mathf.Sqrt(3) / 2f);
@@ -39,9 +45,6 @@ public partial class HexGridMap : Node3D
     /// <summary>
     /// Returns a list of hex positions between two hexes.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="target"></param>
-    /// <returns></returns>
     public CubeHexVector[] GetLine(CubeHex source, CubeHex target)
     {
         var distance = source.Position.Distance(target.Position);
@@ -107,14 +110,12 @@ public partial class HexGridMap : Node3D
     /// Returns a list of hex positions in a ring around a center hex.
     /// The ring starts at the north direction and goes clockwise.
     /// </summary>
-    /// <param name="center">Center position of the ring.</param>
-    /// <param name="radius">Radius of the ring.</param>
     public CubeHexVector[] GetRing(CubeHexVector center, int radius)
     {
         var directions = new[]
         {
-            CubeHexVector.SouthEast, CubeHexVector.South, CubeHexVector.SouthWest, 
-            CubeHexVector.NorthWest, CubeHexVector.North, CubeHexVector.NorthEast
+            CubeHexVector.EastSouth, CubeHexVector.South, CubeHexVector.WestSouth, 
+            CubeHexVector.WestNorth, CubeHexVector.North, CubeHexVector.EastNorth
         };
         var results = new List<CubeHexVector>();
         var hex = GetNeighbor(center, CubeHexVector.North * radius);
@@ -142,13 +143,52 @@ public partial class HexGridMap : Node3D
     /// <summary>
     /// Returns a position of a neighbor hex in a given direction.
     /// </summary>
-    /// <param name="hex">Reference hex position.</param>
-    /// <param name="direction">Hex direction.</param>
     public CubeHexVector GetNeighbor(CubeHexVector hex, CubeHexVector direction)
     {
         return hex + direction;
     }
+
+    public HexMapStorage InitializeStorage()
+    {
+        storage ??= new HexMapStorage();
+        return storage;
+    }
     
+    public void UpdateMesh()
+    {
+        defaultMeshGenerator ??= new DefaultGridMeshGenerator(this, defaultMaterial);
+        defaultMeshGenerator.UpdateMesh(storage.GetMap());
+    }
+
+    /// <summary>
+    /// Converts a hex position to a chunk position.
+    /// https://observablehq.com/@sanderevers/hexagon-tiling-of-an-hexagonal-grid#small_to_big
+    /// </summary>
+    public CubeHexVector ToChunkCoordinates(CubeHexVector hexPosition)
+    {
+        var shift = 3 * ChunkSize + 2;
+        var area = 3 * ChunkSize * ChunkSize + 3 * ChunkSize + 1;
+        var intermediateVector = new Vector3I(
+            Mathf.FloorToInt((hexPosition.R + shift * hexPosition.Q) / (float)area),
+            Mathf.FloorToInt((hexPosition.S + shift * hexPosition.R) / (float)area),
+            Mathf.FloorToInt((hexPosition.Q + shift * hexPosition.S) / (float)area));
+        var chunkPos = new CubeHexVector(
+            Mathf.FloorToInt((1 + intermediateVector.X - intermediateVector.Y) / 3f),
+            Mathf.FloorToInt((1 + intermediateVector.Y - intermediateVector.Z) / 3f));
+        return chunkPos;
+    }
+
+    /// <summary>
+    /// Converts a chunk position to a hex position.
+    /// https://observablehq.com/@sanderevers/hexmod-representation#center_of
+    /// </summary>
+    public CubeHexVector FromChunkCoordinates(CubeHexVector chunkPosition)
+    {
+        return new CubeHexVector(
+            (ChunkSize + 1) * chunkPosition.Q - ChunkSize * chunkPosition.S,
+            (ChunkSize + 1) * chunkPosition.R - ChunkSize * chunkPosition.Q);
+    }
+
     private CubeHexFracVector Lerp(CubeHex a, CubeHex b, float t)
     {
         return new CubeHexFracVector(a.Position.Q + (b.Position.Q - a.Position.Q) * t, a.Position.R + (b.Position.R - a.Position.R) * t);
