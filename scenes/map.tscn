@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dd70lky3grwlo"]
+[gd_scene load_steps=4 format=3 uid="uid://dd70lky3grwlo"]
 
 [ext_resource type="MeshLibrary" uid="uid://dgxiakmdy3n7x" path="res://mesh_libraries/debug_library.tres" id="1_m2vxb"]
 [ext_resource type="Script" path="res://scripts/HexGridMap.cs" id="2_cquud"]
+[ext_resource type="Material" uid="uid://bq13ehtluunpo" path="res://materials/default.tres" id="3_tt6l1"]
 
 [node name="Map" type="Node3D"]
 
@@ -13,4 +14,6 @@ metadata/_editor_floor_ = Vector3(0, 0, 0)
 [node name="HexGridMap" type="Node3D" parent="."]
 script = ExtResource("2_cquud")
 cellSize = 1.0
+ChunkSize = 10
+defaultMaterial = ExtResource("3_tt6l1")
 MeshLibrary = ExtResource("1_m2vxb")
