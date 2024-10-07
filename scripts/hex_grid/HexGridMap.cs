@@ -44,43 +44,6 @@ public partial class HexGridMap : Node3D
     public float HexHeight => Mathf.Sqrt(3) * cellSize;
     public Vector2 QBasis => new(3f / 2f, Mathf.Sqrt(3) / 2f);
     public Vector2 RBasis => new(0, Mathf.Sqrt(3));
-    
-    /// <summary>
-    /// Returns a list of hex positions between two hexes.
-    /// </summary>
-    public CubeHexVector[] GetLine(CubeHex source, CubeHex target)
-    {
-        var distance = source.Position.Distance(target.Position);
-        var lineHexes = new CubeHexVector[distance + 1];
-        for (var i = 0; i <= distance; i++)
-        {
-            var vector = Round(Lerp(source, target, 1f / distance * i));
-            lineHexes[i] = vector;
-        }
-        return lineHexes;
-    }
-
-    public CubeHexVector Round(CubeHexFracVector fraction)
-    {
-        var q = (int)Math.Round(fraction.Q);
-        var r = (int)Math.Round(fraction.R);
-        var s = (int)Math.Round(fraction.S);
-        
-        var qDiff = Math.Abs(q - fraction.Q);
-        var rDiff = Math.Abs(r - fraction.R);
-        var sDiff = Math.Abs(s - fraction.S);
-        
-        if (qDiff > rDiff && qDiff > sDiff)
-        {
-            q = -r - s;
-        }
-        else if (rDiff > sDiff)
-        {
-            r = -q - s;
-        }
-
-        return new CubeHexVector(q, r);
-    }
 
     public Vector3 GetWorldPosition(CubeHexVector hexPosition)
     {
@@ -106,7 +69,7 @@ public partial class HexGridMap : Node3D
     {
         var q = 2f / 3f * worldPosition.X / cellSize;
         var r = (-1f / 3f * worldPosition.X + Mathf.Sqrt(3) / 3f * worldPosition.Z) / cellSize;
-        return Round(new CubeHexFracVector(q, r));
+        return new CubeHexFracVector(q, r).Round();
     }
 
     /// <summary>
@@ -190,11 +153,6 @@ public partial class HexGridMap : Node3D
         return new CubeHexVector(
             (ChunkSize + 1) * chunkPosition.Q - ChunkSize * chunkPosition.S,
             (ChunkSize + 1) * chunkPosition.R - ChunkSize * chunkPosition.Q);
-    }
-
-    private CubeHexFracVector Lerp(CubeHex a, CubeHex b, float t)
-    {
-        return new CubeHexFracVector(a.Position.Q + (b.Position.Q - a.Position.Q) * t, a.Position.R + (b.Position.R - a.Position.R) * t);
     }
 
     private void OnMeshSelectedHandler(Mesh mesh)
