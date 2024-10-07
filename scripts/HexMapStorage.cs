@@ -2,6 +2,7 @@ namespace hex_grid.scripts;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class HexMapStorage
 {
@@ -19,10 +20,16 @@ public class HexMapStorage
         return hex;
     }
     
+    public void Remove(CubeHexVector position)
+    {
+        var hash = HashCode.Combine(position.Q, position.R);
+        map.Remove(hash);
+    }
+    
     public void Add(CubeHex value)
     {
         var hash = HashCode.Combine(value.Position.Q, value.Position.R);
-        map.Add(hash, value);
+        map.TryAdd(hash, value);
     }
 
     public CubeHex Get(int q, int r)
@@ -34,5 +41,10 @@ public class HexMapStorage
     public CubeHex Get(CubeHexVector hexPosition)
     {
         return Get(hexPosition.Q, hexPosition.R);
+    }
+    
+    public CubeHex[] GetMap()
+    {
+        return map.Values.ToArray();
     }
 }
