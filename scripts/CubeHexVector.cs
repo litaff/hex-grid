@@ -16,12 +16,28 @@ public struct CubeHexVector
     }
     
     public static CubeHexVector Zero => new(0, 0);
+
+    #region Direct directions
+
     public static CubeHexVector North => new(0, -1);
-    public static CubeHexVector NorthEast => new(1, -1);
-    public static CubeHexVector SouthEast => new(1, 0);
+    public static CubeHexVector EastNorth => new(1, -1);
+    public static CubeHexVector EastSouth => new(1, 0);
     public static CubeHexVector South => new(0, 1);
-    public static CubeHexVector SouthWest => new(-1, 1);
-    public static CubeHexVector NorthWest => new(-1, 0);
+    public static CubeHexVector WestSouth => new(-1, 1);
+    public static CubeHexVector WestNorth => new(-1, 0);
+
+    #endregion
+
+    #region Diagonal directions
+
+    public static CubeHexVector East => new(2, -1);
+    public static CubeHexVector SouthEast => new(1, 1);
+    public static CubeHexVector SouthWest => new(-1, 2);
+    public static CubeHexVector West => new(-2, 1);
+    public static CubeHexVector NorthWest => new(-1, -1);
+    public static CubeHexVector NorthEast => new(1, -2);
+
+    #endregion
 
     public int Distance(CubeHexVector target)
     {

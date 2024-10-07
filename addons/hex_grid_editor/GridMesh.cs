@@ -8,27 +8,26 @@ using Array = Godot.Collections.Array;
 
 public class GridMesh
 {
-	private readonly Material lineMaterial = GD.Load<Material>("res://addons/hex_grid_editor/line_material.tres");
+	private readonly Material material;
 	private readonly HexGridMap hexGridMap;
-	private readonly InputHandler inputHandler;
 	private Rid gridMeshRid;
 	private Rid gridInstanceRid;
 	
-	public GridMesh(HexGridMap hexGridMap, InputHandler inputHandler)
+	public GridMesh(HexGridMap hexGridMap, Material material)
 	{
 		this.hexGridMap = hexGridMap;
-		this.inputHandler = inputHandler;
+		this.material = material;
 		gridInstanceRid = RenderingServer.InstanceCreate();
 		gridMeshRid = RenderingServer.MeshCreate();
 	}
 	
-    public void UpdateGrid()
+    public void UpdateGrid(CubeHexVector hexPosition, int radius, bool useAlphaFalloff)
 	{
-		var meshData = GetGridMeshData();
+		var meshData = GetGridMeshData(hexPosition, radius, useAlphaFalloff);
 			
 		RenderingServer.MeshClear(gridMeshRid);
 		RenderingServer.MeshAddSurfaceFromArrays(gridMeshRid, RenderingServer.PrimitiveType.Lines, meshData);
-		RenderingServer.MeshSurfaceSetMaterial(gridMeshRid, 0, lineMaterial.GetRid());
+		RenderingServer.MeshSurfaceSetMaterial(gridMeshRid, 0, material.GetRid());
 		RenderingServer.InstanceSetBase(gridInstanceRid, gridMeshRid);
 		RenderingServer.InstanceSetScenario(gridInstanceRid, hexGridMap.GetWorld3D().Scenario);
 		RenderingServer.InstanceSetTransform(gridInstanceRid, new Transform3D(Basis.Identity, Vector3.Zero));
@@ -41,17 +40,17 @@ public class GridMesh
 		gridMeshRid.FreeRid();
 	}
 	
-	private Array GetGridMeshData()
+	private Array GetGridMeshData(CubeHexVector hexPosition, int radius, bool useAlphaFalloff)
 	{
 		var meshData = new Array();
 		meshData.Resize((int)RenderingServer.ArrayType.Max);
 			
-		var allHexes = hexGridMap.GetSpiral(inputHandler.HexPosition, hexGridMap.EditorGridSize);
+		var allHexes = hexGridMap.GetSpiral(hexPosition, radius);
 		var allHexVertices = allHexes.Select(center => hexGridMap.GetHexVertices(hexGridMap.GetWorldPosition(center))).ToList();
 		var meshVertices = new List<Vector3[]>();
 		var meshColors = new List<Color[]>();
 
-		var maxDistance = allHexVertices.Max(vertices => vertices.Max(vertex => vertex.DistanceTo(inputHandler.HexCenter)));
+		var maxDistance = allHexVertices.Max(vertices => vertices.Max(vertex => vertex.DistanceTo(hexGridMap.GetWorldPosition(hexPosition))));
 			
 		foreach (var singleHexVertices in allHexVertices)
 		{
@@ -68,12 +67,12 @@ public class GridMesh
 
 				// Colors for both vertices of the line segment.
 				colors[firstIndex] = new Color(1f, 1f, 1f, 
-					hexGridMap.EditorGridAlphaFalloff ?
-					Mathf.Pow(Mathf.Max(0, 1f - vertices[firstIndex].DistanceTo(inputHandler.HexCenter) / maxDistance), 2) :
+					useAlphaFalloff ?
+					Mathf.Pow(Mathf.Max(0, 1f - vertices[firstIndex].DistanceTo(hexGridMap.GetWorldPosition(hexPosition)) / maxDistance), 2) :
 					1f);
 				colors[secondIndex] = new Color(1f, 1f, 1f, 
-					hexGridMap.EditorGridAlphaFalloff ?
-					Mathf.Pow(Mathf.Max(0, 1f - vertices[secondIndex].DistanceTo(inputHandler.HexCenter) / maxDistance), 2) :
+					useAlphaFalloff ?
+					Mathf.Pow(Mathf.Max(0, 1f - vertices[secondIndex].DistanceTo(hexGridMap.GetWorldPosition(hexPosition)) / maxDistance), 2) :
 					1f);
 			}
 				
