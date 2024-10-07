@@ -8,14 +8,20 @@ using scripts;
 public partial class HexGridEditor : EditorPlugin
 {
 	private PackedScene dockScene = GD.Load<PackedScene>("res://addons/hex_grid_editor/hex_grid_editor.tscn");
+	private Material lineMaterial = GD.Load<Material>("res://addons/hex_grid_editor/line_material.tres");
+	private Material chunkMaterial = GD.Load<Material>("res://addons/hex_grid_editor/chunk_material.tres");
 
 	private Control rootView;
 	private View view;
 	
 	private HexGridMap hexGridMap;
+	private HexMapStorage mapStorage;
 	private InputHandler inputHandler;
 	private GridMesh gridMesh;
+	private GridMesh chunkMesh;
 	private bool isSelectionActive;
+	private Rid instanceRid;
+	private int selectedMeshIndex;
 	
 	private bool enabled;
 
@@ -25,49 +31,10 @@ public partial class HexGridEditor : EditorPlugin
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
-		gridMesh.UpdateGrid();
-		
+		gridMesh.UpdateGrid(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
+		UpdateChunk();
+
 		return (int)inputHandler.FinalizeInput(viewportCamera, @event, isSelectionActive);
-	}
-
-	public override bool _ForwardCanvasGuiInput(InputEvent @event)
-	{
-		GD.Print("ForwardCanvasGuiInput");
-		return base._ForwardCanvasGuiInput(@event);
-	}
-
-	/// <summary>
-	/// Called when any input is detected.
-	/// </summary>
-	/// <param name="event"></param>
-	public override void _Input(InputEvent @event)
-	{
-		base._Input(@event);
-	}
-
-	public override void _ShortcutInput(InputEvent @event)
-	{
-		GD.Print("ShortcutInput");
-	}
-
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		GD.Print("UnhandledInput");
-	}
-
-	public override void _UnhandledKeyInput(InputEvent @event)
-	{
-		GD.Print("UnhandledKeyInput");
-	}
-
-	public override void _Forward3DDrawOverViewport(Control viewportControl)
-	{
-		GD.Print("Forward3DDrawOverViewport");
-	}
-
-	public override void _ForwardCanvasDrawOverViewport(Control viewportControl)
-	{
-		GD.Print("ForwardCanvasDrawOverViewport");
 	}
 
 	public override void _EnterTree()
@@ -80,6 +47,8 @@ public partial class HexGridEditor : EditorPlugin
 		rootView.QueueFree();
 		gridMesh?.Dispose();
 		gridMesh = null;
+		chunkMesh?.Dispose();
+		chunkMesh = null;
 	}
 
 	public override bool _Handles(GodotObject @object)
@@ -99,9 +68,11 @@ public partial class HexGridEditor : EditorPlugin
 		enabled = true;
 		
 		hexGridMap = map;
+		mapStorage = hexGridMap.InitializeStorage();
 		inputHandler = new InputHandler(hexGridMap);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
-		gridMesh = new GridMesh(hexGridMap, inputHandler);
+		gridMesh = new GridMesh(hexGridMap, lineMaterial);
+		chunkMesh = new GridMesh(hexGridMap, chunkMaterial);
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
 		view.UpdateList(hexGridMap.MeshLibrary);
@@ -118,6 +89,8 @@ public partial class HexGridEditor : EditorPlugin
 		view.ItemList.Clear();
 		gridMesh?.Dispose();
 		gridMesh = null;
+		chunkMesh?.Dispose();
+		chunkMesh = null;
 		OnDeselectRequestedHandler();
 	}
 
@@ -125,15 +98,12 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		view.ItemList.DeselectAll();
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
-		inputHandler.OnLeftMouseButtonPressed -= OnLeftMouseButtonPressedHandler;
-		inputHandler.OnRightMouseButtonPressed -= OnRightMouseButtonPressedHandler;
+		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
+		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
 		instanceRid.FreeRid();
 		isSelectionActive = false;
 	}
 
-	private Rid instanceRid;
-	private int selectedMeshIndex;
-	
 	private void OnItemSelectedHandler(long index)
 	{
 		OnDeselectRequestedHandler();
@@ -146,25 +116,49 @@ public partial class HexGridEditor : EditorPlugin
 		RenderingServer.InstanceSetScenario(instanceRid, hexGridMap.GetWorld3D().Scenario);
 		OnHexCenterUpdatedHandler(inputHandler.HexCenter);
 		inputHandler.OnHexCenterUpdated += OnHexCenterUpdatedHandler;
-		inputHandler.OnLeftMouseButtonPressed += OnLeftMouseButtonPressedHandler;
-		inputHandler.OnRightMouseButtonPressed += OnRightMouseButtonPressedHandler;
+		inputHandler.OnAddHexRequested += OnAddHexRequestedHandler;
+		inputHandler.OnRemoveHexRequest += OnRemoveHexRequestHandler;
 	}
 
-	private void OnLeftMouseButtonPressedHandler()
+	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return;
-		// TODO: Place the tile here.
+		mapStorage.Add(inputHandler.HexPosition);
+		hexGridMap.UpdateMesh();
 	}
 
-	private void OnRightMouseButtonPressedHandler()
+	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return;
-		// TODO: Remove the tile here.
+		mapStorage.Remove(inputHandler.HexPosition);		
+		hexGridMap.UpdateMesh();
 	}
 
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
 	{
 		RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, hexCenter));
+		
+		if (inputHandler.IsAddHexHeld)
+		{
+			OnAddHexRequestedHandler();
+		}
+		if (inputHandler.IsRemoveHexHeld)
+		{
+			OnRemoveHexRequestHandler();
+		}
+	}
+
+	private void UpdateChunk()
+	{
+		if (!hexGridMap.DisplayChunks)
+		{
+			chunkMesh?.Dispose();
+			chunkMesh = null;
+			return;
+		}
+		chunkMesh ??= new GridMesh(hexGridMap, chunkMaterial);
+		var hexesChunkPosition = hexGridMap.ToChunkCoordinates(inputHandler.HexPosition);
+		chunkMesh.UpdateGrid(hexGridMap.FromChunkCoordinates(hexesChunkPosition), hexGridMap.ChunkSize, false);
 	}
 }
 #endif
