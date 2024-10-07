@@ -7,14 +7,14 @@ using scripts;
 using scripts.utils;
 using Array = Godot.Collections.Array;
 
-public class GridMesh
+public class HexGridWireMesh
 {
 	private readonly Material material;
 	private readonly HexGridMap hexGridMap;
 	private Rid gridMeshRid;
 	private Rid gridInstanceRid;
 	
-	public GridMesh(HexGridMap hexGridMap, Material material)
+	public HexGridWireMesh(HexGridMap hexGridMap, Material material)
 	{
 		this.hexGridMap = hexGridMap;
 		this.material = material;
@@ -22,7 +22,7 @@ public class GridMesh
 		gridMeshRid = RenderingServer.MeshCreate();
 	}
 	
-    public void UpdateGrid(CubeHexVector hexPosition, int radius, bool useAlphaFalloff)
+    public void UpdateMesh(CubeHexVector hexPosition, int radius, bool useAlphaFalloff)
 	{
 		var meshData = GetGridMeshData(hexPosition, radius, useAlphaFalloff);
 			
