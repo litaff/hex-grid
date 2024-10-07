@@ -1,4 +1,6 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid.hex;
+
+using vector;
 
 public class CubeHex
 {

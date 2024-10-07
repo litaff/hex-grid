@@ -1,20 +1,24 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid.mesh;
 
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using hex;
+using utils;
 
-public class DefaultGridMeshGenerator
+public class PrimitiveHexGridMesh
 {
-    private readonly HexGridMap gridMap;
+    private readonly World3D scenario;
+    private readonly float cellSize;
     private readonly Material defaultMaterial;
     private Rid meshRid;
     private Rid instanceRid;
 
-    public DefaultGridMeshGenerator(HexGridMap gridMap, Material defaultMaterial)
+    public PrimitiveHexGridMesh(World3D scenario, float cellSize, Material defaultMaterial)
     {
-        this.gridMap = gridMap;
+        this.scenario = scenario;
+        this.cellSize = cellSize;
         this.defaultMaterial = defaultMaterial;
     }
     
@@ -31,7 +35,7 @@ public class DefaultGridMeshGenerator
         if (instanceRid.IsValid && meshRid.IsValid)
         {
             RenderingServer.InstanceSetBase(instanceRid, meshRid);
-            RenderingServer.InstanceSetScenario(instanceRid, gridMap.GetWorld3D().Scenario);
+            RenderingServer.InstanceSetScenario(instanceRid, scenario.Scenario);
             RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, Vector3.Zero));
         }
         var meshData = new Array();
@@ -39,8 +43,7 @@ public class DefaultGridMeshGenerator
         var meshVertices = new List<Vector3[]>();
         foreach (var hex in hexes)
         {
-            var position = gridMap.GetWorldPosition(hex.Position);
-            var vertices = gridMap.GetHexVertices(position);
+            var vertices = hex.Position.GetHexVertices(cellSize);
             meshVertices.Add(new[] { vertices[0], vertices[1], vertices[2] });
             meshVertices.Add(new[] { vertices[2], vertices[3], vertices[4] });
             meshVertices.Add(new[] { vertices[4], vertices[5], vertices[0] });
@@ -57,5 +60,12 @@ public class DefaultGridMeshGenerator
         
         RenderingServer.MeshAddSurfaceFromArrays(meshRid, RenderingServer.PrimitiveType.Triangles, meshData);
         RenderingServer.MeshSurfaceSetMaterial(meshRid, 0, defaultMaterial.GetRid());
+    }
+    
+    public void Dispose()
+    {
+        RenderingServer.MeshClear(meshRid);
+        instanceRid.FreeRid();
+        meshRid.FreeRid();
     }
 }

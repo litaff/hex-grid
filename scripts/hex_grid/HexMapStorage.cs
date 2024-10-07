@@ -1,8 +1,10 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using hex;
+using vector;
 
 public class HexMapStorage
 {

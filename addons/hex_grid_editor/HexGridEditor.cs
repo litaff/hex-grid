@@ -3,6 +3,9 @@ namespace hex_grid.addons.hex_grid_editor;
 
 using Godot;
 using scripts;
+using scripts.hex_grid;
+using scripts.utils;
+using HexGridMap = scripts.hex_grid.HexGridMap;
 
 [Tool]
 public partial class HexGridEditor : EditorPlugin
@@ -17,8 +20,8 @@ public partial class HexGridEditor : EditorPlugin
 	private HexGridMap hexGridMap;
 	private HexMapStorage mapStorage;
 	private InputHandler inputHandler;
-	private GridMesh gridMesh;
-	private GridMesh chunkMesh;
+	private HexGridWireMesh gridWireMesh;
+	private HexGridWireMesh chunkWireMesh;
 	private bool isSelectionActive;
 	private Rid instanceRid;
 	private int selectedMeshIndex;
@@ -31,7 +34,7 @@ public partial class HexGridEditor : EditorPlugin
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
-		gridMesh.UpdateGrid(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
+		gridWireMesh.UpdateMesh(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
 		UpdateChunk();
 
 		return (int)inputHandler.FinalizeInput(viewportCamera, @event, isSelectionActive);
@@ -45,10 +48,10 @@ public partial class HexGridEditor : EditorPlugin
 	public override void _ExitTree()
 	{
 		rootView.QueueFree();
-		gridMesh?.Dispose();
-		gridMesh = null;
-		chunkMesh?.Dispose();
-		chunkMesh = null;
+		gridWireMesh?.Dispose();
+		gridWireMesh = null;
+		chunkWireMesh?.Dispose();
+		chunkWireMesh = null;
 	}
 
 	public override bool _Handles(GodotObject @object)
@@ -69,10 +72,10 @@ public partial class HexGridEditor : EditorPlugin
 		
 		hexGridMap = map;
 		mapStorage = hexGridMap.InitializeStorage();
-		inputHandler = new InputHandler(hexGridMap);
+		inputHandler = new InputHandler(hexGridMap.Position, hexGridMap.CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
-		gridMesh = new GridMesh(hexGridMap, lineMaterial);
-		chunkMesh = new GridMesh(hexGridMap, chunkMaterial);
+		gridWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
+		chunkWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
 		view.UpdateList(hexGridMap.MeshLibrary);
@@ -87,10 +90,10 @@ public partial class HexGridEditor : EditorPlugin
 		RemoveControlFromDocks(rootView);
 		view.ItemList.ItemSelected -= OnItemSelectedHandler;
 		view.ItemList.Clear();
-		gridMesh?.Dispose();
-		gridMesh = null;
-		chunkMesh?.Dispose();
-		chunkMesh = null;
+		gridWireMesh?.Dispose();
+		gridWireMesh = null;
+		chunkWireMesh?.Dispose();
+		chunkWireMesh = null;
 		OnDeselectRequestedHandler();
 	}
 
@@ -152,13 +155,14 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		if (!hexGridMap.DisplayChunks)
 		{
-			chunkMesh?.Dispose();
-			chunkMesh = null;
+			chunkWireMesh?.Dispose();
+			chunkWireMesh = null;
 			return;
 		}
-		chunkMesh ??= new GridMesh(hexGridMap, chunkMaterial);
-		var hexesChunkPosition = hexGridMap.ToChunkCoordinates(inputHandler.HexPosition);
-		chunkMesh.UpdateGrid(hexGridMap.FromChunkCoordinates(hexesChunkPosition), hexGridMap.ChunkSize, false);
+		chunkWireMesh ??= new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		var hexesChunkPosition = inputHandler.HexPosition.ToChunkPosition(hexGridMap.ChunkSize);
+		chunkWireMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize), hexGridMap.ChunkSize,
+			false);
 	}
 }
 #endif
