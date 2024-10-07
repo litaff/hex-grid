@@ -1,18 +1,19 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid.mesh;
 
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using utils;
 
-public class DefaultGridMeshGenerator
+public class PrimitiveHexGridMesh
 {
     private readonly HexGridMap gridMap;
     private readonly Material defaultMaterial;
     private Rid meshRid;
     private Rid instanceRid;
 
-    public DefaultGridMeshGenerator(HexGridMap gridMap, Material defaultMaterial)
+    public PrimitiveHexGridMesh(HexGridMap gridMap, Material defaultMaterial)
     {
         this.gridMap = gridMap;
         this.defaultMaterial = defaultMaterial;
@@ -57,5 +58,12 @@ public class DefaultGridMeshGenerator
         
         RenderingServer.MeshAddSurfaceFromArrays(meshRid, RenderingServer.PrimitiveType.Triangles, meshData);
         RenderingServer.MeshSurfaceSetMaterial(meshRid, 0, defaultMaterial.GetRid());
+    }
+    
+    public void Dispose()
+    {
+        RenderingServer.MeshClear(meshRid);
+        instanceRid.FreeRid();
+        meshRid.FreeRid();
     }
 }
