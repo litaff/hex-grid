@@ -1,12 +1,12 @@
-namespace hex_grid.scripts.hex_grid;
+namespace hex_grid.scripts.hex_grid.chunk;
 
 using vector;
 
-public struct CubeHexChunk
+public struct CubeChunk
 {
     public CubeHexVector Position { get; private set; }
     
-    public CubeHexChunk(CubeHexVector position)
+    public CubeChunk(CubeHexVector position)
     {
         Position = position;
     }
