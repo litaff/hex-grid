@@ -13,7 +13,7 @@ metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="HexGridMap" type="Node3D" parent="."]
 script = ExtResource("2_rcp8o")
-cellSize = 1.0
+CellSize = 1.0
 ChunkSize = 10
 defaultMaterial = ExtResource("3_tt6l1")
 MeshLibrary = ExtResource("1_m2vxb")

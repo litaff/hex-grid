@@ -3,23 +3,23 @@ namespace hex_grid.addons.hex_grid_editor;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using scripts;
 using scripts.hex_grid;
 using scripts.hex_grid.vector;
 using scripts.utils;
 using Array = Godot.Collections.Array;
-using HexGridMap = scripts.hex_grid.HexGridMap;
 
 public class HexGridWireMesh
 {
+	private readonly World3D scenario;
+	private readonly float cellSize;
 	private readonly Material material;
-	private readonly HexGridMap hexGridMap;
 	private Rid gridMeshRid;
 	private Rid gridInstanceRid;
 	
-	public HexGridWireMesh(HexGridMap hexGridMap, Material material)
+	public HexGridWireMesh(World3D scenario, float cellSize, Material material)
 	{
-		this.hexGridMap = hexGridMap;
+		this.scenario = scenario;
+		this.cellSize = cellSize;
 		this.material = material;
 		gridInstanceRid = RenderingServer.InstanceCreate();
 		gridMeshRid = RenderingServer.MeshCreate();
@@ -33,7 +33,7 @@ public class HexGridWireMesh
 		RenderingServer.MeshAddSurfaceFromArrays(gridMeshRid, RenderingServer.PrimitiveType.Lines, meshData);
 		RenderingServer.MeshSurfaceSetMaterial(gridMeshRid, 0, material.GetRid());
 		RenderingServer.InstanceSetBase(gridInstanceRid, gridMeshRid);
-		RenderingServer.InstanceSetScenario(gridInstanceRid, hexGridMap.GetWorld3D().Scenario);
+		RenderingServer.InstanceSetScenario(gridInstanceRid, scenario.Scenario);
 		RenderingServer.InstanceSetTransform(gridInstanceRid, new Transform3D(Basis.Identity, Vector3.Zero));
 	}
     
@@ -49,12 +49,12 @@ public class HexGridWireMesh
 		var meshData = new Array();
 		meshData.Resize((int)RenderingServer.ArrayType.Max);
 			
-		var allHexes = hexGridMap.GetSpiral(hexPosition, radius);
-		var allHexVertices = allHexes.Select(center => hexGridMap.GetHexVertices(hexGridMap.GetWorldPosition(center))).ToList();
+		var allHexes = hexPosition.GetSpiral(radius);
+		var allHexVertices = allHexes.Select(center => center.GetHexVertices(cellSize)).ToList();
 		var meshVertices = new List<Vector3[]>();
 		var meshColors = new List<Color[]>();
 
-		var maxDistance = allHexVertices.Max(vertices => vertices.Max(vertex => vertex.DistanceTo(hexGridMap.GetWorldPosition(hexPosition))));
+		var maxDistance = allHexVertices.Max(vertices => vertices.Max(vertex => vertex.DistanceTo(hexPosition.ToWorldPosition(cellSize))));
 			
 		foreach (var singleHexVertices in allHexVertices)
 		{
@@ -72,11 +72,11 @@ public class HexGridWireMesh
 				// Colors for both vertices of the line segment.
 				colors[firstIndex] = new Color(1f, 1f, 1f, 
 					useAlphaFalloff ?
-					Mathf.Pow(Mathf.Max(0, 1f - vertices[firstIndex].DistanceTo(hexGridMap.GetWorldPosition(hexPosition)) / maxDistance), 2) :
+					Mathf.Pow(Mathf.Max(0, 1f - vertices[firstIndex].DistanceTo(hexPosition.ToWorldPosition(cellSize)) / maxDistance), 2) :
 					1f);
 				colors[secondIndex] = new Color(1f, 1f, 1f, 
 					useAlphaFalloff ?
-					Mathf.Pow(Mathf.Max(0, 1f - vertices[secondIndex].DistanceTo(hexGridMap.GetWorldPosition(hexPosition)) / maxDistance), 2) :
+					Mathf.Pow(Mathf.Max(0, 1f - vertices[secondIndex].DistanceTo(hexPosition.ToWorldPosition(cellSize)) / maxDistance), 2) :
 					1f);
 			}
 				

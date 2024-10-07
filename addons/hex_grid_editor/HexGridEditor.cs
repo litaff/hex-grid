@@ -72,10 +72,10 @@ public partial class HexGridEditor : EditorPlugin
 		
 		hexGridMap = map;
 		mapStorage = hexGridMap.InitializeStorage();
-		inputHandler = new InputHandler(hexGridMap);
+		inputHandler = new InputHandler(hexGridMap.Position, hexGridMap.CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
-		gridWireMesh = new HexGridWireMesh(hexGridMap, lineMaterial);
-		chunkWireMesh = new HexGridWireMesh(hexGridMap, chunkMaterial);
+		gridWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
+		chunkWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
 		view.UpdateList(hexGridMap.MeshLibrary);
@@ -159,9 +159,10 @@ public partial class HexGridEditor : EditorPlugin
 			chunkWireMesh = null;
 			return;
 		}
-		chunkWireMesh ??= new HexGridWireMesh(hexGridMap, chunkMaterial);
-		var hexesChunkPosition = hexGridMap.ToChunkCoordinates(inputHandler.HexPosition);
-		chunkWireMesh.UpdateMesh(hexGridMap.FromChunkCoordinates(hexesChunkPosition), hexGridMap.ChunkSize, false);
+		chunkWireMesh ??= new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		var hexesChunkPosition = inputHandler.HexPosition.ToChunkPosition(hexGridMap.ChunkSize);
+		chunkWireMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize), hexGridMap.ChunkSize,
+			false);
 	}
 }
 #endif
