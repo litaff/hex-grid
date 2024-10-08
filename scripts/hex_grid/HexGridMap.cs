@@ -35,9 +35,8 @@ public partial class HexGridMap : Node3D
     [Export, ExportGroup(EDITOR)]
     public bool DisplayChunks { get; private set; } = true;
     
-    private List<MeshInstance3D> meshInstances = new();
-    private MeshInstance3D currentMesh;
     private HexMapStorage storage;
+    private HexMapChunkStorage chunkStorage;
     private PrimitiveHexGridMesh primitiveHexMesh;
 
     public float HexWidth => 3f / 2f * CellSize;
@@ -46,21 +45,32 @@ public partial class HexGridMap : Node3D
     public HexMapStorage InitializeStorage()
     {
         storage ??= new HexMapStorage();
+        if (chunkStorage != null && chunkStorage.IsUpToDate(ChunkSize)) return storage;
+        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibrary, GetWorld3D());
+        foreach (var hex in storage.GetMap())
+        {
+            chunkStorage.AssignHex(hex);
+        }
         return storage;
     }
     
-    public void UpdateMesh()
+    public void UpdateDebugMesh()
     {
         primitiveHexMesh ??= new PrimitiveHexGridMesh(GetWorld3D(), CellSize, defaultMaterial);
         primitiveHexMesh.UpdateMesh(storage.GetMap());
     }
-
-    private void OnMeshSelectedHandler(Mesh mesh)
+    
+    public void RemoveHex(CubeHexVector hexPosition)
     {
-        var meshInstance = new MeshInstance3D();
-        meshInstance.Mesh = mesh;
-        AddChild(meshInstance);
-        meshInstances.Add(meshInstance);
-        currentMesh = meshInstance;
+        storage.Remove(hexPosition);
+        chunkStorage.RemoveHex(hexPosition);
+        GD.Print(chunkStorage);
+    }
+
+    public void AddHex(CubeHexVector hexPosition, int meshIndex)
+    {
+        storage.Add(hexPosition, CellSize, meshIndex);
+        chunkStorage.AssignHex(storage.Get(hexPosition));
+        GD.Print(chunkStorage);
     }
 }

@@ -126,15 +126,15 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return;
-		mapStorage.Add(inputHandler.HexPosition);
-		hexGridMap.UpdateMesh();
+		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex);
+		hexGridMap.UpdateDebugMesh();
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return;
-		mapStorage.Remove(inputHandler.HexPosition);		
-		hexGridMap.UpdateMesh();
+		hexGridMap.RemoveHex(inputHandler.HexPosition);
+		hexGridMap.UpdateDebugMesh();
 	}
 
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
