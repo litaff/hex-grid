@@ -168,4 +168,14 @@ public static class HexGridExtensions
             (chunkSize + 1) * chunkPosition.Q - chunkSize * chunkPosition.S,
             (chunkSize + 1) * chunkPosition.R - chunkSize * chunkPosition.Q);
     }
+    
+    /// <summary>
+    /// Returns a hex position relative to the chunk, which contains the hex position.
+    /// https://observablehq.com/@sanderevers/hexmod-representation#rel_coords
+    /// </summary>
+    public static CubeHexVector RelativeToChunk(this CubeHexVector hexPosition, int chunkSize)
+    {
+        var chunkPosition = hexPosition.ToChunkPosition(chunkSize);
+        return hexPosition - chunkPosition.FromChunkPosition(chunkSize);
+    }
 }
