@@ -15,9 +15,9 @@ public class HexMapStorage
         map = new Dictionary<int, CubeHex>();
     }
 
-    public CubeHex Add(CubeHexVector position)
+    public CubeHex Add(CubeHexVector position, float size, int libraryIndex)
     {
-        var hex = new CubeHex(position.Q, position.R);
+        var hex = new CubeHex(position.Q, position.R, size, libraryIndex);
         Add(hex);
         return hex;
     }
