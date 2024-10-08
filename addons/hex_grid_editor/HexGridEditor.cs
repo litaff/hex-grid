@@ -13,6 +13,7 @@ public partial class HexGridEditor : EditorPlugin
 	private PackedScene dockScene = GD.Load<PackedScene>("res://addons/hex_grid_editor/hex_grid_editor.tscn");
 	private Material lineMaterial = GD.Load<Material>("res://addons/hex_grid_editor/line_material.tres");
 	private Material chunkMaterial = GD.Load<Material>("res://addons/hex_grid_editor/chunk_material.tres");
+	private Material debugHexMaterial = GD.Load<Material>("res://addons/hex_grid_editor/debug_hex_material.tres");
 
 	private Control rootView;
 	private View view;
@@ -22,6 +23,7 @@ public partial class HexGridEditor : EditorPlugin
 	private InputHandler inputHandler;
 	private HexGridWireMesh gridWireMesh;
 	private HexGridWireMesh chunkWireMesh;
+	private PrimitiveHexGridMesh primitiveHexMesh;
 	private bool isSelectionActive;
 	private Rid instanceRid;
 	private int selectedMeshIndex;
@@ -76,6 +78,8 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		gridWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
 		chunkWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, debugHexMaterial);
+		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
 		view.UpdateList(hexGridMap.MeshLibrary);
@@ -94,6 +98,8 @@ public partial class HexGridEditor : EditorPlugin
 		gridWireMesh = null;
 		chunkWireMesh?.Dispose();
 		chunkWireMesh = null;
+		primitiveHexMesh?.Dispose();
+		primitiveHexMesh = null;
 		OnDeselectRequestedHandler();
 	}
 
@@ -127,14 +133,16 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		if (!isSelectionActive) return;
 		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex);
-		hexGridMap.UpdateDebugMesh();
+		if (!hexGridMap.DisplayDebugHexes) return;
+		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return;
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
-		hexGridMap.UpdateDebugMesh();
+		if (!hexGridMap.DisplayDebugHexes) return;
+		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
 	}
 
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)

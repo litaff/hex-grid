@@ -2,9 +2,9 @@ namespace hex_grid.scripts.hex_grid;
 
 using System;
 using System.Collections.Generic;
+using addons.hex_grid_editor;
 using Godot;
 using hex;
-using mesh;
 using vector;
 
 [GlobalClass]
@@ -24,8 +24,6 @@ public partial class HexGridMap : Node3D
     [Export]
     public int ChunkSize { get; private set; }
     [Export]
-    private Material defaultMaterial;
-    [Export]
     public MeshLibrary MeshLibrary { get; private set; }
 
     [Export, ExportGroup(EDITOR)]
@@ -34,13 +32,15 @@ public partial class HexGridMap : Node3D
     public bool EditorGridAlphaFalloff { get; private set; } = true;
     [Export, ExportGroup(EDITOR)]
     public bool DisplayChunks { get; private set; } = true;
+    [Export, ExportGroup(EDITOR)]
+    public bool DisplayDebugHexes { get; private set; } = true;
     
     private HexMapStorage storage;
     private HexMapChunkStorage chunkStorage;
-    private PrimitiveHexGridMesh primitiveHexMesh;
 
     public float HexWidth => 3f / 2f * CellSize;
     public float HexHeight => Mathf.Sqrt(3) * CellSize;
+    public CubeHex[] Map => storage?.GetMap();
 
     public HexMapStorage InitializeStorage()
     {
@@ -52,12 +52,6 @@ public partial class HexGridMap : Node3D
             chunkStorage.AssignHex(hex);
         }
         return storage;
-    }
-    
-    public void UpdateDebugMesh()
-    {
-        primitiveHexMesh ??= new PrimitiveHexGridMesh(GetWorld3D(), CellSize, defaultMaterial);
-        primitiveHexMesh.UpdateMesh(storage.GetMap());
     }
     
     public void RemoveHex(CubeHexVector hexPosition)
