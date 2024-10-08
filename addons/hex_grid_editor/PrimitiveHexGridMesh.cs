@@ -1,11 +1,12 @@
-namespace hex_grid.scripts.hex_grid.mesh;
+namespace hex_grid.addons.hex_grid_editor;
 
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using hex;
-using utils;
+using hex_grid.scripts.hex_grid.hex;
+using scripts.utils;
+using scripts.hex_grid;
 
 public class PrimitiveHexGridMesh
 {
