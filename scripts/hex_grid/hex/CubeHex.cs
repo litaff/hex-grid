@@ -21,4 +21,10 @@ public class CubeHex
         LibraryIndex = libraryIndex;
         Size = size;
     }
+
+    public void SetSize(float cellSize)
+    {
+        if (cellSize <= 0) return;
+        Size = cellSize;
+    }
 }
