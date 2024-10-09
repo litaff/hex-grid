@@ -15,3 +15,7 @@ script = ExtResource("2_rcp8o")
 CellSize = 1.0
 ChunkSize = 10
 MeshLibrary = ExtResource("1_m2vxb")
+EditorGridSize = 5
+EditorGridAlphaFalloff = true
+DisplayChunks = true
+DisplayDebugHexes = true
