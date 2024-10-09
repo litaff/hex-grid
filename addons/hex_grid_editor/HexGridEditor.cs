@@ -19,8 +19,8 @@ public partial class HexGridEditor : EditorPlugin
 	
 	private HexGridMap hexGridMap;
 	private InputHandler inputHandler;
-	private HexGridWireMesh gridWireMesh;
-	private HexGridWireMesh chunkWireMesh;
+	private WireHexGridMesh gridMesh;
+	private WireHexGridMesh chunkMesh;
 	private PrimitiveHexGridMesh primitiveHexMesh;
 	private bool isSelectionActive;
 	private Rid selectedMeshInstanceRid;
@@ -34,7 +34,7 @@ public partial class HexGridEditor : EditorPlugin
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
-		gridWireMesh.UpdateMesh(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
+		gridMesh.UpdateMesh(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
 		UpdateChunk();
 
 		return (int)inputHandler.FinalizeInput(viewportCamera, @event, isSelectionActive);
@@ -48,10 +48,10 @@ public partial class HexGridEditor : EditorPlugin
 	public override void _ExitTree()
 	{
 		rootView.QueueFree();
-		gridWireMesh?.Dispose();
-		gridWireMesh = null;
-		chunkWireMesh?.Dispose();
-		chunkWireMesh = null;
+		gridMesh?.Dispose();
+		gridMesh = null;
+		chunkMesh?.Dispose();
+		chunkMesh = null;
 	}
 
 	public override bool _Handles(GodotObject @object)
@@ -75,8 +75,8 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap.Initialize();
 		inputHandler = new InputHandler(hexGridMap.Position, hexGridMap.CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
-		gridWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
-		chunkWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		gridMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
+		chunkMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
 		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, debugHexMaterial);
 		UpdatePrimitive();
 		AddControlToDock(DockSlot.RightBl, rootView);
@@ -94,10 +94,10 @@ public partial class HexGridEditor : EditorPlugin
 		RemoveControlFromDocks(rootView);
 		view.ItemList.ItemSelected -= OnItemSelectedHandler;
 		view.ItemList.Clear();
-		gridWireMesh?.Dispose();
-		gridWireMesh = null;
-		chunkWireMesh?.Dispose();
-		chunkWireMesh = null;
+		gridMesh?.Dispose();
+		gridMesh = null;
+		chunkMesh?.Dispose();
+		chunkMesh = null;
 		primitiveHexMesh?.Dispose();
 		primitiveHexMesh = null;
 		OnDeselectRequestedHandler();
@@ -173,13 +173,13 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		if (!hexGridMap.DisplayChunks)
 		{
-			chunkWireMesh?.Dispose();
-			chunkWireMesh = null;
+			chunkMesh?.Dispose();
+			chunkMesh = null;
 			return;
 		}
-		chunkWireMesh ??= new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		chunkMesh ??= new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
 		var hexesChunkPosition = inputHandler.HexPosition.ToChunkPosition(hexGridMap.ChunkSize);
-		chunkWireMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize), hexGridMap.ChunkSize,
+		chunkMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize), hexGridMap.ChunkSize,
 			false);
 	}
 }

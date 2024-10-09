@@ -8,7 +8,7 @@ using scripts.hex_grid.vector;
 using scripts.utils;
 using Array = Godot.Collections.Array;
 
-public class HexGridWireMesh
+public class WireHexGridMesh
 {
 	private readonly World3D scenario;
 	private readonly float cellSize;
@@ -16,7 +16,7 @@ public class HexGridWireMesh
 	private Rid gridMeshRid;
 	private Rid gridInstanceRid;
 	
-	public HexGridWireMesh(World3D scenario, float cellSize, Material material)
+	public WireHexGridMesh(World3D scenario, float cellSize, Material material)
 	{
 		this.scenario = scenario;
 		this.cellSize = cellSize;
@@ -43,6 +43,11 @@ public class HexGridWireMesh
 		gridInstanceRid.FreeRid();
 		gridMeshRid.FreeRid();
 	}
+
+	/*private Array GetMeshData()
+	{
+		var meshData = new Array();
+	}*/
 	
 	private Array GetGridMeshData(CubeHexVector hexPosition, int radius, bool useAlphaFalloff)
 	{
