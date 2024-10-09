@@ -2,7 +2,6 @@
 namespace hex_grid.addons.hex_grid_editor;
 
 using Godot;
-using scripts;
 using scripts.hex_grid;
 using scripts.utils;
 using HexGridMap = scripts.hex_grid.HexGridMap;
@@ -19,13 +18,12 @@ public partial class HexGridEditor : EditorPlugin
 	private View view;
 	
 	private HexGridMap hexGridMap;
-	private HexMapStorage mapStorage;
 	private InputHandler inputHandler;
 	private HexGridWireMesh gridWireMesh;
 	private HexGridWireMesh chunkWireMesh;
 	private PrimitiveHexGridMesh primitiveHexMesh;
 	private bool isSelectionActive;
-	private Rid instanceRid;
+	private Rid selectedMeshInstanceRid;
 	private int selectedMeshIndex;
 	
 	private bool enabled;
@@ -73,13 +71,14 @@ public partial class HexGridEditor : EditorPlugin
 		enabled = true;
 		
 		hexGridMap = map;
-		mapStorage = hexGridMap.InitializeStorage();
+		hexGridMap.OnPropertyChange += Reset;
+		hexGridMap.Initialize();
 		inputHandler = new InputHandler(hexGridMap.Position, hexGridMap.CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		gridWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
 		chunkWireMesh = new HexGridWireMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
 		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, debugHexMaterial);
-		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
+		UpdatePrimitive();
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
 		view.UpdateList(hexGridMap.MeshLibrary);
@@ -91,6 +90,7 @@ public partial class HexGridEditor : EditorPlugin
 		if (!enabled) return;
 		enabled = false;
 		
+		hexGridMap.OnPropertyChange -= Reset;
 		RemoveControlFromDocks(rootView);
 		view.ItemList.ItemSelected -= OnItemSelectedHandler;
 		view.ItemList.Clear();
@@ -103,13 +103,19 @@ public partial class HexGridEditor : EditorPlugin
 		OnDeselectRequestedHandler();
 	}
 
+	private void Reset()
+	{
+		Disable();
+		Enable(hexGridMap);
+	}
+	
 	private void OnDeselectRequestedHandler()
 	{
 		view.ItemList.DeselectAll();
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
 		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
-		instanceRid.FreeRid();
+		selectedMeshInstanceRid.FreeRid();
 		isSelectionActive = false;
 	}
 
@@ -120,9 +126,9 @@ public partial class HexGridEditor : EditorPlugin
 		isSelectionActive = true;
 		selectedMeshIndex = (int)index;
 		var mesh = hexGridMap.MeshLibrary.GetItemMesh((int)index);
-		instanceRid = RenderingServer.InstanceCreate();
-		RenderingServer.InstanceSetBase(instanceRid, mesh.GetRid());
-		RenderingServer.InstanceSetScenario(instanceRid, hexGridMap.GetWorld3D().Scenario);
+		selectedMeshInstanceRid = RenderingServer.InstanceCreate();
+		RenderingServer.InstanceSetBase(selectedMeshInstanceRid, mesh.GetRid());
+		RenderingServer.InstanceSetScenario(selectedMeshInstanceRid, hexGridMap.GetWorld3D().Scenario);
 		OnHexCenterUpdatedHandler(inputHandler.HexCenter);
 		inputHandler.OnHexCenterUpdated += OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested += OnAddHexRequestedHandler;
@@ -133,21 +139,25 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		if (!isSelectionActive) return;
 		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex);
-		if (!hexGridMap.DisplayDebugHexes) return;
-		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
+		UpdatePrimitive();
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return;
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
+		UpdatePrimitive();
+	}
+
+	private void UpdatePrimitive()
+	{
 		if (!hexGridMap.DisplayDebugHexes) return;
 		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
 	}
 
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
 	{
-		RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, hexCenter));
+		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, new Transform3D(Basis.Identity, hexCenter));
 		
 		if (inputHandler.IsAddHexHeld)
 		{

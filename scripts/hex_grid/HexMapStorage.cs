@@ -15,6 +15,14 @@ public class HexMapStorage
         map = new Dictionary<int, CubeHex>();
     }
 
+    public void UpdateCellSize(float cellSize)
+    {
+        foreach (var hex in map.Values)
+        {
+            hex.SetSize(cellSize);
+        }
+    }
+    
     public CubeHex Add(CubeHexVector position, float size, int libraryIndex)
     {
         var hex = new CubeHex(position.Q, position.R, size, libraryIndex);

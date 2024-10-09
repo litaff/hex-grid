@@ -10,11 +10,11 @@ using vector;
 
 public class HexMapChunkStorage
 {
-    private Dictionary<int, CubeChunk> map;
-    private readonly int chunkSize;
     private readonly MeshLibrary library;
     private readonly World3D scenario;
-    
+    private Dictionary<int, CubeChunk> map;
+    private int chunkSize;
+
     public HexMapChunkStorage(int chunkSize, MeshLibrary library, World3D scenario)
     {
         this.chunkSize = chunkSize;
@@ -23,9 +23,9 @@ public class HexMapChunkStorage
         this.scenario = scenario;
     }
 
-    public bool IsUpToDate(int chunkSize)
+    public bool IsUpToDate(int chunkSize, MeshLibrary library, World3D scenario)
     {
-        return this.chunkSize == chunkSize;
+        return this.chunkSize == chunkSize && this.library == library && this.scenario == scenario;
     }
     
     public void AssignHex(CubeHex hex)
@@ -79,5 +79,13 @@ public class HexMapChunkStorage
     public override string ToString()
     {
         return map.Values.Aggregate("", (current, chunk) => current + (chunk + "\n"));
+    }
+
+    public void Dispose()
+    {
+        foreach (var chunk in map)
+        {
+            chunk.Value.Dispose();
+        }
     }
 }
