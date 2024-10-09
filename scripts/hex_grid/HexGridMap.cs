@@ -111,25 +111,12 @@ public partial class HexGridMap : Node3D
     public CubeHex[] Map => storage?.GetMap();
 
     public event Action OnPropertyChange;
-    
-    public HexMapStorage Initialize()
+
+    public void Initialize()
     {
         storage ??= new HexMapStorage();
-        if (chunkStorage != null && chunkStorage.IsUpToDate(ChunkSize, MeshLibrary, GetWorld3D())) return storage;
+        if (chunkStorage != null && chunkStorage.IsUpToDate(ChunkSize, MeshLibrary, GetWorld3D())) return;
         InitializeChunkStorage();
-        return storage;
-    }
-
-    private void InitializeChunkStorage()
-    {
-        chunkStorage?.Dispose();
-        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibrary, GetWorld3D());
-        if (storage == null) return;
-        
-        foreach (var hex in storage.GetMap())
-        {
-            chunkStorage.AssignHex(hex);
-        }
     }
 
     public void RemoveHex(CubeHexVector hexPosition)
@@ -142,5 +129,25 @@ public partial class HexGridMap : Node3D
     {
         storage.Add(hexPosition, CellSize, meshIndex);
         chunkStorage.AssignHex(storage.Get(hexPosition));
+    }
+
+    public void ResetMap()
+    {
+        storage = null;
+        chunkStorage?.Dispose();
+        chunkStorage = null;
+        Initialize();
+    }
+
+    private void InitializeChunkStorage()
+    {
+        chunkStorage?.Dispose();
+        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibrary, GetWorld3D());
+        if (storage == null) return;
+        
+        foreach (var hex in storage.GetMap())
+        {
+            chunkStorage.AssignHex(hex);
+        }
     }
 }

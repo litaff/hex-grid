@@ -83,6 +83,7 @@ public partial class HexGridEditor : EditorPlugin
 		UpdatePrimitive();
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
+		view.MapResetButton.Confirmed += OnMapResetRequestedHandler;
 		view.UpdateList(hexGridMap.MeshLibrary);
 		view.ItemList.ItemSelected += OnItemSelectedHandler;
 	}
@@ -94,6 +95,7 @@ public partial class HexGridEditor : EditorPlugin
 		
 		hexGridMap.OnPropertyChange -= Reset;
 		RemoveControlFromDocks(rootView);
+		view.MapResetButton.Confirmed -= OnMapResetRequestedHandler;
 		view.ItemList.ItemSelected -= OnItemSelectedHandler;
 		view.ItemList.Clear();
 		gridMesh?.Dispose();
@@ -103,6 +105,12 @@ public partial class HexGridEditor : EditorPlugin
 		primitiveHexMesh?.Dispose();
 		primitiveHexMesh = null;
 		OnDeselectRequestedHandler();
+	}
+
+	private void OnMapResetRequestedHandler()
+	{
+		hexGridMap.ResetMap();
+		UpdatePrimitive();
 	}
 
 	private void Reset()
