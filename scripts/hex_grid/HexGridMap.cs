@@ -2,6 +2,7 @@ namespace hex_grid.scripts.hex_grid;
 
 using System;
 using Godot;
+using Godot.Collections;
 using hex;
 using vector;
 
@@ -39,12 +40,12 @@ public partial class HexGridMap : Node3D
         } 
     }
     [Export]
-    public MeshLibrary MeshLibrary
+    public Dictionary<HexType, MeshLibrary> MeshLibraries
     {
-        get => meshLibrary;
+        get => meshLibraries;
         private set
         {
-            meshLibrary = value;
+            meshLibraries = value;
             if (value == null)
             {
                 GD.PrintErr("MeshLibrary is null, chunks won't be updated!");
@@ -55,7 +56,7 @@ public partial class HexGridMap : Node3D
 
     private float cellSize;
     private int chunkSize;
-    private MeshLibrary meshLibrary;
+    private Dictionary<HexType, MeshLibrary> meshLibraries;
     
     [Export, ExportGroup(EDITOR)]
     public int EditorGridSize
@@ -115,7 +116,7 @@ public partial class HexGridMap : Node3D
     public void Initialize()
     {
         storage ??= new HexMapStorage();
-        if (chunkStorage != null && chunkStorage.IsUpToDate(ChunkSize, MeshLibrary, GetWorld3D())) return;
+        if (chunkStorage != null && chunkStorage.IsUpToDate(ChunkSize, MeshLibraries, GetWorld3D())) return;
         InitializeChunkStorage();
     }
 
@@ -125,9 +126,9 @@ public partial class HexGridMap : Node3D
         chunkStorage.RemoveHex(hexPosition);
     }
 
-    public void AddHex(CubeHexVector hexPosition, int meshIndex)
+    public void AddHex(CubeHexVector hexPosition, int meshIndex, HexType type)
     {
-        storage.Add(hexPosition, CellSize, meshIndex);
+        storage.Add(hexPosition, CellSize, meshIndex, type);
         chunkStorage.AssignHex(storage.Get(hexPosition));
     }
 
@@ -142,7 +143,7 @@ public partial class HexGridMap : Node3D
     private void InitializeChunkStorage()
     {
         chunkStorage?.Dispose();
-        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibrary, GetWorld3D());
+        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibraries, GetWorld3D());
         if (storage == null) return;
         
         foreach (var hex in storage.GetMap())

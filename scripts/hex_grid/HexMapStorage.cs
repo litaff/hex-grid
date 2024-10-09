@@ -23,9 +23,14 @@ public class HexMapStorage
         }
     }
     
-    public CubeHex Add(CubeHexVector position, float size, int libraryIndex)
+    public CubeHex Add(CubeHexVector position, float size, int libraryIndex, HexType type)
     {
-        var hex = new CubeHex(position.Q, position.R, size, libraryIndex);
+        var hex = type switch
+        {
+            HexType.Accessible => new AccessibleHex(position.Q, position.R, size, libraryIndex),
+            HexType.Base => new CubeHex(position.Q, position.R, size, libraryIndex),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
         Add(hex);
         return hex;
     }

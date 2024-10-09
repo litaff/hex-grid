@@ -35,9 +35,9 @@ public class CubeChunk
         hexes.Remove(hex);
     }
 
-    public void UpdateMesh(MeshLibrary meshLibrary, World3D scenario)
+    public void UpdateMesh(Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
-        if (meshLibrary == null) return;
+        if (libraries == null) return;
         
         ClearMeshInstances();
         
@@ -45,7 +45,8 @@ public class CubeChunk
         foreach (var hexGroup in sortedHexes)
         {
             var firstHex = hexGroup.Value.First();
-            var mesh = meshLibrary.GetItemMesh(hexGroup.Key);
+            var mesh = libraries[hexGroup.Key.Item1]?.GetItemMesh(hexGroup.Key.Item2);
+            if (mesh == null) continue;
             var hexPositions = hexGroup.Value.Select(hex => hex.Position).ToList();
             var relativeHexPositions = hexPositions.Select(position => position.RelativeToChunk(Size)).ToList();
             var relativeWorldPositions =
@@ -71,19 +72,20 @@ public class CubeChunk
         return $"Position: {Position}, Size: {Size}, Hexes: {hexes.Count}, MeshInstances: {meshInstances.Count}";
     }
 
-    private Dictionary<int, List<CubeHex>> SortHexes()
+    private Dictionary<(HexType, int), List<CubeHex>> SortHexes()
     {
-        Dictionary<int, List<CubeHex>> sortedHexes = new();
+        Dictionary<(HexType, int), List<CubeHex>> sortedHexes = new();
         
         foreach (var hex in hexes)
         {
-            if (sortedHexes.ContainsKey(hex.LibraryIndex))
+            var key = (hex.Type, hex.LibraryIndex);
+            if (sortedHexes.ContainsKey(key))
             {
-                sortedHexes[hex.LibraryIndex].Add(hex);
+                sortedHexes[key].Add(hex);
             }
             else
             {
-                sortedHexes.Add(hex.LibraryIndex, new List<CubeHex> {hex});
+                sortedHexes.Add(key, new List<CubeHex> {hex});
             }
         }
 

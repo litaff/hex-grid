@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cvyi07qp410ei"]
+[gd_scene load_steps=4 format=3 uid="uid://cvyi07qp410ei"]
 
 [ext_resource type="Script" path="res://addons/hex_grid_editor/View.cs" id="1_21wjd"]
 [ext_resource type="Script" path="res://scripts/DoubleConfirmButton.cs" id="2_67wff"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/HexTypePropertiesView.cs" id="3_srp4n"]
 
-[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("ItemList", "MapResetButton")]
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("MeshList", "MapResetButton", "HexTypeSelector")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,8 +12,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_21wjd")
-ItemList = NodePath("ScrollContainer/VBoxContainer/Meshes/MeshList")
+MeshList = NodePath("ScrollContainer/VBoxContainer/MeshList")
 MapResetButton = NodePath("ScrollContainer/VBoxContainer/DoubleConfirmButton")
+HexTypeSelector = NodePath("ScrollContainer/VBoxContainer/HexTypeSelector")
+HexProperties = {
+0: NodePath("ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"),
+1: NodePath("ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties")
+}
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -35,24 +41,31 @@ text = "Clear map"
 script = ExtResource("2_67wff")
 confirmDuration = 2.0
 
-[node name="PropertiesSelector" type="OptionButton" parent="ScrollContainer/VBoxContainer"]
+[node name="HexTypeSelector" type="OptionButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+selected = 0
+
+[node name="HexPropertiesContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ObstacleContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+[node name="BaseHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer"]
+visible = false
 layout_mode = 2
+script = ExtResource("3_srp4n")
 
-[node name="CheckButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/ObstacleContainer"]
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"]
 layout_mode = 2
-text = "Enabled"
+text = "Base"
 
-[node name="Meshes" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+[node name="AccessibleHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer"]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
+script = ExtResource("3_srp4n")
 
-[node name="MeshLibraries" type="OptionButton" parent="ScrollContainer/VBoxContainer/Meshes"]
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties"]
 layout_mode = 2
+text = "Accessible"
 
-[node name="MeshList" type="ItemList" parent="ScrollContainer/VBoxContainer/Meshes"]
+[node name="MeshList" type="ItemList" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

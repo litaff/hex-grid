@@ -10,22 +10,22 @@ using vector;
 
 public class HexMapChunkStorage
 {
-    private readonly MeshLibrary library;
+    private readonly Godot.Collections.Dictionary<HexType, MeshLibrary> libraries;
     private readonly World3D scenario;
     private Dictionary<int, CubeChunk> map;
     private int chunkSize;
 
-    public HexMapChunkStorage(int chunkSize, MeshLibrary library, World3D scenario)
+    public HexMapChunkStorage(int chunkSize, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
         this.chunkSize = chunkSize;
         map = new Dictionary<int, CubeChunk>();
-        this.library = library;
+        this.libraries = libraries;
         this.scenario = scenario;
     }
 
-    public bool IsUpToDate(int chunkSize, MeshLibrary library, World3D scenario)
+    public bool IsUpToDate(int chunkSize, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
-        return this.chunkSize == chunkSize && this.library == library && this.scenario == scenario;
+        return this.chunkSize == chunkSize && this.libraries == libraries && this.scenario == scenario;
     }
     
     public void AssignHex(CubeHex hex)
@@ -39,7 +39,7 @@ public class HexMapChunkStorage
         }
         chunk.Add(hex);
         
-        chunk.UpdateMesh(library, scenario);
+        chunk.UpdateMesh(libraries, scenario);
     }
     
     public void RemoveHex(CubeHexVector position)
@@ -48,7 +48,7 @@ public class HexMapChunkStorage
         var chunk = Get(chunkPosition);
         if (chunk == null) return;
         chunk.Remove(position);
-        chunk.UpdateMesh(library, scenario);
+        chunk.UpdateMesh(libraries, scenario);
         if (!chunk.IsEmpty) return;
         RemoveChunk(chunkPosition);
     }

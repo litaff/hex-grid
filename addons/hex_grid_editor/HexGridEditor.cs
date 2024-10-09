@@ -83,9 +83,10 @@ public partial class HexGridEditor : EditorPlugin
 		UpdatePrimitive();
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
+		view.OnHexTypeSelected += OnHexTypeSelectedHandler;
+		view.Initialize();
 		view.MapResetButton.Confirmed += OnMapResetRequestedHandler;
-		view.UpdateList(hexGridMap.MeshLibrary);
-		view.ItemList.ItemSelected += OnItemSelectedHandler;
+		view.MeshList.ItemSelected += OnMeshSelectedHandler;
 	}
 
 	private void Disable()
@@ -96,8 +97,10 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap.OnPropertyChange -= Reset;
 		RemoveControlFromDocks(rootView);
 		view.MapResetButton.Confirmed -= OnMapResetRequestedHandler;
-		view.ItemList.ItemSelected -= OnItemSelectedHandler;
-		view.ItemList.Clear();
+		view.MeshList.ItemSelected -= OnMeshSelectedHandler;
+		view.OnHexTypeSelected -= OnHexTypeSelectedHandler;
+		view.UpdateList(null);
+		view.Dispose();
 		gridMesh?.Dispose();
 		gridMesh = null;
 		chunkMesh?.Dispose();
@@ -105,6 +108,15 @@ public partial class HexGridEditor : EditorPlugin
 		primitiveHexMesh?.Dispose();
 		primitiveHexMesh = null;
 		OnDeselectRequestedHandler();
+	}
+
+	private HexType selectedHexType;
+	
+	private void OnHexTypeSelectedHandler(HexType hexType, HexTypePropertiesView propertiesView)
+	{
+		OnDeselectRequestedHandler();
+		selectedHexType = hexType;
+		view.UpdateList(hexGridMap.MeshLibraries[hexType]);
 	}
 
 	private void OnMapResetRequestedHandler()
@@ -121,7 +133,7 @@ public partial class HexGridEditor : EditorPlugin
 	
 	private void OnDeselectRequestedHandler()
 	{
-		view.ItemList.DeselectAll();
+		view.MeshList.DeselectAll();
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
 		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
@@ -129,13 +141,13 @@ public partial class HexGridEditor : EditorPlugin
 		isSelectionActive = false;
 	}
 
-	private void OnItemSelectedHandler(long index)
+	private void OnMeshSelectedHandler(long index)
 	{
 		OnDeselectRequestedHandler();
 		
 		isSelectionActive = true;
 		selectedMeshIndex = (int)index;
-		var mesh = hexGridMap.MeshLibrary.GetItemMesh((int)index);
+		var mesh = hexGridMap.MeshLibraries[selectedHexType].GetItemMesh((int)index);
 		selectedMeshInstanceRid = RenderingServer.InstanceCreate();
 		RenderingServer.InstanceSetBase(selectedMeshInstanceRid, mesh.GetRid());
 		RenderingServer.InstanceSetScenario(selectedMeshInstanceRid, hexGridMap.GetWorld3D().Scenario);
@@ -148,7 +160,7 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return;
-		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex);
+		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
 		UpdatePrimitive();
 	}
 

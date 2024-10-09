@@ -7,6 +7,7 @@ public class CubeHex
     public CubeHexVector Position { get; private set; }
     public float Size { get; private set; }
     public int LibraryIndex { get; private set; }
+    public virtual HexType Type => HexType.Base;
 
     public CubeHex(float size, int libraryIndex)
     {
