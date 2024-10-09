@@ -65,7 +65,6 @@ public class PrimitiveHexGridMesh
     
     public void Dispose()
     {
-        RenderingServer.MeshClear(meshRid);
         instanceRid.FreeRid();
         meshRid.FreeRid();
     }
