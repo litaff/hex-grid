@@ -1,21 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://dd70lky3grwlo"]
 
-[ext_resource type="MeshLibrary" uid="uid://dgxiakmdy3n7x" path="res://mesh_libraries/debug_library.tres" id="1_m2vxb"]
+[ext_resource type="MeshLibrary" uid="uid://dbmuulywd58ol" path="res://mesh_libraries/base_tiles/base_tiles.tres" id="2_gkh2p"]
 [ext_resource type="Script" path="res://scripts/hex_grid/HexGridMap.cs" id="2_rcp8o"]
 
 [node name="Map" type="Node3D"]
-
-[node name="GridMap" type="GridMap" parent="."]
-mesh_library = ExtResource("1_m2vxb")
-cell_size = Vector3(1, 1, 1)
-metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="HexGridMap" type="Node3D" parent="."]
 script = ExtResource("2_rcp8o")
 CellSize = 1.0
 ChunkSize = 10
-MeshLibrary = ExtResource("1_m2vxb")
-EditorGridSize = 5
+MeshLibrary = ExtResource("2_gkh2p")
+EditorGridSize = 10
 EditorGridAlphaFalloff = true
-DisplayChunks = true
-DisplayDebugHexes = true
