@@ -37,6 +37,8 @@ public class CubeChunk
 
     public void UpdateMesh(MeshLibrary meshLibrary, World3D scenario)
     {
+        if (meshLibrary == null) return;
+        
         ClearMeshInstances();
         
         var sortedHexes = SortHexes();
@@ -86,5 +88,10 @@ public class CubeChunk
         }
 
         return sortedHexes;
+    }
+
+    public void Dispose()
+    {
+        ClearMeshInstances();
     }
 }
