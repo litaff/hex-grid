@@ -27,6 +27,8 @@ public partial class HexGridEditor : EditorPlugin
 	private int selectedMeshIndex;
 	
 	private bool enabled;
+	
+	private float CellSize => hexGridMap.CellSize;
 
 	/// <summary>
 	/// Called when cursor is in the 3D viewport.
@@ -34,7 +36,7 @@ public partial class HexGridEditor : EditorPlugin
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
-		gridMesh.UpdateMesh(inputHandler.HexPosition, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
+		gridMesh.UpdateMesh(inputHandler.HexPosition.ToWorldPosition(CellSize));
 		UpdateChunk();
 
 		return (int)inputHandler.FinalizeInput(viewportCamera, @event, isSelectionActive);
@@ -73,11 +75,11 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap = map;
 		hexGridMap.OnPropertyChange += Reset;
 		hexGridMap.Initialize();
-		inputHandler = new InputHandler(hexGridMap.Position, hexGridMap.CellSize);
+		inputHandler = new InputHandler(hexGridMap.Position, CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
-		gridMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, lineMaterial);
-		chunkMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
-		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, debugHexMaterial);
+		gridMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), CellSize, lineMaterial, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
+		UpdateChunk();
+		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, debugHexMaterial);
 		UpdatePrimitive();
 		AddControlToDock(DockSlot.RightBl, rootView);
 		view = rootView.GetNode<View>(".");
@@ -177,10 +179,9 @@ public partial class HexGridEditor : EditorPlugin
 			chunkMesh = null;
 			return;
 		}
-		chunkMesh ??= new WireHexGridMesh(hexGridMap.GetWorld3D(), hexGridMap.CellSize, chunkMaterial);
+		chunkMesh ??= new WireHexGridMesh(hexGridMap.GetWorld3D(), CellSize, chunkMaterial, hexGridMap.ChunkSize, false);
 		var hexesChunkPosition = inputHandler.HexPosition.ToChunkPosition(hexGridMap.ChunkSize);
-		chunkMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize), hexGridMap.ChunkSize,
-			false);
+		chunkMesh.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize).ToWorldPosition(CellSize));
 	}
 }
 #endif
