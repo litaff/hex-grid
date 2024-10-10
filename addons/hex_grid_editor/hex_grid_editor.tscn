@@ -43,7 +43,6 @@ confirmDuration = 2.0
 
 [node name="HexTypeSelector" type="OptionButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-selected = 0
 
 [node name="HexPropertiesContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -53,18 +52,10 @@ visible = false
 layout_mode = 2
 script = ExtResource("3_srp4n")
 
-[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"]
-layout_mode = 2
-text = "Base"
-
 [node name="AccessibleHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer"]
 visible = false
 layout_mode = 2
 script = ExtResource("3_srp4n")
-
-[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties"]
-layout_mode = 2
-text = "Accessible"
 
 [node name="MeshList" type="ItemList" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
