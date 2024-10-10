@@ -1,10 +1,10 @@
-namespace hex_grid.addons.hex_grid_editor;
+namespace hex_grid.addons.hex_grid_editor.views;
 
 using System;
 using Godot;
 using Godot.Collections;
 using scripts;
-using scripts.hex_grid;
+using hex_grid.scripts.hex_grid;
 
 [Tool]
 public partial class View : Control
@@ -18,9 +18,9 @@ public partial class View : Control
     [Export]
     public Dictionary<HexType, NodePath> HexProperties { get; private set; }
 
-    private System.Collections.Generic.Dictionary<HexType, HexTypePropertiesView> propertiesViews = new();
+    private System.Collections.Generic.Dictionary<HexType, BaseHexPropertiesView> propertiesViews = new();
     
-    public event Action<HexType, HexTypePropertiesView> OnHexTypeSelected;
+    public event Action<HexType, BaseHexPropertiesView> OnHexTypeSelected;
     
     public void Initialize()
     {
@@ -28,7 +28,7 @@ public partial class View : Control
         InitializeHexTypeSelector();
         foreach (var hexProperty in HexProperties)
         {
-            var hexTypePropertiesView = GetNode<HexTypePropertiesView>(hexProperty.Value);
+            var hexTypePropertiesView = GetNode<BaseHexPropertiesView>(hexProperty.Value);
             propertiesViews.TryAdd(hexProperty.Key, hexTypePropertiesView);
         }
         OnHexTypeSelectedHandler(HexTypeSelector.Selected);

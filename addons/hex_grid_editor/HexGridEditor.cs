@@ -1,6 +1,7 @@
 #if TOOLS
 namespace hex_grid.addons.hex_grid_editor;
 
+using System.Linq;
 using Godot;
 using scripts.hex_grid;
 using scripts.utils;
@@ -13,15 +14,17 @@ public partial class HexGridEditor : EditorPlugin
 	private Material lineMaterial = GD.Load<Material>("res://addons/hex_grid_editor/line_material.tres");
 	private Material chunkMaterial = GD.Load<Material>("res://addons/hex_grid_editor/chunk_material.tres");
 	private Material debugHexMaterial = GD.Load<Material>("res://addons/hex_grid_editor/debug_hex_material.tres");
+	private Material fovMaterial = GD.Load<Material>("res://addons/hex_grid_editor/fov_material.tres");
 
 	private Control rootView;
-	private View view;
+	private views.View view;
 	
 	private HexGridMap hexGridMap;
 	private InputHandler inputHandler;
 	private WireHexGridMesh gridMesh;
 	private WireHexGridMesh chunkMesh;
-	private PrimitiveHexGridMesh primitiveHexMesh;
+	private PrimitiveHexGridMesh debugMesh;
+	private PrimitiveHexGridMesh fovMesh;
 	private bool isSelectionActive;
 	private Rid selectedMeshInstanceRid;
 	private int selectedMeshIndex;
@@ -38,6 +41,7 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
 		gridMesh.UpdateMesh(inputHandler.HexPosition.ToWorldPosition(CellSize));
 		UpdateChunk();
+		UpdateFovMesh();
 
 		return (int)inputHandler.FinalizeInput(viewportCamera, @event, isSelectionActive);
 	}
@@ -79,10 +83,11 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		gridMesh = new WireHexGridMesh(hexGridMap.GetWorld3D(), CellSize, lineMaterial, hexGridMap.EditorGridSize, hexGridMap.EditorGridAlphaFalloff);
 		UpdateChunk();
-		primitiveHexMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, debugHexMaterial);
-		UpdatePrimitive();
+		debugMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, debugHexMaterial, Vector3.Zero);
+		fovMesh = new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, fovMaterial, Vector3.Up * 0.01f);
+		UpdateDebugMesh();
 		AddControlToDock(DockSlot.RightBl, rootView);
-		view = rootView.GetNode<View>(".");
+		view = rootView.GetNode<views.View>(".");
 		view.OnHexTypeSelected += OnHexTypeSelectedHandler;
 		view.Initialize();
 		view.MapResetButton.Confirmed += OnMapResetRequestedHandler;
@@ -105,24 +110,28 @@ public partial class HexGridEditor : EditorPlugin
 		gridMesh = null;
 		chunkMesh?.Dispose();
 		chunkMesh = null;
-		primitiveHexMesh?.Dispose();
-		primitiveHexMesh = null;
+		debugMesh?.Dispose();
+		debugMesh = null;
+		fovMesh?.Dispose();
+		fovMesh = null;
 		OnDeselectRequestedHandler();
 	}
 
 	private HexType selectedHexType;
+	private views.BaseHexPropertiesView selectedPropertiesView;
 	
-	private void OnHexTypeSelectedHandler(HexType hexType, HexTypePropertiesView propertiesView)
+	private void OnHexTypeSelectedHandler(HexType hexType, views.BaseHexPropertiesView propertiesView)
 	{
 		OnDeselectRequestedHandler();
 		selectedHexType = hexType;
+		selectedPropertiesView = propertiesView;
 		view.UpdateList(hexGridMap.MeshLibraries[hexType]);
 	}
 
 	private void OnMapResetRequestedHandler()
 	{
 		hexGridMap.ResetMap();
-		UpdatePrimitive();
+		UpdateDebugMesh();
 	}
 
 	private void Reset()
@@ -160,21 +169,29 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return;
-		hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
-		UpdatePrimitive();
+		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
+		selectedPropertiesView.Apply(spawnedHex);
+		UpdateDebugMesh();
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return;
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
-		UpdatePrimitive();
+		UpdateDebugMesh();
 	}
 
-	private void UpdatePrimitive()
+	private void UpdateDebugMesh()
 	{
 		if (!hexGridMap.DisplayDebugHexes) return;
-		primitiveHexMesh.UpdateMesh(hexGridMap.Map);
+		debugMesh.UpdateMesh(hexGridMap.Map.Select(hex => hex.Position).ToArray());
+	}
+	
+	private void UpdateFovMesh()
+	{
+		if (!hexGridMap.DisplayFieldOfView) return;
+		
+		fovMesh.UpdateMesh(hexGridMap.GetVisiblePositions(inputHandler.HexPosition, hexGridMap.FieldOfViewRadius));
 	}
 
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)

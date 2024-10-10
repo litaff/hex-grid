@@ -7,6 +7,7 @@ using Godot.Collections;
 using hex_grid.scripts.hex_grid.hex;
 using scripts.utils;
 using scripts.hex_grid;
+using scripts.hex_grid.vector;
 
 public class PrimitiveHexGridMesh
 {
@@ -15,7 +16,7 @@ public class PrimitiveHexGridMesh
     private Rid meshRid;
     private Rid instanceRid;
 
-    public PrimitiveHexGridMesh(World3D scenario, float cellSize, Material defaultMaterial)
+    public PrimitiveHexGridMesh(World3D scenario, float cellSize, Material defaultMaterial, Vector3 offset)
     {
         this.cellSize = cellSize;
         this.defaultMaterial = defaultMaterial;
@@ -23,17 +24,17 @@ public class PrimitiveHexGridMesh
         meshRid = RenderingServer.MeshCreate();
         RenderingServer.InstanceSetBase(instanceRid, meshRid);
         RenderingServer.InstanceSetScenario(instanceRid, scenario.Scenario);
-        RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, Vector3.Zero));
+        RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, offset));
     }
     
-    public void UpdateMesh(CubeHex[] hexes)
+    public void UpdateMesh(CubeHexVector[] positions)
     {
         var meshData = new Array();
         meshData.Resize((int)RenderingServer.ArrayType.Max);
         var meshVertices = new List<Vector3[]>();
-        foreach (var hex in hexes)
+        foreach (var position in positions)
         {
-            var vertices = hex.Position.GetHexVertices(cellSize);
+            var vertices = position.GetHexVertices(cellSize);
             meshVertices.Add(new[] { vertices[0], vertices[1], vertices[2] });
             meshVertices.Add(new[] { vertices[2], vertices[3], vertices[4] });
             meshVertices.Add(new[] { vertices[4], vertices[5], vertices[0] });

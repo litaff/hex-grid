@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvyi07qp410ei"]
+[gd_scene load_steps=5 format=3 uid="uid://cvyi07qp410ei"]
 
-[ext_resource type="Script" path="res://addons/hex_grid_editor/View.cs" id="1_21wjd"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/View.cs" id="1_lijte"]
 [ext_resource type="Script" path="res://scripts/DoubleConfirmButton.cs" id="2_67wff"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/HexTypePropertiesView.cs" id="3_srp4n"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/BaseHexPropertiesView.cs" id="3_nu4c1"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/AccessibleHexPropertiesView.cs" id="4_683oo"]
 
 [node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("MeshList", "MapResetButton", "HexTypeSelector")]
 layout_mode = 3
@@ -11,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_21wjd")
+script = ExtResource("1_lijte")
 MeshList = NodePath("ScrollContainer/VBoxContainer/MeshList")
 MapResetButton = NodePath("ScrollContainer/VBoxContainer/DoubleConfirmButton")
 HexTypeSelector = NodePath("ScrollContainer/VBoxContainer/HexTypeSelector")
@@ -47,15 +48,25 @@ layout_mode = 2
 [node name="HexPropertiesContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BaseHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer"]
+[node name="BaseHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
-script = ExtResource("3_srp4n")
+script = ExtResource("3_nu4c1")
+IsOccluderButton = NodePath("IsOccluderButton")
 
-[node name="AccessibleHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer"]
+[node name="IsOccluderButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"]
+layout_mode = 2
+text = "IsOccluder"
+
+[node name="AccessibleHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
-script = ExtResource("3_srp4n")
+script = ExtResource("4_683oo")
+IsOccluderButton = NodePath("IsOccluderButton")
+
+[node name="IsOccluderButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties"]
+layout_mode = 2
+text = "IsOccluder"
 
 [node name="MeshList" type="ItemList" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2

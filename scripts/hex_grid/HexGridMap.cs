@@ -1,8 +1,9 @@
 namespace hex_grid.scripts.hex_grid;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
-using Godot.Collections;
 using hex;
 using vector;
 
@@ -40,7 +41,7 @@ public partial class HexGridMap : Node3D
         } 
     }
     [Export]
-    public Dictionary<HexType, MeshLibrary> MeshLibraries
+    public Godot.Collections.Dictionary<HexType, MeshLibrary> MeshLibraries
     {
         get => meshLibraries;
         private set
@@ -56,7 +57,7 @@ public partial class HexGridMap : Node3D
 
     private float cellSize;
     private int chunkSize;
-    private Dictionary<HexType, MeshLibrary> meshLibraries;
+    private Godot.Collections.Dictionary<HexType, MeshLibrary> meshLibraries;
     
     [Export, ExportGroup(EDITOR)]
     public int EditorGridSize
@@ -98,11 +99,33 @@ public partial class HexGridMap : Node3D
             OnPropertyChange?.Invoke();
         } 
     }
+    [Export, ExportGroup(EDITOR)]
+    public bool DisplayFieldOfView
+    {
+        get => displayFieldOfView;
+        private set
+        {
+            displayFieldOfView = value;
+            OnPropertyChange?.Invoke();
+        } 
+    }
+    [Export, ExportGroup(EDITOR)]
+    public int FieldOfViewRadius
+    {
+        get => fieldOfViewRadius;
+        private set
+        {
+            fieldOfViewRadius = value;
+            OnPropertyChange?.Invoke();
+        } 
+    }
     
     private int editorGridSize;
     private bool editorGridAlphaFalloff;
     private bool displayChunks;
     private bool displayDebugHexes;
+    private bool displayFieldOfView;
+    private int fieldOfViewRadius;
     
     private HexMapStorage storage;
     private HexMapChunkStorage chunkStorage;
@@ -126,10 +149,11 @@ public partial class HexGridMap : Node3D
         chunkStorage.RemoveHex(hexPosition);
     }
 
-    public void AddHex(CubeHexVector hexPosition, int meshIndex, HexType type)
+    public CubeHex AddHex(CubeHexVector hexPosition, int meshIndex, HexType type)
     {
-        storage.Add(hexPosition, CellSize, meshIndex, type);
+        var hex = storage.Add(hexPosition, CellSize, meshIndex, type);
         chunkStorage.AssignHex(storage.Get(hexPosition));
+        return hex;
     }
 
     public void ResetMap()
@@ -138,6 +162,23 @@ public partial class HexGridMap : Node3D
         chunkStorage?.Dispose();
         chunkStorage = null;
         Initialize();
+    }
+
+    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius)
+    {
+        var visiblePositions = new Dictionary<int, CubeHexVector>();
+        var edge = origin.GetRing(radius);
+        foreach (var edgePoint in edge)
+        {
+            var visionLine = origin.LineTo(edgePoint);
+            var hexes = visionLine.Select(position => storage.Get(position)).Where(hex => hex != null);
+            var positions = hexes.TakeWhile(hex => !hex.IsOccluder).Select(hex => hex.Position);
+            foreach (var position in positions)
+            {
+                visiblePositions.TryAdd(position.GetHashCode(), position);
+            }
+        }
+        return visiblePositions.Values.ToArray();
     }
 
     private void InitializeChunkStorage()

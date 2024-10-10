@@ -16,4 +16,5 @@ MeshLibraries = {
 }
 EditorGridSize = 10
 EditorGridAlphaFalloff = true
-DisplayChunks = true
+DisplayFieldOfView = true
+FieldOfViewRadius = 20
