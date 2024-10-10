@@ -2,7 +2,7 @@ namespace hex_grid.scripts.hex_grid.vector;
 
 using System;
 
-public struct CubeHexVector
+public struct CubeHexVector : IEquatable<CubeHexVector>
 {
     public int Q { get; private set; }
     public int R { get; private set; }
@@ -78,5 +78,20 @@ public struct CubeHexVector
     public override string ToString()
     {
         return $"({Q}, {R}, {S})";
+    }
+    
+    public bool Equals(CubeHexVector other)
+    {
+        return Q == other.Q && R == other.R && S == other.S;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is CubeHexVector other && this == other;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Q, R);
     }
 }
