@@ -1,4 +1,4 @@
-namespace hex_grid.scripts.hex_grid;
+namespace hex_grid.scripts.hex_grid.storage;
 
 using System;
 using System.Collections.Generic;
