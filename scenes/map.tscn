@@ -1,20 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://dd70lky3grwlo"]
+[gd_scene load_steps=5 format=3 uid="uid://dd70lky3grwlo"]
 
 [ext_resource type="MeshLibrary" uid="uid://dbmuulywd58ol" path="res://mesh_libraries/base_tiles/base_tiles.tres" id="2_gkh2p"]
 [ext_resource type="Script" path="res://scripts/hex_grid/HexGridMap.cs" id="2_rcp8o"]
+[ext_resource type="Resource" uid="uid://by62ip7m3qmvp" path="res://content/maps/test.tres" id="2_ykpyj"]
 [ext_resource type="MeshLibrary" uid="uid://cvxh5uehtjsef" path="res://mesh_libraries/accessible_tiles/accessible_tiles.tres" id="3_5y8es"]
 
 [node name="Map" type="Node3D"]
 
 [node name="HexGridMap" type="Node3D" parent="."]
 script = ExtResource("2_rcp8o")
+MapData = ExtResource("2_ykpyj")
 CellSize = 1.0
 ChunkSize = 10
 MeshLibraries = {
 0: ExtResource("2_gkh2p"),
 1: ExtResource("3_5y8es")
 }
-EditorGridSize = 10
+EditorGridSize = 5
 EditorGridAlphaFalloff = true
 DisplayFieldOfView = true
-FieldOfViewRadius = 20
+FieldOfViewRadius = 10
+metadata/_edit_lock_ = true

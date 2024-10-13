@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lijte")
 MeshList = NodePath("ScrollContainer/VBoxContainer/MeshList")
-MapResetButton = NodePath("ScrollContainer/VBoxContainer/DoubleConfirmButton")
+MapResetButton = NodePath("ScrollContainer/VBoxContainer/MapSerializationButtons/DoubleConfirmButton")
 HexTypeSelector = NodePath("ScrollContainer/VBoxContainer/HexTypeSelector")
 HexProperties = {
 0: NodePath("ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"),
@@ -36,11 +36,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="DoubleConfirmButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+[node name="MapSerializationButtons" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
+alignment = 1
+
+[node name="DoubleConfirmButton" type="Button" parent="ScrollContainer/VBoxContainer/MapSerializationButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Clear map"
 script = ExtResource("2_67wff")
-confirmDuration = 2.0
 
 [node name="HexTypeSelector" type="OptionButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2

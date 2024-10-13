@@ -3,18 +3,39 @@ namespace hex_grid.scripts.hex_grid.storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using hex;
 using vector;
 
 public class HexMapStorage
 {
+    private readonly HexMapData mapData;
     private Dictionary<int, CubeHex> map;
-    
-    public HexMapStorage()
+
+    public HexMapStorage(HexMapData mapData)
     {
+        this.mapData = mapData;
+        if (mapData != null)
+        {
+            
+            map = mapData.Deserialize();
+            return;
+        }
+        
+        GD.PushWarning("Map data is null. Created map won't be saved.");
         map = new Dictionary<int, CubeHex>();
     }
 
+    public void Save()
+    {
+        if (mapData == null)
+        {
+            GD.PushWarning("Map wasn't saved. Map data is null.");
+            return;
+        }
+        mapData.Serialize();
+    }
+    
     public void UpdateCellSize(float cellSize)
     {
         foreach (var hex in map.Values)
@@ -53,5 +74,10 @@ public class HexMapStorage
     public CubeHex[] GetMap()
     {
         return map.Values.ToArray();
+    }
+
+    public void Clear()
+    {
+        mapData?.Clear();
     }
 }

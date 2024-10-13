@@ -90,7 +90,7 @@ public partial class HexGridEditor : EditorPlugin
 		view = rootView.GetNode<views.View>(".");
 		view.OnHexTypeSelected += OnHexTypeSelectedHandler;
 		view.Initialize();
-		view.MapResetButton.Confirmed += OnMapResetRequestedHandler;
+		view.MapResetButton.Confirmed += OnClearMapRequestedHandler;
 		view.MeshList.ItemSelected += OnMeshSelectedHandler;
 	}
 
@@ -101,7 +101,7 @@ public partial class HexGridEditor : EditorPlugin
 		
 		hexGridMap.OnPropertyChange -= Reset;
 		RemoveControlFromDocks(rootView);
-		view.MapResetButton.Confirmed -= OnMapResetRequestedHandler;
+		view.MapResetButton.Confirmed -= OnClearMapRequestedHandler;
 		view.MeshList.ItemSelected -= OnMeshSelectedHandler;
 		view.OnHexTypeSelected -= OnHexTypeSelectedHandler;
 		view.UpdateList(null);
@@ -128,7 +128,7 @@ public partial class HexGridEditor : EditorPlugin
 		view.UpdateList(hexGridMap.MeshLibraries[hexType]);
 	}
 
-	private void OnMapResetRequestedHandler()
+	private void OnClearMapRequestedHandler()
 	{
 		hexGridMap.ResetMap();
 		UpdateDebugMesh();
@@ -172,6 +172,7 @@ public partial class HexGridEditor : EditorPlugin
 		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
 		selectedPropertiesView.Apply(spawnedHex);
 		UpdateDebugMesh();
+		hexGridMap.Storage.Save();
 	}
 
 	private void OnRemoveHexRequestHandler()
@@ -179,6 +180,7 @@ public partial class HexGridEditor : EditorPlugin
 		if (!isSelectionActive) return;
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
 		UpdateDebugMesh();
+		hexGridMap.Storage.Save();
 	}
 
 	private void UpdateDebugMesh()

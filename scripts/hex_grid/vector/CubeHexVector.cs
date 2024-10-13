@@ -1,6 +1,7 @@
 namespace hex_grid.scripts.hex_grid.vector;
 
 using System;
+using System.Text.Json.Serialization;
 
 public struct CubeHexVector : IEquatable<CubeHexVector>
 {
@@ -13,6 +14,16 @@ public struct CubeHexVector : IEquatable<CubeHexVector>
         Q = q;
         R = r;
         S = -q - r;
+    }
+    
+    [JsonConstructor]
+    public CubeHexVector(int q, int r, int s)
+    {
+        Q = q;
+        R = r;
+        S = s;
+        if (Q + R + S == 0) return;
+        throw new ArgumentException("[CubeHexVector] Q + R + S must be 0!");
     }
     
     public static CubeHexVector Zero => new(0, 0);
