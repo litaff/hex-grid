@@ -4,10 +4,10 @@ using System;
 using Godot;
 using Godot.Collections;
 using scripts;
-using hex_grid.scripts.hex_grid;
+using scripts.hex_grid;
 
 [Tool]
-public partial class View : Control
+public partial class HexEditorView : Control
 {
     [Export]
     public ItemList MeshList { get; private set; }
@@ -17,14 +17,13 @@ public partial class View : Control
     public OptionButton HexTypeSelector { get; private set; }
     [Export]
     public Dictionary<HexType, NodePath> HexProperties { get; private set; }
-
+    
     private System.Collections.Generic.Dictionary<HexType, BaseHexPropertiesView> propertiesViews = new();
     
     public event Action<HexType, BaseHexPropertiesView> OnHexTypeSelected;
     
     public void Initialize()
     {
-        base._EnterTree();
         InitializeHexTypeSelector();
         foreach (var hexProperty in HexProperties)
         {
