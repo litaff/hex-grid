@@ -14,12 +14,6 @@ using vector;
 [GlobalClass]
 public partial class HexGridMap : Node3D
 {
-    #region Editor Properties
-
-    private const string EDITOR = "Editor";
-
-    #endregion
-
     [Export]
     public HexMapData MapData
     {
@@ -48,7 +42,7 @@ public partial class HexGridMap : Node3D
         get => chunkSize;
         private set
         {
-            chunkSize = value;
+            chunkSize = value > 0 ? value : 1;
             Initialize();
             OnPropertyChange?.Invoke();
         } 
@@ -72,74 +66,6 @@ public partial class HexGridMap : Node3D
     private float cellSize;
     private int chunkSize;
     private Godot.Collections.Dictionary<HexType, MeshLibrary> meshLibraries;
-    
-    [Export, ExportGroup(EDITOR)]
-    public int EditorGridSize
-    {
-        get => editorGridSize;
-        private set
-        {
-            editorGridSize = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export, ExportGroup(EDITOR)]
-    public bool EditorGridAlphaFalloff
-    {
-        get => editorGridAlphaFalloff;
-        private set
-        {
-            editorGridAlphaFalloff = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export, ExportGroup(EDITOR)]
-    public bool DisplayChunks
-    {
-        get => displayChunks;
-        private set
-        {
-            displayChunks = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export, ExportGroup(EDITOR)]
-    public bool DisplayDebugHexes
-    {
-        get => displayDebugHexes;
-        private set
-        {
-            displayDebugHexes = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export, ExportGroup(EDITOR)]
-    public bool DisplayFieldOfView
-    {
-        get => displayFieldOfView;
-        private set
-        {
-            displayFieldOfView = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export, ExportGroup(EDITOR)]
-    public int FieldOfViewRadius
-    {
-        get => fieldOfViewRadius;
-        private set
-        {
-            fieldOfViewRadius = value;
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    
-    private int editorGridSize;
-    private bool editorGridAlphaFalloff;
-    private bool displayChunks;
-    private bool displayDebugHexes;
-    private bool displayFieldOfView;
-    private int fieldOfViewRadius;
     
     public HexMapStorage Storage { get; private set; }
     private HexMapChunkStorage chunkStorage;
