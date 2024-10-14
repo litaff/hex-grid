@@ -1,10 +1,8 @@
 #if TOOLS
 namespace hex_grid.addons.hex_grid_editor;
 
-using System;
 using Godot;
 using scripts.hex_grid;
-using scripts.hex_grid.hex;
 using scripts.utils;
 using views;
 using HexGridMap = scripts.hex_grid.HexGridMap;
@@ -12,10 +10,14 @@ using HexGridMap = scripts.hex_grid.HexGridMap;
 [Tool]
 public partial class HexGridEditor : EditorPlugin
 {
+	#region Loaded content
+
 	private PackedScene editorScene = GD.Load<PackedScene>("res://addons/hex_grid_editor/hex_grid_editor.tscn");
 	private Material lineMaterial = GD.Load<Material>("res://addons/hex_grid_editor/line_material.tres");
 	private Material chunkMaterial = GD.Load<Material>("res://addons/hex_grid_editor/chunk_material.tres");
 	private Material fovMaterial = GD.Load<Material>("res://addons/hex_grid_editor/fov_material.tres");
+
+	#endregion
 
 	private Control rootView;
 	private HexGridEditorView view;
@@ -23,27 +25,12 @@ public partial class HexGridEditor : EditorPlugin
 	private HexGridMap hexGridMap;
 	private InputHandler inputHandler;
 	
-	private WireHexGridMesh indicatorMesh;
-	private int indicatorRadius;
-	
-	private WireHexGridMesh chunkMesh;
-	private bool chunkEnabled;
-	
-	private PrimitiveHexGridMesh fovMesh;
-	private int fovRadius;
-	private bool fovEnabled;
-	
-	private bool isSelectionActive;
-	private Rid selectedMeshInstanceRid;
-	private int selectedMeshIndex;
-	
-	private bool enabled;
+	private bool pluginEnabled;
 	
 	private float CellSize => hexGridMap.CellSize;
 
-	/// <summary>
-	/// Called when cursor is in the 3D viewport.
-	/// </summary>
+	#region EditorPlugin overrides
+
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
 		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
@@ -75,10 +62,12 @@ public partial class HexGridEditor : EditorPlugin
 		return true;
 	}
 
+	#endregion
+
 	private void Enable(HexGridMap map)
 	{
-		if (enabled) return;
-		enabled = true;
+		if (pluginEnabled) return;
+		pluginEnabled = true;
 		
 		hexGridMap = map;
 		hexGridMap.OnPropertyChange += Reset;
@@ -112,8 +101,8 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void Disable()
 	{
-		if (!enabled) return;
-		enabled = false;
+		if (!pluginEnabled) return;
+		pluginEnabled = false;
 
 		RemoveControlFromDocks(rootView);
 		
@@ -150,9 +139,25 @@ public partial class HexGridEditor : EditorPlugin
 		OnDeselectRequestedHandler();
 	}
 
+	private void Reset()
+	{
+		Disable();
+		Enable(hexGridMap);
+	}
+	
 	private void OnRotateRequestedHandler()
 	{
 		// TODO: Rotate selected hex
+	}
+	
+	private void OnPipetteRequestedHandler()
+	{
+		var hex = hexGridMap.Storage.Get(inputHandler.HexPosition);
+		if (hex == null) return;
+		view.TabContainer.CurrentTab = 0;
+		view.HexEditor.SetCurrentHexType(hex.Type);
+		selectedPropertiesView.SetFrom(hex);
+		view.HexEditor.SelectMesh(hex.LibraryIndex);
 	}
 
 	private void OnTabChangedHandler(long index)
@@ -161,6 +166,13 @@ public partial class HexGridEditor : EditorPlugin
 		{
 			OnDeselectRequestedHandler();
 		}
+	}
+
+	#region Hex editing
+
+	private void OnClearMapRequestedHandler()
+	{
+		hexGridMap.ResetMap();
 	}
 	
 	private HexType selectedHexType;
@@ -173,28 +185,11 @@ public partial class HexGridEditor : EditorPlugin
 		selectedPropertiesView = propertiesView;
 		view.HexEditor.UpdateList(hexGridMap.MeshLibraries[hexType]);
 	}
-
-	private void OnClearMapRequestedHandler()
-	{
-		hexGridMap.ResetMap();
-	}
-
-	private void Reset()
-	{
-		Disable();
-		Enable(hexGridMap);
-	}
 	
-	private void OnDeselectRequestedHandler()
-	{
-		view.HexEditor.MeshList.DeselectAll();
-		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
-		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
-		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
-		selectedMeshInstanceRid.FreeRid();
-		isSelectionActive = false;
-	}
-
+	private bool isSelectionActive;
+	private Rid selectedMeshInstanceRid;
+	private int selectedMeshIndex;
+	
 	private void OnMeshSelectedHandler(int index)
 	{
 		OnDeselectRequestedHandler();
@@ -211,6 +206,30 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler.OnRemoveHexRequest += OnRemoveHexRequestHandler;
 	}
 
+	private void OnDeselectRequestedHandler()
+	{
+		view.HexEditor.MeshList.DeselectAll();
+		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
+		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
+		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
+		selectedMeshInstanceRid.FreeRid();
+		isSelectionActive = false;
+	}
+	
+	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
+	{
+		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, new Transform3D(Basis.Identity, hexCenter));
+		
+		if (inputHandler.IsAddHexHeld)
+		{
+			OnAddHexRequestedHandler();
+		}
+		if (inputHandler.IsRemoveHexHeld)
+		{
+			OnRemoveHexRequestHandler();
+		}
+	}
+	
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
@@ -225,6 +244,13 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
 		hexGridMap.Storage.Save();
 	}
+
+	#endregion
+
+	#region Indicator
+
+	private WireHexGridMesh indicatorMesh;
+	private int indicatorRadius;
 	
 	private void OnIndicatorSizeChangedHandler(int radius)
 	{
@@ -245,6 +271,14 @@ public partial class HexGridEditor : EditorPlugin
 		indicatorMesh?.Dispose();
 		indicatorMesh = null;
 	}
+
+	#endregion
+
+	#region Field of view
+
+	private PrimitiveHexGridMesh fovMesh;
+	private int fovRadius;
+	private bool fovEnabled;
 	
 	private void OnFovDisplayRequestedHandler(int radius)
 	{
@@ -267,6 +301,13 @@ public partial class HexGridEditor : EditorPlugin
 		fovMesh.UpdateMesh(hexGridMap.GetVisiblePositions(inputHandler.HexPosition, radius));
 	}
 
+	#endregion
+
+	#region Chunk
+
+	private WireHexGridMesh chunkMesh;
+	private bool chunkEnabled;
+	
 	private void OnChunkDisplayRequestedHandler(bool enabled)
 	{
 		chunkEnabled = enabled;
@@ -289,28 +330,6 @@ public partial class HexGridEditor : EditorPlugin
 		chunkMesh?.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize).ToWorldPosition(CellSize));
 	}
 
-	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
-	{
-		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, new Transform3D(Basis.Identity, hexCenter));
-		
-		if (inputHandler.IsAddHexHeld)
-		{
-			OnAddHexRequestedHandler();
-		}
-		if (inputHandler.IsRemoveHexHeld)
-		{
-			OnRemoveHexRequestHandler();
-		}
-	}
-	
-	private void OnPipetteRequestedHandler()
-	{
-		var hex = hexGridMap.Storage.Get(inputHandler.HexPosition);
-		if (hex == null) return;
-		view.TabContainer.CurrentTab = 0;
-		view.HexEditor.SetCurrentHexType(hex.Type);
-		selectedPropertiesView.SetFrom(hex);
-		view.HexEditor.SelectMesh(hex.LibraryIndex);
-	}
+	#endregion
 }
 #endif
