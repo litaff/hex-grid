@@ -1,8 +1,10 @@
 #if TOOLS
 namespace hex_grid.addons.hex_grid_editor;
 
+using System;
 using Godot;
 using scripts.hex_grid;
+using scripts.hex_grid.hex;
 using scripts.utils;
 using views;
 using HexGridMap = scripts.hex_grid.HexGridMap;
@@ -84,12 +86,13 @@ public partial class HexGridEditor : EditorPlugin
 		
 		inputHandler = new InputHandler(hexGridMap.Position, CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
+		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
 		
 		view = rootView.GetNode<HexGridEditorView>(".");
 
 		view.HexEditor.OnHexTypeSelected += OnHexTypeSelectedHandler;
 		view.HexEditor.MapResetButton.Confirmed += OnClearMapRequestedHandler;
-		view.HexEditor.MeshList.ItemSelected += OnMeshSelectedHandler;
+		view.HexEditor.OnMeshSelected += OnMeshSelectedHandler;
 		view.HexEditor.Initialize();
 
 		view.DebugFov.OnFovDisplayRequested += OnFovDisplayRequestedHandler;
@@ -100,6 +103,8 @@ public partial class HexGridEditor : EditorPlugin
 		
 		view.ChunkDisplay.OnDisplayChunkRequested += OnChunkDisplayRequestedHandler;
 		view.ChunkDisplay.Initialize(chunkEnabled);
+		
+		view.TabContainer.TabChanged += OnTabChangedHandler;
 		
 		AddControlToDock(DockSlot.RightBl, rootView);
 	}
@@ -114,6 +119,7 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap.OnPropertyChange -= Reset;
 		
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
+		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
 		
 		UpdateIndicatorMesh(0);
 		
@@ -122,6 +128,8 @@ public partial class HexGridEditor : EditorPlugin
 		
 		UpdateFovMesh(0);
 
+		view.TabContainer.TabChanged -= OnTabChangedHandler;
+		
 		view.ChunkDisplay.OnDisplayChunkRequested -= OnChunkDisplayRequestedHandler;
 		view.ChunkDisplay.Dispose();
 		
@@ -132,7 +140,7 @@ public partial class HexGridEditor : EditorPlugin
 		view.DebugFov.Dispose();
 		
 		view.HexEditor.MapResetButton.Confirmed -= OnClearMapRequestedHandler;
-		view.HexEditor.MeshList.ItemSelected -= OnMeshSelectedHandler;
+		view.HexEditor.OnMeshSelected -= OnMeshSelectedHandler;
 		view.HexEditor.OnHexTypeSelected -= OnHexTypeSelectedHandler;
 		view.HexEditor.UpdateList(null);
 		view.HexEditor.Dispose();
@@ -140,6 +148,14 @@ public partial class HexGridEditor : EditorPlugin
 		OnDeselectRequestedHandler();
 	}
 
+	private void OnTabChangedHandler(long index)
+	{
+		if (index != 0)
+		{
+			OnDeselectRequestedHandler();
+		}
+	}
+	
 	private HexType selectedHexType;
 	private BaseHexPropertiesView selectedPropertiesView;
 	
@@ -172,13 +188,13 @@ public partial class HexGridEditor : EditorPlugin
 		isSelectionActive = false;
 	}
 
-	private void OnMeshSelectedHandler(long index)
+	private void OnMeshSelectedHandler(int index)
 	{
 		OnDeselectRequestedHandler();
 		
 		isSelectionActive = true;
-		selectedMeshIndex = (int)index;
-		var mesh = hexGridMap.MeshLibraries[selectedHexType].GetItemMesh((int)index);
+		selectedMeshIndex = index;
+		var mesh = hexGridMap.MeshLibraries[selectedHexType].GetItemMesh(index);
 		selectedMeshInstanceRid = RenderingServer.InstanceCreate();
 		RenderingServer.InstanceSetBase(selectedMeshInstanceRid, mesh.GetRid());
 		RenderingServer.InstanceSetScenario(selectedMeshInstanceRid, hexGridMap.GetWorld3D().Scenario);
@@ -278,6 +294,16 @@ public partial class HexGridEditor : EditorPlugin
 		{
 			OnRemoveHexRequestHandler();
 		}
+	}
+	
+	private void OnPipetteRequestedHandler()
+	{
+		var hex = hexGridMap.Storage.Get(inputHandler.HexPosition);
+		if (hex == null) return;
+		view.TabContainer.CurrentTab = 0;
+		view.HexEditor.SetCurrentHexType(hex.Type);
+		selectedPropertiesView.SetFrom(hex);
+		view.HexEditor.SelectMesh(hex.LibraryIndex);
 	}
 }
 #endif

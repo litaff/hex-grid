@@ -21,6 +21,7 @@ public partial class HexEditorView : Control
     private System.Collections.Generic.Dictionary<HexType, BaseHexPropertiesView> propertiesViews = new();
     
     public event Action<HexType, BaseHexPropertiesView> OnHexTypeSelected;
+    public event Action<int> OnMeshSelected;
     
     public void Initialize()
     {
@@ -31,11 +32,13 @@ public partial class HexEditorView : Control
             propertiesViews.TryAdd(hexProperty.Key, hexTypePropertiesView);
         }
         OnHexTypeSelectedHandler(HexTypeSelector.Selected);
+        MeshList.ItemSelected += OnMeshSelectedHandler;
     }
     
     public new void Dispose()
     {
         HexTypeSelector.ItemSelected -= OnHexTypeSelectedHandler;
+        MeshList.ItemSelected -= OnMeshSelectedHandler;
         HexTypeSelector.Clear();
         foreach (var views in propertiesViews.Values)
         {
@@ -53,6 +56,23 @@ public partial class HexEditorView : Control
         {
             MeshList.AddItem(meshLibrary.GetItemName(itemId), meshLibrary.GetItemPreview(itemId));
         }
+    }
+
+    public void SetCurrentHexType(HexType hexType)
+    {
+        HexTypeSelector.Selected = (int)hexType;
+        OnHexTypeSelectedHandler(HexTypeSelector.Selected);
+    }
+
+    public void SelectMesh(int libraryIndex)
+    {
+        MeshList.Select(libraryIndex);
+        OnMeshSelectedHandler(libraryIndex);
+    }
+
+    private void OnMeshSelectedHandler(long index)
+    {
+        OnMeshSelected?.Invoke((int)index);
     }
 
     private void InitializeHexTypeSelector()

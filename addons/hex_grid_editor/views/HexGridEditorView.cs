@@ -6,6 +6,8 @@ using Godot;
 public partial class HexGridEditorView : Control
 {
     [Export]
+    public TabContainer TabContainer { get; private set; }
+    [Export]
     public DebugFovView DebugFov { get; private set; }
     [Export]
     public HexEditorView HexEditor { get; private set; }

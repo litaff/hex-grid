@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/IndicatorGridView.cs" id="6_stx68"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/ChunkDisplayView.cs" id="7_6pfc8"]
 
-[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("DebugFov", "HexEditor", "IndicatorGrid", "ChunkDisplay")]
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "DebugFov", "HexEditor", "IndicatorGrid", "ChunkDisplay")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ma58e")
+TabContainer = NodePath("TabContainer")
 DebugFov = NodePath("TabContainer/Settings/VBoxContainer/FovDebug")
 HexEditor = NodePath("TabContainer/Hexes")
 IndicatorGrid = NodePath("TabContainer/Settings/VBoxContainer/MarginContainer")
