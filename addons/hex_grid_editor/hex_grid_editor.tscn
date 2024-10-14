@@ -1,77 +1,167 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvyi07qp410ei"]
+[gd_scene load_steps=9 format=3 uid="uid://cvyi07qp410ei"]
 
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/View.cs" id="1_lijte"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexGridEditorView.cs" id="1_ma58e"]
 [ext_resource type="Script" path="res://scripts/DoubleConfirmButton.cs" id="2_67wff"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexEditorView.cs" id="2_occu0"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/BaseHexPropertiesView.cs" id="3_nu4c1"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/AccessibleHexPropertiesView.cs" id="4_683oo"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/DebugFovView.cs" id="5_q4d41"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/IndicatorGridView.cs" id="6_stx68"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/views/ChunkDisplayView.cs" id="7_6pfc8"]
 
-[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("MeshList", "MapResetButton", "HexTypeSelector")]
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "DebugFov", "HexEditor", "IndicatorGrid", "ChunkDisplay")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_lijte")
-MeshList = NodePath("ScrollContainer/VBoxContainer/MeshList")
-MapResetButton = NodePath("ScrollContainer/VBoxContainer/MapSerializationButtons/DoubleConfirmButton")
-HexTypeSelector = NodePath("ScrollContainer/VBoxContainer/HexTypeSelector")
-HexProperties = {
-0: NodePath("ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"),
-1: NodePath("ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties")
-}
+script = ExtResource("1_ma58e")
+TabContainer = NodePath("TabContainer")
+DebugFov = NodePath("TabContainer/Settings/VBoxContainer/FovDebug")
+HexEditor = NodePath("TabContainer/Hexes")
+IndicatorGrid = NodePath("TabContainer/Settings/VBoxContainer/MarginContainer")
+ChunkDisplay = NodePath("TabContainer/Settings/VBoxContainer/DisplayChunks")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+[node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "MapResetButton", "HexTypeSelector")]
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("2_occu0")
+MeshList = NodePath("HexEditorContainer/MeshList")
+MapResetButton = NodePath("HexEditorContainer/MeshClearButton")
+HexTypeSelector = NodePath("HexEditorContainer/HexTypeSelector")
+HexProperties = {
+0: NodePath("HexEditorContainer/HexPropertiesContainer/BaseHexProperties"),
+1: NodePath("HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties")
+}
+
+[node name="HexEditorContainer" type="VBoxContainer" parent="TabContainer/Hexes"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="MapSerializationButtons" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="DoubleConfirmButton" type="Button" parent="ScrollContainer/VBoxContainer/MapSerializationButtons"]
+[node name="MeshClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear map"
 script = ExtResource("2_67wff")
 
-[node name="HexTypeSelector" type="OptionButton" parent="ScrollContainer/VBoxContainer"]
+[node name="HexTypeSelector" type="OptionButton" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 
-[node name="HexPropertiesContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+[node name="HexPropertiesContainer" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 
-[node name="BaseHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
+[node name="BaseHexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
 script = ExtResource("3_nu4c1")
 IsOccluderButton = NodePath("IsOccluderButton")
 
-[node name="IsOccluderButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/BaseHexProperties"]
+[node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/BaseHexProperties"]
 layout_mode = 2
 text = "IsOccluder"
 
-[node name="AccessibleHexProperties" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
+[node name="AccessibleHexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
 script = ExtResource("4_683oo")
 IsOccluderButton = NodePath("IsOccluderButton")
 
-[node name="IsOccluderButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/HexPropertiesContainer/AccessibleHexProperties"]
+[node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties"]
 layout_mode = 2
 text = "IsOccluder"
 
-[node name="MeshList" type="ItemList" parent="ScrollContainer/VBoxContainer"]
+[node name="MeshList" type="ItemList" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Settings" type="ScrollContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("indicatorRadius")]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_right = 2
+script = ExtResource("6_stx68")
+indicatorRadius = NodePath("IndicatorRadius/SpinBox")
+
+[node name="IndicatorRadius" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Settings/VBoxContainer/MarginContainer/IndicatorRadius"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Indicator radius:"
+
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Settings/VBoxContainer/MarginContainer/IndicatorRadius"]
+layout_mode = 2
+min_value = 2.0
+value = 10.0
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Settings/VBoxContainer"]
+layout_mode = 2
+
+[node name="DisplayChunks" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("displayChunkButton")]
+layout_mode = 2
+script = ExtResource("7_6pfc8")
+displayChunkButton = NodePath("CheckButton")
+
+[node name="CheckButton" type="CheckButton" parent="TabContainer/Settings/VBoxContainer/DisplayChunks"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Display chunks"
+
+[node name="HSeparator2" type="HSeparator" parent="TabContainer/Settings/VBoxContainer"]
+layout_mode = 2
+
+[node name="FovDebug" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("enableFovButton", "fovRadius")]
+layout_mode = 2
+script = ExtResource("5_q4d41")
+enableFovButton = NodePath("VBoxContainer/CheckButton")
+fovRadius = NodePath("VBoxContainer/MarginContainer/IndicatorSize/SpinBox")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Settings/VBoxContainer/FovDebug"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CheckButton" type="CheckButton" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Debug field of view"
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_right = 2
+
+[node name="IndicatorSize" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer/MarginContainer/IndicatorSize"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Radius:"
+
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer/MarginContainer/IndicatorSize"]
+layout_mode = 2
+min_value = 1.0
+value = 3.0
+
+[node name="HSeparator3" type="HSeparator" parent="TabContainer/Settings/VBoxContainer"]
+layout_mode = 2

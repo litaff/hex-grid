@@ -16,8 +16,4 @@ MeshLibraries = {
 0: ExtResource("2_gkh2p"),
 1: ExtResource("3_5y8es")
 }
-EditorGridSize = 5
-EditorGridAlphaFalloff = true
-DisplayFieldOfView = true
-FieldOfViewRadius = 10
 metadata/_edit_lock_ = true

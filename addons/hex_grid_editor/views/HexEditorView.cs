@@ -4,10 +4,10 @@ using System;
 using Godot;
 using Godot.Collections;
 using scripts;
-using hex_grid.scripts.hex_grid;
+using scripts.hex_grid;
 
 [Tool]
-public partial class View : Control
+public partial class HexEditorView : Control
 {
     [Export]
     public ItemList MeshList { get; private set; }
@@ -17,14 +17,14 @@ public partial class View : Control
     public OptionButton HexTypeSelector { get; private set; }
     [Export]
     public Dictionary<HexType, NodePath> HexProperties { get; private set; }
-
+    
     private System.Collections.Generic.Dictionary<HexType, BaseHexPropertiesView> propertiesViews = new();
     
     public event Action<HexType, BaseHexPropertiesView> OnHexTypeSelected;
+    public event Action<int> OnMeshSelected;
     
     public void Initialize()
     {
-        base._EnterTree();
         InitializeHexTypeSelector();
         foreach (var hexProperty in HexProperties)
         {
@@ -32,11 +32,13 @@ public partial class View : Control
             propertiesViews.TryAdd(hexProperty.Key, hexTypePropertiesView);
         }
         OnHexTypeSelectedHandler(HexTypeSelector.Selected);
+        MeshList.ItemSelected += OnMeshSelectedHandler;
     }
     
     public new void Dispose()
     {
         HexTypeSelector.ItemSelected -= OnHexTypeSelectedHandler;
+        MeshList.ItemSelected -= OnMeshSelectedHandler;
         HexTypeSelector.Clear();
         foreach (var views in propertiesViews.Values)
         {
@@ -54,6 +56,23 @@ public partial class View : Control
         {
             MeshList.AddItem(meshLibrary.GetItemName(itemId), meshLibrary.GetItemPreview(itemId));
         }
+    }
+
+    public void SetCurrentHexType(HexType hexType)
+    {
+        HexTypeSelector.Selected = (int)hexType;
+        OnHexTypeSelectedHandler(HexTypeSelector.Selected);
+    }
+
+    public void SelectMesh(int libraryIndex)
+    {
+        MeshList.Select(libraryIndex);
+        OnMeshSelectedHandler(libraryIndex);
+    }
+
+    private void OnMeshSelectedHandler(long index)
+    {
+        OnMeshSelected?.Invoke((int)index);
     }
 
     private void InitializeHexTypeSelector()

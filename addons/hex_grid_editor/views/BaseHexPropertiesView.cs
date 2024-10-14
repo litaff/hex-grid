@@ -13,4 +13,9 @@ public partial class BaseHexPropertiesView : Control
     {
         spawnedHex.IsOccluder = IsOccluderButton.ButtonPressed;
     }
+    
+    public virtual void SetFrom(CubeHex hex)
+    {
+        IsOccluderButton.ButtonPressed = hex.IsOccluder;
+    }
 }
