@@ -87,6 +87,7 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler = new InputHandler(hexGridMap.Position, CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
+		inputHandler.OnRotateRequested += OnRotateRequestedHandler;
 		
 		view = rootView.GetNode<HexGridEditorView>(".");
 
@@ -120,6 +121,7 @@ public partial class HexGridEditor : EditorPlugin
 		
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
+		inputHandler.OnRotateRequested -= OnRotateRequestedHandler;
 		
 		UpdateIndicatorMesh(0);
 		
@@ -146,6 +148,11 @@ public partial class HexGridEditor : EditorPlugin
 		view.HexEditor.Dispose();
 		
 		OnDeselectRequestedHandler();
+	}
+
+	private void OnRotateRequestedHandler()
+	{
+		// TODO: Rotate selected hex
 	}
 
 	private void OnTabChangedHandler(long index)
@@ -206,7 +213,7 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void OnAddHexRequestedHandler()
 	{
-		if (!isSelectionActive) return;
+		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
 		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
 		selectedPropertiesView.Apply(spawnedHex);
 		hexGridMap.Storage.Save();
@@ -214,7 +221,7 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void OnRemoveHexRequestHandler()
 	{
-		if (!isSelectionActive) return;
+		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
 		hexGridMap.Storage.Save();
 	}
