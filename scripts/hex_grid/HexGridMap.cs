@@ -91,9 +91,9 @@ public partial class HexGridMap : Node3D
         chunkStorage.RemoveHex(hexPosition);
     }
 
-    public CubeHex AddHex(CubeHexVector hexPosition, int meshIndex, HexType type)
+    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type)
     {
-        var hex = Storage.Add(hexPosition, CellSize, meshIndex, type);
+        var hex = Storage.Add(hexPosition, CellSize, meshData, type);
         chunkStorage.AssignHex(Storage.Get(hexPosition));
         return hex;
     }

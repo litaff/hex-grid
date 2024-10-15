@@ -8,13 +8,13 @@ public class AccessibleHex : CubeHex
     [JsonIgnore]
     public override HexType Type => HexType.Accessible;
 
-    public AccessibleHex(int q, int r, float size, int libraryIndex) : base(q, r, size, libraryIndex)
+    public AccessibleHex(int q, int r, float size, HexMeshData meshData) : base(q, r, size, meshData)
     {
     }
 
     [JsonConstructor]
-    public AccessibleHex(CubeHexVector position, float size, int libraryIndex, bool isOccluder) : 
-        base(position, size, libraryIndex, isOccluder)
+    public AccessibleHex(CubeHexVector position, float size, HexMeshData meshData, bool isOccluder) : 
+        base(position, size, meshData, isOccluder)
     {
     }
 }

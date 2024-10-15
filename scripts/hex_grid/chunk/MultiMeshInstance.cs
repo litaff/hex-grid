@@ -9,7 +9,7 @@ public class MultiMeshInstance
     private Rid instanceRid;
     private Rid multiMeshRid;
     
-    public MultiMeshInstance(Mesh mesh, Vector3 position, List<Vector3> instances, World3D scenario)
+    public MultiMeshInstance(Mesh mesh, Vector3 position, List<Transform3D> instances, World3D scenario)
     {
         instanceRid = RenderingServer.InstanceCreate();
         multiMeshRid = RenderingServer.MultimeshCreate();
@@ -20,7 +20,7 @@ public class MultiMeshInstance
         
         for (var i = 0; i < instances.Count; i++)
         {
-            RenderingServer.MultimeshInstanceSetTransform(multiMeshRid, i, new Transform3D(Basis.Identity, instances[i]));
+            RenderingServer.MultimeshInstanceSetTransform(multiMeshRid, i, instances[i]);
         }
 
         RenderingServer.InstanceSetBase(instanceRid, multiMeshRid);

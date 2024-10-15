@@ -3,6 +3,7 @@ namespace hex_grid.addons.hex_grid_editor;
 
 using Godot;
 using scripts.hex_grid;
+using scripts.hex_grid.hex;
 using scripts.utils;
 using views;
 using HexGridMap = scripts.hex_grid.HexGridMap;
@@ -157,7 +158,7 @@ public partial class HexGridEditor : EditorPlugin
 		view.TabContainer.CurrentTab = 0;
 		view.HexEditor.SetCurrentHexType(hex.Type);
 		selectedPropertiesView.SetFrom(hex);
-		view.HexEditor.SelectMesh(hex.LibraryIndex);
+		view.HexEditor.SelectMesh(hex.MeshData.MeshIndex);
 	}
 
 	private void OnTabChangedHandler(long index)
@@ -189,6 +190,7 @@ public partial class HexGridEditor : EditorPlugin
 	private bool isSelectionActive;
 	private Rid selectedMeshInstanceRid;
 	private int selectedMeshIndex;
+	private int rotationAngle;
 	
 	private void OnMeshSelectedHandler(int index)
 	{
@@ -233,7 +235,7 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, selectedMeshIndex, selectedHexType);
+		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, rotationAngle), selectedHexType);
 		selectedPropertiesView.Apply(spawnedHex);
 		hexGridMap.Storage.Save();
 	}

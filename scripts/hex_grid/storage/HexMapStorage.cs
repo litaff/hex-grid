@@ -44,12 +44,12 @@ public class HexMapStorage
         }
     }
     
-    public CubeHex Add(CubeHexVector position, float size, int libraryIndex, HexType type)
+    public CubeHex Add(CubeHexVector position, float size, HexMeshData meshData, HexType type)
     {
         var hex = type switch
         {
-            HexType.Accessible => new AccessibleHex(position.Q, position.R, size, libraryIndex),
-            HexType.Base => new CubeHex(position.Q, position.R, size, libraryIndex),
+            HexType.Accessible => new AccessibleHex(position.Q, position.R, size, meshData),
+            HexType.Base => new CubeHex(position.Q, position.R, size, meshData),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
         Add(hex);
