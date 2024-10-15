@@ -8,26 +8,26 @@ public class CubeHex
 {
     public CubeHexVector Position { get; private set; }
     public float Size { get; private set; }
-    public int LibraryIndex { get; private set; }
+    public HexMeshData MeshData { get; private set; }
 
     public bool IsOccluder { get; set; }
     
     [JsonIgnore]
     public virtual HexType Type => HexType.Base;
     
-    public CubeHex(int q, int r, float size, int libraryIndex)
+    public CubeHex(int q, int r, float size, HexMeshData meshData)
     {
         Position = new CubeHexVector(q, r);
-        LibraryIndex = libraryIndex;
+        MeshData = meshData;
         Size = size;
     }
     
     [JsonConstructor]
-    public CubeHex(CubeHexVector position, float size, int libraryIndex, bool isOccluder)
+    public CubeHex(CubeHexVector position, float size, HexMeshData meshData, bool isOccluder)
     {
         Position = position;
         Size = size;
-        LibraryIndex = libraryIndex;
+        MeshData = meshData;
         IsOccluder = isOccluder;
     }
 

@@ -21,6 +21,7 @@ public partial class HexGridMap : Node3D
         private set
         {
             mapData = value;
+            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
             Storage = null;
             Initialize();
             OnPropertyChange?.Invoke();
@@ -32,6 +33,7 @@ public partial class HexGridMap : Node3D
         private set
         {
             cellSize = value;
+            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
             Storage?.UpdateCellSize(value);
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
@@ -43,6 +45,7 @@ public partial class HexGridMap : Node3D
         private set
         {
             chunkSize = value > 0 ? value : 1;
+            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
             Initialize();
             OnPropertyChange?.Invoke();
         } 
@@ -88,9 +91,9 @@ public partial class HexGridMap : Node3D
         chunkStorage.RemoveHex(hexPosition);
     }
 
-    public CubeHex AddHex(CubeHexVector hexPosition, int meshIndex, HexType type)
+    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type)
     {
-        var hex = Storage.Add(hexPosition, CellSize, meshIndex, type);
+        var hex = Storage.Add(hexPosition, CellSize, meshData, type);
         chunkStorage.AssignHex(Storage.Get(hexPosition));
         return hex;
     }

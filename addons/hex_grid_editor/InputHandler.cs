@@ -16,6 +16,7 @@ public class InputHandler
     public CubeHexVector HexPosition { get; private set; }
     public Vector3 HexCenter { get; private set; }
     
+    public event Action OnRotateRequested;
     public event Action OnPipetteRequested;
     public event Action OnDeselectRequested;
     public event Action<Vector3> OnHexCenterUpdated;
@@ -55,6 +56,9 @@ public class InputHandler
     {
         switch (@event)
         {
+            case InputEventKey { Pressed: true, Keycode: Key.R } when isSelectionActive:
+                OnRotateRequested?.Invoke();
+                return EditorPlugin.AfterGuiInput.Stop;
             case InputEventKey { Pressed: true, Keycode: Key.Escape }:
                 OnDeselectRequested?.Invoke();
                 return EditorPlugin.AfterGuiInput.Stop;

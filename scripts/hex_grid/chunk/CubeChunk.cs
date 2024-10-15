@@ -44,15 +44,18 @@ public class CubeChunk
         var sortedHexes = SortHexes();
         foreach (var hexGroup in sortedHexes)
         {
-            var firstHex = hexGroup.Value.First();
+            var hexSize = hexGroup.Value.First().Size;
             var mesh = libraries[hexGroup.Key.Item1]?.GetItemMesh(hexGroup.Key.Item2);
             if (mesh == null) continue;
+            var hexRotations = hexGroup.Value.Select(hex => hex.MeshData.Radians).ToList();
             var hexPositions = hexGroup.Value.Select(hex => hex.Position).ToList();
             var relativeHexPositions = hexPositions.Select(position => position.RelativeToChunk(Size)).ToList();
-            var relativeWorldPositions =
-                relativeHexPositions.Select(position => position.ToWorldPosition(firstHex.Size)).ToList();
-            var worldPosition = Position.FromChunkPosition(Size).ToWorldPosition(firstHex.Size);
-            var meshInstance = new MultiMeshInstance(mesh, worldPosition, relativeWorldPositions, scenario);
+            var relativeWorldHexPositions = relativeHexPositions.Select(position => 
+                position.ToWorldPosition(hexSize)).ToList();
+            var transforms = hexRotations.Zip(relativeWorldHexPositions, (rotation, position) => 
+                new Transform3D(Basis.Identity.Rotated(Vector3.Up, rotation), position)).ToList();
+            var chunkWorldPosition = Position.FromChunkPosition(Size).ToWorldPosition(hexSize);
+            var meshInstance = new MultiMeshInstance(mesh, chunkWorldPosition, transforms, scenario);
             meshInstances.Add(meshInstance);
         }
     }
@@ -78,14 +81,14 @@ public class CubeChunk
         
         foreach (var hex in hexes)
         {
-            var key = (hex.Type, hex.LibraryIndex);
-            if (sortedHexes.ContainsKey(key))
+            var key = (hex.Type, hex.MeshData.MeshIndex);
+            if (sortedHexes.TryGetValue(key, out var value))
             {
-                sortedHexes[key].Add(hex);
+                value.Add(hex);
             }
             else
             {
-                sortedHexes.Add(key, new List<CubeHex> {hex});
+                sortedHexes.Add(key, [hex]);
             }
         }
 
