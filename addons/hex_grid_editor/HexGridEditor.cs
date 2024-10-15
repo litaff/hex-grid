@@ -77,7 +77,6 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler = new InputHandler(hexGridMap.Position, CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
-		inputHandler.OnRotateRequested += OnRotateRequestedHandler;
 		
 		view = rootView.GetNode<HexGridEditorView>(".");
 
@@ -111,7 +110,6 @@ public partial class HexGridEditor : EditorPlugin
 		
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
-		inputHandler.OnRotateRequested -= OnRotateRequestedHandler;
 		
 		UpdateIndicatorMesh(0);
 		
@@ -146,11 +144,6 @@ public partial class HexGridEditor : EditorPlugin
 		Enable(hexGridMap);
 	}
 	
-	private void OnRotateRequestedHandler()
-	{
-		// TODO: Rotate selected hex
-	}
-	
 	private void OnPipetteRequestedHandler()
 	{
 		var hex = hexGridMap.Storage.Get(inputHandler.HexPosition);
@@ -159,6 +152,8 @@ public partial class HexGridEditor : EditorPlugin
 		view.HexEditor.SetCurrentHexType(hex.Type);
 		selectedPropertiesView.SetFrom(hex);
 		view.HexEditor.SelectMesh(hex.MeshData.MeshIndex);
+		rotationAngle = -hex.MeshData.Rotation;
+		UpdateSelectedHexMesh();
 	}
 
 	private void OnTabChangedHandler(long index)
@@ -202,10 +197,11 @@ public partial class HexGridEditor : EditorPlugin
 		selectedMeshInstanceRid = RenderingServer.InstanceCreate();
 		RenderingServer.InstanceSetBase(selectedMeshInstanceRid, mesh.GetRid());
 		RenderingServer.InstanceSetScenario(selectedMeshInstanceRid, hexGridMap.GetWorld3D().Scenario);
-		OnHexCenterUpdatedHandler(inputHandler.HexCenter);
+		UpdateSelectedHexMesh();
 		inputHandler.OnHexCenterUpdated += OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested += OnAddHexRequestedHandler;
 		inputHandler.OnRemoveHexRequest += OnRemoveHexRequestHandler;
+		inputHandler.OnRotateRequested += OnRotateRequestedHandler;
 	}
 
 	private void OnDeselectRequestedHandler()
@@ -214,13 +210,15 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
 		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
+		inputHandler.OnRotateRequested -= OnRotateRequestedHandler;
+		rotationAngle = 0;
 		selectedMeshInstanceRid.FreeRid();
 		isSelectionActive = false;
 	}
 	
 	private void OnHexCenterUpdatedHandler(Vector3 hexCenter)
 	{
-		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, new Transform3D(Basis.Identity, hexCenter));
+		UpdateSelectedHexMesh();
 		
 		if (inputHandler.IsAddHexHeld)
 		{
@@ -235,7 +233,7 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, rotationAngle), selectedHexType);
+		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, -rotationAngle), selectedHexType);
 		selectedPropertiesView.Apply(spawnedHex);
 		hexGridMap.Storage.Save();
 	}
@@ -245,6 +243,18 @@ public partial class HexGridEditor : EditorPlugin
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
 		hexGridMap.RemoveHex(inputHandler.HexPosition);
 		hexGridMap.Storage.Save();
+	}
+	
+	private void OnRotateRequestedHandler()
+	{
+		rotationAngle = (rotationAngle + 60) % 360;
+		UpdateSelectedHexMesh();
+	}
+
+	private void UpdateSelectedHexMesh()
+	{
+		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid,
+			new Transform3D(Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad(-rotationAngle)), inputHandler.HexCenter));
 	}
 
 	#endregion
