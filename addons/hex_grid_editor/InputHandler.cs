@@ -56,7 +56,7 @@ public class InputHandler
     {
         switch (@event)
         {
-            case InputEventKey { Pressed: true, Keycode: Key.R }:
+            case InputEventKey { Pressed: true, Keycode: Key.R } when isSelectionActive:
                 OnRotateRequested?.Invoke();
                 return EditorPlugin.AfterGuiInput.Stop;
             case InputEventKey { Pressed: true, Keycode: Key.Escape }:
