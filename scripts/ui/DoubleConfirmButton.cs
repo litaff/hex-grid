@@ -1,4 +1,4 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.ui;
 
 using System;
 using Godot;

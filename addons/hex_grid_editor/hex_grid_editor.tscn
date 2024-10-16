@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://cvyi07qp410ei"]
 
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexGridEditorView.cs" id="1_ma58e"]
-[ext_resource type="Script" path="res://scripts/DoubleConfirmButton.cs" id="2_67wff"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexEditorView.cs" id="2_occu0"]
+[ext_resource type="Script" path="res://scripts/ui/DoubleConfirmButton.cs" id="3_ebrcs"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/BaseHexPropertiesView.cs" id="3_nu4c1"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/AccessibleHexPropertiesView.cs" id="4_683oo"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/views/DebugFovView.cs" id="5_q4d41"]
@@ -53,7 +53,7 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear map"
-script = ExtResource("2_67wff")
+script = ExtResource("3_ebrcs")
 
 [node name="HexTypeSelector" type="OptionButton" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2

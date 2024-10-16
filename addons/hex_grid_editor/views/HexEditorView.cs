@@ -3,8 +3,8 @@ namespace hex_grid.addons.hex_grid_editor.views;
 using System;
 using Godot;
 using Godot.Collections;
-using scripts;
 using scripts.hex_grid;
+using scripts.ui;
 
 [Tool]
 public partial class HexEditorView : Control
