@@ -1,4 +1,4 @@
-namespace hex_grid.scripts;
+namespace hex_grid.scripts.hex_grid.vector;
 
 public struct CubeHexFracVector
 {
@@ -11,5 +11,10 @@ public struct CubeHexFracVector
         Q = q;
         R = r;
         S = -q - r;
+    }
+    
+    public override string ToString()
+    {
+        return $"({Q}, {R}, {S})";
     }
 }
