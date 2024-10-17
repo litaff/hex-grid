@@ -68,6 +68,7 @@ script = ExtResource("3_ebrcs")
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer" node_paths=PackedStringArray("indicatorRadius")]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_right = 2
 script = ExtResource("6_stx68")

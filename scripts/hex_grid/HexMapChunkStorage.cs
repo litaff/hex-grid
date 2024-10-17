@@ -15,6 +15,8 @@ public class HexMapChunkStorage
     private Dictionary<int, CubeChunk> map;
     private int chunkSize;
     private float verticalOffset;
+    
+    private List<CubeChunk> hiddenChunks = [];
 
     public HexMapChunkStorage(int chunkSize, float verticalOffset, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
@@ -55,12 +57,43 @@ public class HexMapChunkStorage
         RemoveChunk(chunkPosition);
     }
     
+    public CubeChunk[] HideChunks(CubeHexVector[] chunkPositions, out List<CubeChunk> displayedChunks)
+    {
+        displayedChunks = [];
+        var chunksToHide = chunkPositions.Select(Get).Where(chunk => chunk != null).ToList();
+        foreach (var hiddenChunk in hiddenChunks.Where(hiddenChunk => !chunksToHide.Contains(hiddenChunk)))
+        {
+            hiddenChunk.Display();
+            displayedChunks.Add(hiddenChunk);
+        }
+        
+        hiddenChunks.Clear();
+        
+        foreach (var chunkToHide in chunksToHide)
+        {
+            chunkToHide.Hide();
+            hiddenChunks.Add(chunkToHide);
+        }
+        
+        return hiddenChunks.ToArray();
+    }
+
+    public CubeChunk[] Hide()
+    {
+        foreach (var chunk in map.Values.Where(chunk => !hiddenChunks.Contains(chunk)))
+        {
+            chunk.Hide();
+            hiddenChunks.Add(chunk);
+        }
+        return hiddenChunks.ToArray();
+    }
+
     private void AddChunk(CubeChunk value)
     {
         var hash = HashCode.Combine(value.Position.Q, value.Position.R);
         map.TryAdd(hash, value);
     }
-    
+
     private void RemoveChunk(CubeHexVector position)
     {
         var hash = HashCode.Combine(position.Q, position.R);

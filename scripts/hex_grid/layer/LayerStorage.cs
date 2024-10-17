@@ -1,6 +1,8 @@
 namespace hex_grid.scripts.hex_grid.layer;
 
+using System;
 using System.Linq;
+using chunk;
 using Godot;
 using Godot.Collections;
 using hex;
@@ -98,7 +100,25 @@ public class LayerStorage
     {
         return storage.GetMap().Length <= 0;
     }
+    
+    public void HideChunks(CubeHexVector[] chunkPositions)
+    {
+        // TODO: Hide all entities in the chunks
+        var hiddenChunks = chunkStorage.HideChunks(chunkPositions, out var displayedChunks);
+    }
 
+    public void Display()
+    {
+        // TODO: Display all entities in the chunks
+        chunkStorage.HideChunks([], out var displayedChunks);
+    }
+    
+    public void Hide()
+    {
+        // TODO: Hide all entities in the chunks
+        var hiddenChunks = chunkStorage.Hide();
+    }
+    
     public void Dispose()
     {
         chunkStorage?.Dispose();

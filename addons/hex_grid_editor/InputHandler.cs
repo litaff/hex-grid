@@ -11,13 +11,15 @@ public class InputHandler
     
     public bool IsAddHexHeld { get; private set; }
     public bool IsRemoveHexHeld { get; private set; }
+    public bool IsDisplayAllLayersHeld { get; private set; }
     public Vector3 CursorPosition { get; private set; }
     public CubeHexVector HexPosition { get; private set; }
     public Vector3 HexCenter { get; private set; }
-    
+
     public event Action OnRotateRequested;
     public event Action OnPipetteRequested;
     public event Action OnDeselectRequested;
+    public event Action OnDisplayAllLayersRequested;
     public event Action<Vector3> OnHexCenterUpdated;
     public event Action OnAddHexRequested;
     public event Action OnRemoveHexRequest;
@@ -54,6 +56,13 @@ public class InputHandler
     {
         switch (@event)
         {
+            case InputEventKey { Pressed: true, Keycode: Key.Space }:
+                OnDisplayAllLayersRequested?.Invoke();
+                IsDisplayAllLayersHeld = true;
+                return EditorPlugin.AfterGuiInput.Stop;
+            case InputEventKey { Pressed: false, Keycode: Key.Space }:
+                IsDisplayAllLayersHeld = false;
+                return EditorPlugin.AfterGuiInput.Stop;
             case InputEventKey { Pressed: true, Keycode: Key.R } when isSelectionActive:
                 OnRotateRequested?.Invoke();
                 return EditorPlugin.AfterGuiInput.Stop;

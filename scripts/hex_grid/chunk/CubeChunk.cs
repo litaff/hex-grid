@@ -16,6 +16,7 @@ public class CubeChunk
     private List<CubeHex> hexes = new();
     
     public bool IsEmpty => hexes.Count == 0;
+    public IReadOnlyList<CubeHex> AssignedHexes => hexes;
     
     public CubeChunk(CubeHexVector position, int size, float verticalOffset)
     {
@@ -75,6 +76,22 @@ public class CubeChunk
     public override string ToString()
     {
         return $"Position: {Position}, Size: {Size}, Hexes: {hexes.Count}, MeshInstances: {meshInstances.Count}";
+    }
+
+    public void Display()
+    {
+        foreach (var meshInstance in meshInstances)
+        {
+            meshInstance.Display();
+        }
+    }
+
+    public void Hide()
+    {
+        foreach (var meshInstance in meshInstances)
+        {
+            meshInstance.Hide();
+        }
     }
 
     private Dictionary<(HexType, int), List<CubeHex>> SortHexes()

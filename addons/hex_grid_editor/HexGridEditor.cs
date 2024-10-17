@@ -1,6 +1,7 @@
 #if TOOLS
 namespace hex_grid.addons.hex_grid_editor;
 
+using System.Linq;
 using Godot;
 using scripts.hex_grid;
 using scripts.hex_grid.hex;
@@ -78,7 +79,8 @@ public partial class HexGridEditor : EditorPlugin
 		inputHandler = new InputHandler(CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
-		
+		inputHandler.OnDisplayAllLayersRequested += OnDisplayAllLayersRequestedHandler;
+
 		view = rootView.GetNode<HexGridEditorView>(".");
 
 		view.HexEditor.OnHexTypeSelected += OnHexTypeSelectedHandler;
@@ -113,6 +115,7 @@ public partial class HexGridEditor : EditorPlugin
 		
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
+		inputHandler.OnDisplayAllLayersRequested -= OnDisplayAllLayersRequestedHandler;
 		
 		UpdateIndicatorMesh(0);
 		
@@ -164,8 +167,15 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnLayerChangedHandler(int layer)
 	{
 		currentLayer = layer;
+		if (inputHandler.IsDisplayAllLayersHeld) return;
+		hexGridMap.HideLayers(layerIndex => layerIndex > currentLayer);
 	}
-	
+
+	private void OnDisplayAllLayersRequestedHandler()
+	{
+		hexGridMap.HideLayers([]);
+	}
+
 	private void OnClearMapRequestedHandler()
 	{
 		hexGridMap.ClearMap();
@@ -196,6 +206,11 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		OnDeselectRequestedHandler();
 		
+		if (!inputHandler.IsDisplayAllLayersHeld)
+		{
+			hexGridMap.HideLayers(layerIndex => layerIndex > currentLayer);
+		}
+		
 		isSelectionActive = true;
 		selectedMeshIndex = index;
 		var mesh = hexGridMap.MeshLibraries[selectedHexType].GetItemMesh(index);
@@ -211,6 +226,7 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void OnDeselectRequestedHandler()
 	{
+		hexGridMap.HideLayers([]);
 		view.HexEditor.MeshList.DeselectAll();
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
@@ -232,6 +248,10 @@ public partial class HexGridEditor : EditorPlugin
 		if (inputHandler.IsRemoveHexHeld)
 		{
 			OnRemoveHexRequestHandler();
+		}
+		if (!inputHandler.IsDisplayAllLayersHeld)
+		{
+			hexGridMap.HideLayers(layerIndex => layerIndex > currentLayer);
 		}
 	}
 	

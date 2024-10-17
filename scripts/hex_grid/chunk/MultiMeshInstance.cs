@@ -28,6 +28,16 @@ public class MultiMeshInstance
         RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, position));
     }
 
+    public void Display()
+    {
+        RenderingServer.InstanceSetVisible(instanceRid, true);
+    }
+    
+    public void Hide()
+    {
+        RenderingServer.InstanceSetVisible(instanceRid, false);
+    }
+    
     public void Dispose()
     {
         multiMeshRid.FreeRid();

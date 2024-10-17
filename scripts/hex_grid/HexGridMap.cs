@@ -3,6 +3,7 @@ namespace hex_grid.scripts.hex_grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using chunk;
 using Godot;
 using hex;
 using layer;
@@ -121,6 +122,50 @@ public partial class HexGridMap : Node3D
     public CubeHex GetHex(CubeHexVector hexPosition, int layerIndex)
     {
         return Layers.TryGetValue(layerIndex, out var layer) ? layer.GetHex(hexPosition) : null;
+    }
+    
+    public void HideChunks(CubeHexVector[] chunkPositions, int[] layerIndexes)
+    {
+        foreach (var layerIndex in layerIndexes)
+        {
+            if (!Layers.TryGetValue(layerIndex, out var layer)) continue;
+            layer.HideChunks(chunkPositions);
+        }
+    }
+    
+    public void HideChunks(CubeHexVector[] chunkPositions, Predicate<int> layerPredicate)
+    {
+        foreach (var layer in Layers.Where(layer => layerPredicate(layer.Key)))
+        {
+            layer.Value.HideChunks(chunkPositions);
+        }
+    }
+    
+    public void HideLayers(int[] layerIndexes)
+    {
+        foreach (var layerIndex in layerIndexes)
+        {
+            if (!Layers.TryGetValue(layerIndex, out var layer)) continue;
+            layer.Hide();
+        }
+        
+        foreach (var layer in Layers.Where(layer => !layerIndexes.Contains(layer.Key)))
+        {
+            layer.Value.Display();
+        }
+    }
+    
+    public void HideLayers(Predicate<int> predicate)
+    {
+        foreach (var layer in Layers.Where(layer => predicate(layer.Key)))
+        {
+            layer.Value.Hide();
+        }
+        
+        foreach (var layer in Layers.Where(layer => !predicate(layer.Key)))
+        {
+            layer.Value.Display();
+        }
     }
 
     public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, object layerIndex)
