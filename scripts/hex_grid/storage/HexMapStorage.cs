@@ -10,11 +10,13 @@ using vector;
 public class HexMapStorage
 {
     private readonly HexMapData mapData;
+    private float cellSize;
     private Dictionary<int, CubeHex> map;
 
-    public HexMapStorage(HexMapData mapData)
+    public HexMapStorage(float cellSize, HexMapData mapData)
     {
         this.mapData = mapData;
+        this.cellSize = cellSize;
         if (mapData != null)
         {
             
@@ -25,31 +27,23 @@ public class HexMapStorage
         GD.PushWarning("Map data is null. Created map won't be saved.");
         map = new Dictionary<int, CubeHex>();
     }
-
-    public void Save()
-    {
-        if (mapData == null)
-        {
-            GD.PushWarning("Map wasn't saved. Map data is null.");
-            return;
-        }
-        mapData.Serialize();
-    }
     
     public void UpdateCellSize(float cellSize)
     {
+        this.cellSize = cellSize > 0 ? cellSize : this.cellSize;
         foreach (var hex in map.Values)
         {
-            hex.SetSize(cellSize);
+            hex.SetSize(this.cellSize);
         }
+        mapData?.Serialize();
     }
     
-    public CubeHex Add(CubeHexVector position, float size, HexMeshData meshData, HexType type)
+    public CubeHex Add(CubeHexVector position, HexMeshData meshData, HexType type)
     {
         var hex = type switch
         {
-            HexType.Accessible => new AccessibleHex(position.Q, position.R, size, meshData),
-            HexType.Base => new CubeHex(position.Q, position.R, size, meshData),
+            HexType.Accessible => new AccessibleHex(position.Q, position.R, cellSize, meshData),
+            HexType.Base => new CubeHex(position.Q, position.R, cellSize, meshData),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
         Add(hex);
@@ -59,11 +53,13 @@ public class HexMapStorage
     public void Remove(CubeHexVector position)
     {
         map.Remove(position.GetHashCode());
+        mapData?.Serialize();
     }
     
     public void Add(CubeHex value)
     {
         map.TryAdd(value.Position.GetHashCode(), value);
+        mapData?.Serialize();
     }
 
     public CubeHex Get(CubeHexVector hexPosition)

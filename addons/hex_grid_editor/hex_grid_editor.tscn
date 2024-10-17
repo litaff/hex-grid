@@ -31,13 +31,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "MapResetButton", "HexTypeSelector")]
+[node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "LayerResetButton", "MapResetButton", "HexTypeSelector", "CurrentLayer")]
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("2_occu0")
 MeshList = NodePath("HexEditorContainer/MeshList")
-MapResetButton = NodePath("HexEditorContainer/MeshClearButton")
+LayerResetButton = NodePath("HexEditorContainer/HBoxContainer/LayerClearButton")
+MapResetButton = NodePath("HexEditorContainer/HBoxContainer/MapClearButton")
 HexTypeSelector = NodePath("HexEditorContainer/HexTypeSelector")
+CurrentLayer = NodePath("HexEditorContainer/MarginContainer/CurrentLayer/SpinBox")
 HexProperties = {
 0: NodePath("HexEditorContainer/HexPropertiesContainer/BaseHexProperties"),
 1: NodePath("HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties")
@@ -49,11 +51,41 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="MeshClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer"]
+layout_mode = 2
+
+[node name="LayerClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Clear layer"
+script = ExtResource("3_ebrcs")
+
+[node name="MapClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear map"
 script = ExtResource("3_ebrcs")
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer" node_paths=PackedStringArray("indicatorRadius")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_right = 2
+script = ExtResource("6_stx68")
+indicatorRadius = NodePath("../../../Settings/VBoxContainer/MarginContainer/IndicatorRadius/SpinBox")
+
+[node name="CurrentLayer" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Hexes/HexEditorContainer/MarginContainer/CurrentLayer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Current layer:"
+
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Hexes/HexEditorContainer/MarginContainer/CurrentLayer"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
 
 [node name="HexTypeSelector" type="OptionButton" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2

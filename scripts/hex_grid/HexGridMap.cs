@@ -3,8 +3,10 @@ namespace hex_grid.scripts.hex_grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using chunk;
 using Godot;
 using hex;
+using layer;
 using storage;
 using vector;
 
@@ -15,18 +17,7 @@ using vector;
 public partial class HexGridMap : Node3D
 {
     [Export]
-    public HexMapData MapData
-    {
-        get => mapData;
-        private set
-        {
-            mapData = value;
-            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            Storage = null;
-            Initialize();
-            OnPropertyChange?.Invoke();
-        } 
-    }
+    public Godot.Collections.Dictionary<int, HexMapData> MapData { get; private set; }
     [Export]
     public float CellSize {
         get => cellSize;
@@ -34,7 +25,7 @@ public partial class HexGridMap : Node3D
         {
             cellSize = value;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            Storage?.UpdateCellSize(value);
+            UpdateCellSize();
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
         } 
@@ -46,93 +37,171 @@ public partial class HexGridMap : Node3D
         {
             chunkSize = value > 0 ? value : 1;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
+            InitializeChunkStorage();
+            OnPropertyChange?.Invoke();
+        } 
+    }
+    [Export]
+    public float LayerHeight {
+        get => layerHeight;
+        private set
+        {
+            layerHeight = value > 0 ? value : 1;
+            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
             Initialize();
             OnPropertyChange?.Invoke();
         } 
     }
     [Export]
-    public Godot.Collections.Dictionary<HexType, MeshLibrary> MeshLibraries
-    {
-        get => meshLibraries;
-        private set
-        {
-            meshLibraries = value;
-            if (value == null)
-            {
-                GD.PrintErr("MeshLibrary is null, chunks won't be updated!");
-            }
-            OnPropertyChange?.Invoke();
-        } 
-    }
+    public Godot.Collections.Dictionary<HexType, MeshLibrary> MeshLibraries { get; private set; }
 
-    private HexMapData mapData;
     private float cellSize;
     private int chunkSize;
-    private Godot.Collections.Dictionary<HexType, MeshLibrary> meshLibraries;
-    
-    public HexMapStorage Storage { get; private set; }
-    private HexMapChunkStorage chunkStorage;
+    private float layerHeight;
+
+    public Dictionary<int, LayerStorage> Layers { get; private set; } = new();
 
     public float HexWidth => 3f / 2f * CellSize;
     public float HexHeight => Mathf.Sqrt(3) * CellSize;
-    public CubeHex[] Map => Storage?.GetMap();
 
     public event Action OnPropertyChange;
-    
+
     public void Initialize()
     {
-        Storage ??= new HexMapStorage(MapData);
-        InitializeChunkStorage();
-    }
-
-    public void RemoveHex(CubeHexVector hexPosition)
-    {
-        Storage.Remove(hexPosition);
-        chunkStorage.RemoveHex(hexPosition);
-    }
-
-    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type)
-    {
-        var hex = Storage.Add(hexPosition, CellSize, meshData, type);
-        chunkStorage.AssignHex(Storage.Get(hexPosition));
-        return hex;
-    }
-
-    public void ResetMap()
-    {
-        Storage.Clear();
-        Storage = null;
-        chunkStorage?.Dispose();
-        chunkStorage = null;
-        Initialize();
-    }
-
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius)
-    {
-        var visiblePositions = new Dictionary<int, CubeHexVector>();
-        var edge = origin.GetRing(radius);
-        foreach (var edgePoint in edge)
+        foreach (var layer in Layers.Values)
         {
-            var visionLine = origin.LineTo(edgePoint);
-            var hexes = visionLine.Select(position => Storage.Get(position)).Where(hex => hex != null);
-            var positions = hexes.TakeWhile(hex => !hex.IsOccluder).Select(hex => hex.Position);
-            foreach (var position in positions)
-            {
-                visiblePositions.TryAdd(position.GetHashCode(), position);
-            }
+            layer.Dispose();
         }
-        return visiblePositions.Values.ToArray();
+
+        Layers.Clear();
+        
+        foreach (var data in MapData)
+        {
+            Layers.Add(data.Key, CreateLayer(data.Key, data.Value));
+        }
+    }
+
+    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type, int layerIndex)
+    {
+        if (Layers.TryGetValue(layerIndex, out var layer)) return layer.AddHex(hexPosition, meshData, type);
+
+        var data = new HexMapData();
+        MapData.Add(layerIndex, data);
+        NotifyPropertyListChanged();
+        layer = CreateLayer(layerIndex, data);
+        Layers.Add(layerIndex, layer);
+        return layer.AddHex(hexPosition, meshData, type);
+    }
+    
+    public void RemoveHex(CubeHexVector hexPosition, int layerIndex)
+    {
+        if (!Layers.TryGetValue(layerIndex, out var layer)) return;
+        layer.RemoveHex(hexPosition);
+        CleanUpData(layerIndex, layer);
+    }
+
+    public void ClearLayer(int layerIndex)
+    {
+        if (!Layers.TryGetValue(layerIndex, out var layer)) return;
+        layer.Clear();
+        CleanUpData(layerIndex, layer);
+    }
+    
+    public void ClearMap()
+    {
+        foreach (var layer in Layers.Values)
+        {
+            layer.Clear();
+        }
+        
+        Layers.Clear();
+        MapData.Clear();
+        NotifyPropertyListChanged();
+    }
+
+    public CubeHex GetHex(CubeHexVector hexPosition, int layerIndex)
+    {
+        return Layers.TryGetValue(layerIndex, out var layer) ? layer.GetHex(hexPosition) : null;
+    }
+    
+    public void HideChunks(CubeHexVector[] chunkPositions, int[] layerIndexes)
+    {
+        foreach (var layerIndex in layerIndexes)
+        {
+            if (!Layers.TryGetValue(layerIndex, out var layer)) continue;
+            layer.HideChunks(chunkPositions);
+        }
+    }
+    
+    public void HideChunks(CubeHexVector[] chunkPositions, Predicate<int> layerPredicate)
+    {
+        foreach (var layer in Layers.Where(layer => layerPredicate(layer.Key)))
+        {
+            layer.Value.HideChunks(chunkPositions);
+        }
+    }
+    
+    public void HideLayers(int[] layerIndexes)
+    {
+        foreach (var layerIndex in layerIndexes)
+        {
+            if (!Layers.TryGetValue(layerIndex, out var layer)) continue;
+            layer.Hide();
+        }
+        
+        foreach (var layer in Layers.Where(layer => !layerIndexes.Contains(layer.Key)))
+        {
+            layer.Value.Display();
+        }
+    }
+    
+    public void HideLayers(Predicate<int> predicate)
+    {
+        foreach (var layer in Layers.Where(layer => predicate(layer.Key)))
+        {
+            layer.Value.Hide();
+        }
+        
+        foreach (var layer in Layers.Where(layer => !predicate(layer.Key)))
+        {
+            layer.Value.Display();
+        }
+    }
+
+    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, object layerIndex)
+    {
+        return Layers.TryGetValue((int) layerIndex, out var layer) ? layer.GetVisiblePositions(origin, radius) : [];
+    }
+
+    private void CleanUpData(int layerIndex, LayerStorage layer)
+    {
+        if (!layer.IsEmpty()) return;
+        Layers.Remove(layerIndex);
+        MapData.Remove(layerIndex);
+        NotifyPropertyListChanged();
+    }
+
+    private LayerStorage CreateLayer(int layerIndex, HexMapData data)
+    {
+        var layerStorage = new LayerStorage();
+        layerStorage.InitializeHexStorage(CellSize, data);
+        layerStorage.InitializeChunkStorage(chunkSize, layerIndex * layerHeight, MeshLibraries, GetWorld3D());
+        return layerStorage;
     }
 
     private void InitializeChunkStorage()
     {
-        chunkStorage?.Dispose();
-        chunkStorage = new HexMapChunkStorage(ChunkSize, MeshLibraries, GetWorld3D());
-        if (Storage == null) return;
-        
-        foreach (var hex in Storage.GetMap())
+        foreach (var layer in Layers)
         {
-            chunkStorage.AssignHex(hex);
+            layer.Value.InitializeChunkStorage(ChunkSize, layer.Key * layerHeight, MeshLibraries, GetWorld3D());
+        }
+    }
+
+    private void UpdateCellSize()
+    {
+        foreach (var layer in Layers.Values)
+        {
+            layer.UpdateCellSize(CellSize);
         }
     }
 }

@@ -12,9 +12,13 @@ public partial class HexEditorView : Control
     [Export]
     public ItemList MeshList { get; private set; }
     [Export]
+    public DoubleConfirmButton LayerResetButton { get; private set; }
+    [Export]
     public DoubleConfirmButton MapResetButton { get; private set; }
     [Export]
     public OptionButton HexTypeSelector { get; private set; }
+    [Export]
+    public SpinBox CurrentLayer { get; private set; }
     [Export]
     public Dictionary<HexType, NodePath> HexProperties { get; private set; }
     
@@ -22,8 +26,9 @@ public partial class HexEditorView : Control
     
     public event Action<HexType, BaseHexPropertiesView> OnHexTypeSelected;
     public event Action<int> OnMeshSelected;
+    public event Action<int> OnLayerChanged;
     
-    public void Initialize()
+    public void Initialize(int previousLayer)
     {
         InitializeHexTypeSelector();
         foreach (var hexProperty in HexProperties)
@@ -33,10 +38,13 @@ public partial class HexEditorView : Control
         }
         OnHexTypeSelectedHandler(HexTypeSelector.Selected);
         MeshList.ItemSelected += OnMeshSelectedHandler;
+        CurrentLayer.ValueChanged += OnLayerChangedHandler;
+        CurrentLayer.Value = previousLayer;
     }
-    
+
     public new void Dispose()
-    {
+    {        
+        CurrentLayer.ValueChanged -= OnLayerChangedHandler;
         HexTypeSelector.ItemSelected -= OnHexTypeSelectedHandler;
         MeshList.ItemSelected -= OnMeshSelectedHandler;
         HexTypeSelector.Clear();
@@ -68,6 +76,11 @@ public partial class HexEditorView : Control
     {
         MeshList.Select(libraryIndex);
         OnMeshSelectedHandler(libraryIndex);
+    }
+
+    private void OnLayerChangedHandler(double value)
+    {
+        OnLayerChanged?.Invoke((int)value);
     }
 
     private void OnMeshSelectedHandler(long index)
