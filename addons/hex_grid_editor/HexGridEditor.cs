@@ -29,12 +29,13 @@ public partial class HexGridEditor : EditorPlugin
 	private bool pluginEnabled;
 	
 	private float CellSize => hexGridMap.CellSize;
+	private Vector3 CurrentLayerOffset => currentLayer * Vector3.Up * hexGridMap.LayerHeight;
 
 	#region EditorPlugin overrides
 
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
-		inputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
+		inputHandler.UpdateCursorPosition(hexGridMap.Position + CurrentLayerOffset, viewportCamera, @event as InputEventMouseMotion);
 		UpdateIndicatorMesh(indicatorRadius);
 		UpdateChunkMesh();
 		UpdateFovMesh(fovRadius);
@@ -74,7 +75,7 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap.OnPropertyChange += Reset;
 		hexGridMap.Initialize();
 		
-		inputHandler = new InputHandler(hexGridMap.Position, CellSize);
+		inputHandler = new InputHandler(CellSize);
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
 		
@@ -82,8 +83,10 @@ public partial class HexGridEditor : EditorPlugin
 
 		view.HexEditor.OnHexTypeSelected += OnHexTypeSelectedHandler;
 		view.HexEditor.MapResetButton.Confirmed += OnClearMapRequestedHandler;
+		view.HexEditor.LayerResetButton.Confirmed += OnClearLayerRequestedHandler;
 		view.HexEditor.OnMeshSelected += OnMeshSelectedHandler;
-		view.HexEditor.Initialize();
+		view.HexEditor.OnLayerChanged += OnLayerChangedHandler;
+		view.HexEditor.Initialize(currentLayer);
 
 		view.DebugFov.OnFovDisplayRequested += OnFovDisplayRequestedHandler;
 		view.DebugFov.Initialize(fovEnabled, fovRadius);
@@ -130,8 +133,10 @@ public partial class HexGridEditor : EditorPlugin
 		view.DebugFov.Dispose();
 		
 		view.HexEditor.MapResetButton.Confirmed -= OnClearMapRequestedHandler;
+		view.HexEditor.LayerResetButton.Confirmed -= OnClearLayerRequestedHandler;
 		view.HexEditor.OnMeshSelected -= OnMeshSelectedHandler;
 		view.HexEditor.OnHexTypeSelected -= OnHexTypeSelectedHandler;
+		view.HexEditor.OnLayerChanged -= OnLayerChangedHandler;
 		view.HexEditor.UpdateList(null);
 		view.HexEditor.Dispose();
 		
@@ -142,18 +147,6 @@ public partial class HexGridEditor : EditorPlugin
 	{
 		Disable();
 		Enable(hexGridMap);
-	}
-	
-	private void OnPipetteRequestedHandler()
-	{
-		var hex = hexGridMap.Storage.Get(inputHandler.HexPosition);
-		if (hex == null) return;
-		view.TabContainer.CurrentTab = 0;
-		view.HexEditor.SetCurrentHexType(hex.Type);
-		selectedPropertiesView.SetFrom(hex);
-		view.HexEditor.SelectMesh(hex.MeshData.MeshIndex);
-		rotationAngle = -hex.MeshData.Rotation;
-		UpdateSelectedHexMesh();
 	}
 
 	private void OnTabChangedHandler(long index)
@@ -166,9 +159,21 @@ public partial class HexGridEditor : EditorPlugin
 
 	#region Hex editing
 
+	private int currentLayer;
+
+	private void OnLayerChangedHandler(int layer)
+	{
+		currentLayer = layer;
+	}
+	
 	private void OnClearMapRequestedHandler()
 	{
-		hexGridMap.ResetMap();
+		hexGridMap.ClearMap();
+	}
+	
+	private void OnClearLayerRequestedHandler()
+	{
+		hexGridMap.ClearLayer(currentLayer);
 	}
 	
 	private HexType selectedHexType;
@@ -233,16 +238,14 @@ public partial class HexGridEditor : EditorPlugin
 	private void OnAddHexRequestedHandler()
 	{
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, -rotationAngle), selectedHexType);
+		var spawnedHex = hexGridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, -rotationAngle), selectedHexType, currentLayer);
 		selectedPropertiesView.Apply(spawnedHex);
-		hexGridMap.Storage.Save();
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!isSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		hexGridMap.RemoveHex(inputHandler.HexPosition);
-		hexGridMap.Storage.Save();
+		hexGridMap.RemoveHex(inputHandler.HexPosition, currentLayer);
 	}
 	
 	private void OnRotateRequestedHandler()
@@ -253,8 +256,21 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void UpdateSelectedHexMesh()
 	{
-		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid,
-			new Transform3D(Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad(-rotationAngle)), inputHandler.HexCenter));
+		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, 
+			new Transform3D(Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad(-rotationAngle)), 
+			inputHandler.HexCenter + CurrentLayerOffset));
+	}
+	
+	private void OnPipetteRequestedHandler()
+	{
+		var hex = hexGridMap.GetHex(inputHandler.HexPosition, currentLayer);
+		if (hex == null) return;
+		view.TabContainer.CurrentTab = 0;
+		view.HexEditor.SetCurrentHexType(hex.Type);
+		selectedPropertiesView.SetFrom(hex);
+		view.HexEditor.SelectMesh(hex.MeshData.MeshIndex);
+		rotationAngle = -hex.MeshData.Rotation;
+		UpdateSelectedHexMesh();
 	}
 
 	#endregion
@@ -276,7 +292,7 @@ public partial class HexGridEditor : EditorPlugin
 
 	private void UpdateIndicatorMesh(int radius)
 	{
-		indicatorMesh?.UpdateMesh(inputHandler.HexPosition.ToWorldPosition(CellSize));
+		indicatorMesh?.UpdateMesh(inputHandler.HexPosition.ToWorldPosition(CellSize) + CurrentLayerOffset);
 		
 		if (radius > 0) return;
 		
@@ -309,8 +325,9 @@ public partial class HexGridEditor : EditorPlugin
 			return;
 		}
 		
-		fovMesh ??= new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, fovMaterial, Vector3.Up * 0.01f);
-		fovMesh.UpdateMesh(hexGridMap.GetVisiblePositions(inputHandler.HexPosition, radius));
+		fovMesh ??= new PrimitiveHexGridMesh(hexGridMap.GetWorld3D(), CellSize, fovMaterial, 
+			Vector3.Up * 0.01f + CurrentLayerOffset);
+		fovMesh.UpdateMesh(hexGridMap.GetVisiblePositions(inputHandler.HexPosition, radius, currentLayer));
 	}
 
 	#endregion
@@ -339,7 +356,8 @@ public partial class HexGridEditor : EditorPlugin
 	private void UpdateChunkMesh()
 	{
 		var hexesChunkPosition = inputHandler.HexPosition.ToChunkPosition(hexGridMap.ChunkSize);
-		chunkMesh?.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize).ToWorldPosition(CellSize));
+		chunkMesh?.UpdateMesh(hexesChunkPosition.FromChunkPosition(hexGridMap.ChunkSize).ToWorldPosition(CellSize) +
+		                      CurrentLayerOffset);
 	}
 
 	#endregion

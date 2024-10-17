@@ -14,13 +14,15 @@ public class HexMapChunkStorage
     private readonly World3D scenario;
     private Dictionary<int, CubeChunk> map;
     private int chunkSize;
+    private float verticalOffset;
 
-    public HexMapChunkStorage(int chunkSize, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
+    public HexMapChunkStorage(int chunkSize, float verticalOffset, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
         this.chunkSize = chunkSize;
         map = new Dictionary<int, CubeChunk>();
         this.libraries = libraries;
         this.scenario = scenario;
+        this.verticalOffset = verticalOffset;
     }
 
     public bool IsUpToDate(int chunkSize, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
@@ -34,7 +36,7 @@ public class HexMapChunkStorage
         var chunk = Get(chunkPosition);
         if (chunk == null)
         {
-            chunk = new CubeChunk(chunkPosition, chunkSize);
+            chunk = new CubeChunk(chunkPosition, chunkSize, verticalOffset);
             AddChunk(chunk);
         }
         chunk.Add(hex);

@@ -7,7 +7,6 @@ using scripts.hex_grid.vector;
 
 public class InputHandler
 {
-    private readonly Vector3 planePosition;
     private readonly float cellSize;
     
     public bool IsAddHexHeld { get; private set; }
@@ -23,13 +22,12 @@ public class InputHandler
     public event Action OnAddHexRequested;
     public event Action OnRemoveHexRequest;
     
-    public InputHandler(Vector3 planePosition, float cellSize)
+    public InputHandler(float cellSize)
     {
-        this.planePosition = planePosition;
         this.cellSize = cellSize;
     }
 
-    public void UpdateCursorPosition(Camera3D viewportCamera, InputEventMouseMotion motion)
+    public void UpdateCursorPosition(Vector3 planePosition, Camera3D viewportCamera, InputEventMouseMotion motion)
     {
         if (motion == null) return;
         var targetPlane = new Plane(Vector3.Up, planePosition);

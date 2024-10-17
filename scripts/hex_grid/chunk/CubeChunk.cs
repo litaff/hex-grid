@@ -8,6 +8,7 @@ using vector;
 
 public class CubeChunk
 {
+    private float verticalOffset;
     public CubeHexVector Position { get; private set; }
     public int Size { get; private set; }
     
@@ -16,8 +17,9 @@ public class CubeChunk
     
     public bool IsEmpty => hexes.Count == 0;
     
-    public CubeChunk(CubeHexVector position, int size)
+    public CubeChunk(CubeHexVector position, int size, float verticalOffset)
     {
+        this.verticalOffset = verticalOffset;
         Position = position;
         Size = size;
     }
@@ -55,7 +57,7 @@ public class CubeChunk
             var transforms = hexRotations.Zip(relativeWorldHexPositions, (rotation, position) => 
                 new Transform3D(Basis.Identity.Rotated(Vector3.Up, rotation), position)).ToList();
             var chunkWorldPosition = Position.FromChunkPosition(Size).ToWorldPosition(hexSize);
-            var meshInstance = new MultiMeshInstance(mesh, chunkWorldPosition, transforms, scenario);
+            var meshInstance = new MultiMeshInstance(mesh, chunkWorldPosition + Vector3.Up * verticalOffset, transforms, scenario);
             meshInstances.Add(meshInstance);
         }
     }
