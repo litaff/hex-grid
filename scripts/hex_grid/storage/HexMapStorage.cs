@@ -33,8 +33,9 @@ public class HexMapStorage
         this.cellSize = cellSize > 0 ? cellSize : this.cellSize;
         foreach (var hex in map.Values)
         {
-            hex.SetSize(cellSize);
+            hex.SetSize(this.cellSize);
         }
+        mapData?.Serialize();
     }
     
     public CubeHex Add(CubeHexVector position, HexMeshData meshData, HexType type)
