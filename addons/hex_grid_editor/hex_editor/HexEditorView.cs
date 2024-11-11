@@ -1,9 +1,9 @@
-namespace hex_grid.addons.hex_grid_editor.views;
+namespace hex_grid.addons.hex_grid_editor.hex_editor;
 
 using System;
 using Godot;
 using Godot.Collections;
-using scripts.hex_grid;
+using hex_grid.scripts.hex_grid;
 using scripts.ui;
 
 [Tool]

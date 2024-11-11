@@ -1,10 +1,10 @@
-namespace hex_grid.addons.hex_grid_editor.views;
+namespace hex_grid.addons.hex_grid_editor.editor_grid_indicator;
 
 using System;
 using Godot;
 
 [Tool]
-public partial class IndicatorGridView : Control
+public partial class EditorGridIndicatorView : Control
 {
     [Export]
     private SpinBox indicatorRadius;

@@ -2,10 +2,11 @@ namespace hex_grid.addons.hex_grid_editor;
 
 using System;
 using Godot;
+using hex_editor;
 using scripts.hex_grid;
 using scripts.hex_grid.vector;
 
-public class InputHandler
+public class HexGridEditorInputHandler : IHexEditorInputProvider
 {
     private readonly float cellSize;
     
@@ -24,7 +25,7 @@ public class InputHandler
     public event Action OnAddHexRequested;
     public event Action OnRemoveHexRequest;
     
-    public InputHandler(float cellSize)
+    public HexGridEditorInputHandler(float cellSize)
     {
         this.cellSize = cellSize;
     }

@@ -1,26 +1,26 @@
 [gd_scene load_steps=9 format=3 uid="uid://cvyi07qp410ei"]
 
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexGridEditorView.cs" id="1_ma58e"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/HexEditorView.cs" id="2_occu0"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
 [ext_resource type="Script" path="res://scripts/ui/DoubleConfirmButton.cs" id="3_ebrcs"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/BaseHexPropertiesView.cs" id="3_nu4c1"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/AccessibleHexPropertiesView.cs" id="4_683oo"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/DebugFovView.cs" id="5_q4d41"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/IndicatorGridView.cs" id="6_stx68"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/views/ChunkDisplayView.cs" id="7_6pfc8"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/BaseHexPropertiesView.cs" id="4_hlrgs"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/AccessibleHexPropertiesView.cs" id="5_ejbu4"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
 
-[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "DebugFov", "HexEditor", "IndicatorGrid", "ChunkDisplay")]
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "FovDisplay", "HexEditor", "EditorGridIndicator", "ChunkDisplay")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ma58e")
+script = ExtResource("1_41alb")
 TabContainer = NodePath("TabContainer")
-DebugFov = NodePath("TabContainer/Settings/VBoxContainer/FovDebug")
+FovDisplay = NodePath("TabContainer/Settings/VBoxContainer/FovDebug")
 HexEditor = NodePath("TabContainer/Hexes")
-IndicatorGrid = NodePath("TabContainer/Settings/VBoxContainer/MarginContainer")
+EditorGridIndicator = NodePath("TabContainer/Settings/VBoxContainer/MarginContainer")
 ChunkDisplay = NodePath("TabContainer/Settings/VBoxContainer/DisplayChunks")
 
 [node name="TabContainer" type="TabContainer" parent="."]
@@ -34,7 +34,7 @@ grow_vertical = 2
 [node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "LayerResetButton", "MapResetButton", "HexTypeSelector", "CurrentLayer")]
 layout_mode = 2
 horizontal_scroll_mode = 0
-script = ExtResource("2_occu0")
+script = ExtResource("2_n44jm")
 MeshList = NodePath("HexEditorContainer/MeshList")
 LayerResetButton = NodePath("HexEditorContainer/HBoxContainer/LayerClearButton")
 MapResetButton = NodePath("HexEditorContainer/HBoxContainer/MapClearButton")
@@ -66,13 +66,11 @@ size_flags_horizontal = 3
 text = "Clear map"
 script = ExtResource("3_ebrcs")
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer" node_paths=PackedStringArray("indicatorRadius")]
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_right = 2
-script = ExtResource("6_stx68")
-indicatorRadius = NodePath("../../../Settings/VBoxContainer/MarginContainer/IndicatorRadius/SpinBox")
 
 [node name="CurrentLayer" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/MarginContainer"]
 layout_mode = 2
@@ -96,7 +94,7 @@ layout_mode = 2
 [node name="BaseHexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
-script = ExtResource("3_nu4c1")
+script = ExtResource("4_hlrgs")
 IsOccluderButton = NodePath("IsOccluderButton")
 
 [node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/BaseHexProperties"]
@@ -106,7 +104,7 @@ text = "IsOccluder"
 [node name="AccessibleHexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer" node_paths=PackedStringArray("IsOccluderButton")]
 visible = false
 layout_mode = 2
-script = ExtResource("4_683oo")
+script = ExtResource("5_ejbu4")
 IsOccluderButton = NodePath("IsOccluderButton")
 
 [node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties"]
@@ -130,7 +128,7 @@ size_flags_vertical = 3
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_right = 2
-script = ExtResource("6_stx68")
+script = ExtResource("6_wblny")
 indicatorRadius = NodePath("IndicatorRadius/SpinBox")
 
 [node name="IndicatorRadius" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer/MarginContainer"]
@@ -151,7 +149,7 @@ layout_mode = 2
 
 [node name="DisplayChunks" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("displayChunkButton")]
 layout_mode = 2
-script = ExtResource("7_6pfc8")
+script = ExtResource("7_yiypl")
 displayChunkButton = NodePath("CheckButton")
 
 [node name="CheckButton" type="CheckButton" parent="TabContainer/Settings/VBoxContainer/DisplayChunks"]
@@ -164,7 +162,7 @@ layout_mode = 2
 
 [node name="FovDebug" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("enableFovButton", "fovRadius")]
 layout_mode = 2
-script = ExtResource("5_q4d41")
+script = ExtResource("8_sxwwd")
 enableFovButton = NodePath("VBoxContainer/CheckButton")
 fovRadius = NodePath("VBoxContainer/MarginContainer/IndicatorSize/SpinBox")
 
@@ -175,7 +173,7 @@ size_flags_horizontal = 3
 [node name="CheckButton" type="CheckButton" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Debug field of view"
+text = "Display field of view"
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Settings/VBoxContainer/FovDebug/VBoxContainer"]
 layout_mode = 2

@@ -1,10 +1,10 @@
-namespace hex_grid.addons.hex_grid_editor.views;
+namespace hex_grid.addons.hex_grid_editor.fov_display;
 
 using System;
 using Godot;
 
 [Tool]
-public partial class DebugFovView : Control
+public partial class FovDisplayView : Control
 {
     [Export]
     private CheckButton enableFovButton;

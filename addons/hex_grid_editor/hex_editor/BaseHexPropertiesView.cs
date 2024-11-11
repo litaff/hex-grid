@@ -1,4 +1,4 @@
-namespace hex_grid.addons.hex_grid_editor.views;
+namespace hex_grid.addons.hex_grid_editor.hex_editor;
 
 using Godot;
 using hex_grid.scripts.hex_grid.hex;

@@ -3,7 +3,7 @@ namespace hex_grid.scripts.hex_grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using chunk;
+using fov;
 using Godot;
 using hex;
 using layer;
@@ -14,7 +14,7 @@ using vector;
 [Tool]
 #endif
 [GlobalClass]
-public partial class HexGridMap : Node3D
+public partial class HexGridMap : Node3D, IFovProvider
 {
     [Export]
     public Godot.Collections.Dictionary<int, HexMapData> MapData { get; private set; }
@@ -168,9 +168,9 @@ public partial class HexGridMap : Node3D
         }
     }
 
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, object layerIndex)
+    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, int layerIndex)
     {
-        return Layers.TryGetValue((int) layerIndex, out var layer) ? layer.GetVisiblePositions(origin, radius) : [];
+        return Layers.TryGetValue(layerIndex, out var layer) ? layer.GetVisiblePositions(origin, radius) : [];
     }
 
     private void CleanUpData(int layerIndex, LayerStorage layer)

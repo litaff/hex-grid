@@ -1,4 +1,4 @@
-namespace hex_grid.addons.hex_grid_editor.views;
+namespace hex_grid.addons.hex_grid_editor.chunk_display;
 
 using System;
 using Godot;
