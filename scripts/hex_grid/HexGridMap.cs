@@ -25,7 +25,7 @@ public partial class HexGridMap : Node3D, IFovProvider
         {
             cellSize = value;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            UpdateCellSize();
+            hexGridData = new HexGridData(CellSize, ChunkSize);
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
         } 
@@ -37,6 +37,7 @@ public partial class HexGridMap : Node3D, IFovProvider
         {
             chunkSize = value > 0 ? value : 1;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
+            hexGridData = new HexGridData(CellSize, ChunkSize);
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
         } 
@@ -55,6 +56,7 @@ public partial class HexGridMap : Node3D, IFovProvider
     [Export]
     public Godot.Collections.Dictionary<HexType, MeshLibrary> MeshLibraries { get; private set; }
 
+    private HexGridData hexGridData;
     private float cellSize;
     private int chunkSize;
     private float layerHeight;
@@ -184,8 +186,8 @@ public partial class HexGridMap : Node3D, IFovProvider
     private LayerStorage CreateLayer(int layerIndex, HexMapData data)
     {
         var layerStorage = new LayerStorage();
-        layerStorage.InitializeHexStorage(CellSize, data);
-        layerStorage.InitializeChunkStorage(chunkSize, layerIndex * layerHeight, MeshLibraries, GetWorld3D());
+        layerStorage.InitializeHexStorage(data);
+        layerStorage.InitializeChunkStorage(layerIndex * layerHeight, MeshLibraries, GetWorld3D());
         return layerStorage;
     }
 
@@ -193,15 +195,7 @@ public partial class HexGridMap : Node3D, IFovProvider
     {
         foreach (var layer in Layers)
         {
-            layer.Value.InitializeChunkStorage(ChunkSize, layer.Key * layerHeight, MeshLibraries, GetWorld3D());
-        }
-    }
-
-    private void UpdateCellSize()
-    {
-        foreach (var layer in Layers.Values)
-        {
-            layer.UpdateCellSize(CellSize);
+            layer.Value.InitializeChunkStorage(layer.Key * layerHeight, MeshLibraries, GetWorld3D());
         }
     }
 }

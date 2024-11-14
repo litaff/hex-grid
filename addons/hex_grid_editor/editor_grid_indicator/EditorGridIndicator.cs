@@ -5,7 +5,7 @@ using mesh;
 using provider;
 
 public class EditorGridIndicator(
-    GridMapMeshData meshData, 
+    World3D world, 
     EditorGridIndicatorView view, 
     ILayerDataProvider layerDataProvider, 
     IEditorHexPositionProvider inputProvider)
@@ -43,7 +43,7 @@ public class EditorGridIndicator(
         indicatorRadius = radius > 0 ? radius : indicatorRadius;
 		
         indicatorMesh?.Dispose();
-        indicatorMesh = new WireHexGridMesh(new HexGridMeshData(meshData, lineMaterial), radius, true);
+        indicatorMesh = new WireHexGridMesh(new HexGridMeshData(world, lineMaterial), radius, true);
 		
         UpdateIndicatorMesh(inputProvider.HexCenter, radius);
     }

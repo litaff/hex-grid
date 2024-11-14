@@ -2,8 +2,8 @@ namespace hex_grid.addons.hex_grid_editor.mesh;
 
 using Godot;
 
-public struct HexGridMeshData(GridMapMeshData gridMapMeshData, Material material)
+public struct HexGridMeshData(World3D world, Material material)
 {
-    public GridMapMeshData GridMapMeshData { get; } = gridMapMeshData;
+    public World3D World { get; } = world;
     public Material Material { get; } = material;
 }

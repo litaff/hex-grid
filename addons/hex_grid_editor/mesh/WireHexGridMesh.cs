@@ -18,10 +18,10 @@ public class WireHexGridMesh
 		gridInstanceRid = RenderingServer.InstanceCreate();
 		gridMeshRid = RenderingServer.MeshCreate();
 		RenderingServer.InstanceSetBase(gridInstanceRid, gridMeshRid);
-		RenderingServer.InstanceSetScenario(gridInstanceRid, meshData.GridMapMeshData.World.Scenario);
+		RenderingServer.InstanceSetScenario(gridInstanceRid, meshData.World.Scenario);
 		RenderingServer.InstanceSetTransform(gridInstanceRid, new Transform3D(Basis.Identity, Vector3.Zero));
 		RenderingServer.MeshAddSurfaceFromArrays(gridMeshRid, RenderingServer.PrimitiveType.Lines,
-			GetGridMeshData(meshData.GridMapMeshData.CellSize, radius, useAlphaFalloff));
+			GetGridMeshData(radius, useAlphaFalloff));
 		RenderingServer.MeshSurfaceSetMaterial(gridMeshRid, 0, meshData.Material.GetRid());
 	}
 
@@ -37,7 +37,7 @@ public class WireHexGridMesh
 		gridMeshRid.FreeRid();
 	}
 
-	private Array GetGridMeshData(float cellSize, int radius, bool useAlphaFalloff)
+	private Array GetGridMeshData(int radius, bool useAlphaFalloff)
 	{
 		var meshData = new Array();
 		meshData.Resize((int)RenderingServer.ArrayType.Max);
@@ -48,41 +48,41 @@ public class WireHexGridMesh
 
 		foreach (var hex in hexes)
 		{
-			var vertices = hex.GetHexVertices(cellSize);
+			var vertices = hex.GetHexVertices();
 			meshVertices.Add([vertices[0], vertices[1]]);
 			meshColors.Add([
-				GetVertexColor(vertices[0], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[1], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[0], radius, useAlphaFalloff),
+				GetVertexColor(vertices[1], radius, useAlphaFalloff)
 			]);
 			
 			meshVertices.Add([vertices[1], vertices[2]]);
 			meshColors.Add([
-				GetVertexColor(vertices[1], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[2], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[1], radius, useAlphaFalloff),
+				GetVertexColor(vertices[2], radius, useAlphaFalloff)
 			]);
 			
 			meshVertices.Add([vertices[2], vertices[3]]);
 			meshColors.Add([
-				GetVertexColor(vertices[2], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[3], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[2], radius, useAlphaFalloff),
+				GetVertexColor(vertices[3], radius, useAlphaFalloff)
 			]);
 			
 			meshVertices.Add([vertices[3], vertices[4]]);
 			meshColors.Add([
-				GetVertexColor(vertices[3], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[4], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[3], radius, useAlphaFalloff),
+				GetVertexColor(vertices[4], radius, useAlphaFalloff)
 			]);
 			
 			meshVertices.Add([vertices[4], vertices[5]]);
 			meshColors.Add([
-				GetVertexColor(vertices[4], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[5], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[4], radius, useAlphaFalloff),
+				GetVertexColor(vertices[5], radius, useAlphaFalloff)
 			]);
 			
 			meshVertices.Add([vertices[5], vertices[0]]);
 			meshColors.Add([
-				GetVertexColor(vertices[5], cellSize, radius, useAlphaFalloff),
-				GetVertexColor(vertices[0], cellSize, radius, useAlphaFalloff)
+				GetVertexColor(vertices[5], radius, useAlphaFalloff),
+				GetVertexColor(vertices[0], radius, useAlphaFalloff)
 			]);
 		}
 			
@@ -92,11 +92,11 @@ public class WireHexGridMesh
 		return meshData;
 	}
 
-	private Color GetVertexColor(Vector3 vertex, float cellSize, int radius, bool useAlphaFalloff)
+	private Color GetVertexColor(Vector3 vertex, int radius, bool useAlphaFalloff)
 	{
 		return new Color(1f, 1f, 1f, 
 			useAlphaFalloff ?
-				Mathf.Pow(Mathf.Max(0, 1f - vertex.DistanceTo(CubeHexVector.Zero.ToWorldPosition(cellSize)) / radius), 2) :
+				Mathf.Pow(Mathf.Max(0, 1f - vertex.DistanceTo(CubeHexVector.Zero.ToWorldPosition()) / radius), 2) :
 				1f);
 	}
 }

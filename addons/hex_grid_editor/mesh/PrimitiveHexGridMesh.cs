@@ -4,25 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using hex_grid.scripts.hex_grid;
 using hex_grid.scripts.hex_grid.vector;
 using scripts.utils;
 
 public class PrimitiveHexGridMesh
 {
-    private readonly float cellSize;
     private readonly Material defaultMaterial;
     private Rid meshRid;
     private Rid instanceRid;
 
     public PrimitiveHexGridMesh(HexGridMeshData meshData, Vector3 offset)
     {
-        cellSize = meshData.GridMapMeshData.CellSize;
         defaultMaterial = meshData.Material;
         instanceRid = RenderingServer.InstanceCreate();
         meshRid = RenderingServer.MeshCreate();
         RenderingServer.InstanceSetBase(instanceRid, meshRid);
-        RenderingServer.InstanceSetScenario(instanceRid, meshData.GridMapMeshData.World.Scenario);
+        RenderingServer.InstanceSetScenario(instanceRid, meshData.World.Scenario);
         RenderingServer.InstanceSetTransform(instanceRid, new Transform3D(Basis.Identity, offset));
     }
     
@@ -33,7 +30,7 @@ public class PrimitiveHexGridMesh
         var meshVertices = new List<Vector3[]>();
         foreach (var position in positions)
         {
-            var vertices = position.GetHexVertices(cellSize);
+            var vertices = position.GetHexVertices();
             meshVertices.Add([vertices[0], vertices[1], vertices[2]]);
             meshVertices.Add([vertices[2], vertices[3], vertices[4]]);
             meshVertices.Add([vertices[4], vertices[5], vertices[0]]);

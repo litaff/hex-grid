@@ -3,13 +3,10 @@ namespace hex_grid.addons.hex_grid_editor;
 using System;
 using Godot;
 using hex_editor;
-using scripts.hex_grid;
 using scripts.hex_grid.vector;
 
 public class HexGridEditorInputHandler : IHexEditorInputProvider
 {
-    private readonly float cellSize;
-    
     public bool IsAddHexHeld { get; private set; }
     public bool IsRemoveHexHeld { get; private set; }
     public bool IsDisplayAllLayersHeld { get; private set; }
@@ -24,11 +21,6 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
     public event Action<Vector3> OnHexCenterUpdated;
     public event Action OnAddHexRequested;
     public event Action OnRemoveHexRequest;
-    
-    public HexGridEditorInputHandler(float cellSize)
-    {
-        this.cellSize = cellSize;
-    }
 
     public void UpdateCursorPosition(Vector3 planePosition, Camera3D viewportCamera, InputEventMouseMotion motion)
     {
@@ -46,8 +38,8 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
 
     private void UpdateCurrentHex()
     {
-        HexPosition = CursorPosition.ToHexPosition(cellSize);
-        var hexCenter = HexPosition.ToWorldPosition(cellSize);
+        HexPosition = CursorPosition.ToHexPosition();
+        var hexCenter = HexPosition.ToWorldPosition();
         if (hexCenter == HexCenter) return;
         HexCenter = hexCenter;
         OnHexCenterUpdated?.Invoke(HexCenter);

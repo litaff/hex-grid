@@ -4,10 +4,10 @@ using Godot;
 using mesh;
 using provider;
 using scripts.hex_grid;
+using scripts.hex_grid.vector;
 
 public class ChunkDisplay(
-    GridMapMeshData meshData,
-    int chunkSize,
+    World3D world,
     ChunkDisplayView view,
     ILayerDataProvider layerDataProvider,
     IEditorHexPositionProvider inputProvider)
@@ -17,17 +17,6 @@ public class ChunkDisplay(
     private WireHexGridMesh chunkMesh;
     
     private bool chunkEnabled;
-    
-    public int ChunkSize
-    {
-        get => chunkSize;
-        set
-        {
-            if (value <= 0) return;
-            chunkSize = value;
-            UpdateChunkMesh();
-        }
-    }
 
     public void Enable()
     {
@@ -51,7 +40,7 @@ public class ChunkDisplay(
 		
         if (enabled)
         {
-            chunkMesh ??= new WireHexGridMesh(new HexGridMeshData(meshData, chunkMaterial), ChunkSize, false);
+            chunkMesh ??= new WireHexGridMesh(new HexGridMeshData(world, chunkMaterial), HexGridData.Instance.ChunkSize, false);
             UpdateChunkMesh();
         }
         else
@@ -68,9 +57,9 @@ public class ChunkDisplay(
 
     private void UpdateChunkMesh()
     {
-        var hexesChunkPosition = inputProvider?.HexPosition.ToChunkPosition(ChunkSize);
+        var hexesChunkPosition = inputProvider?.HexPosition.ToChunkPosition();
         if (hexesChunkPosition == null) return;
-        chunkMesh?.UpdateMesh(hexesChunkPosition.Value.FromChunkPosition(ChunkSize).ToWorldPosition(meshData.CellSize) +
+        chunkMesh?.UpdateMesh(hexesChunkPosition.Value.FromChunkPosition().ToWorldPosition() +
                               layerDataProvider.CurrentLayerOffset);
     }
 }

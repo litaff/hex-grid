@@ -1,8 +1,6 @@
 namespace hex_grid.scripts.hex_grid.layer;
 
-using System;
 using System.Linq;
-using chunk;
 using Godot;
 using Godot.Collections;
 using hex;
@@ -11,30 +9,26 @@ using vector;
 
 public class LayerStorage
 {
-    private float cellSize;
     private HexMapData mapData;
     private HexMapStorage storage;
 
-    private int chunkSize;
     private float layerOffset;
     private Dictionary<HexType, MeshLibrary> libraries;
     private World3D scenario;
     private HexMapChunkStorage chunkStorage;
 
-    public void InitializeHexStorage(float cellSize, HexMapData data)
+    public void InitializeHexStorage( HexMapData data)
     {
-        storage ??= new HexMapStorage(cellSize, data);
+        storage ??= new HexMapStorage(data);
         mapData = data;
-        this.cellSize = cellSize;
     }
     
-    public void InitializeChunkStorage(int chunkSize, float layerOffset, Dictionary<HexType, MeshLibrary> libraries, 
+    public void InitializeChunkStorage(float layerOffset, Dictionary<HexType, MeshLibrary> libraries, 
         World3D scenario)
     {
         chunkStorage?.Dispose();
-        chunkStorage = new HexMapChunkStorage(chunkSize, layerOffset, libraries, scenario);
+        chunkStorage = new HexMapChunkStorage(layerOffset, libraries, scenario);
         
-        this.chunkSize = chunkSize;
         this.layerOffset = layerOffset;
         this.libraries = libraries;
         this.scenario = scenario;
@@ -45,12 +39,6 @@ public class LayerStorage
         {
             chunkStorage.AssignHex(hex);
         }
-    }
-    
-    public void UpdateCellSize(float cellSize)
-    {
-        this.cellSize = cellSize;
-        storage.UpdateCellSize(cellSize);
     }
 
     public CubeHex GetHex(CubeHexVector hexPosition)
@@ -92,8 +80,8 @@ public class LayerStorage
     {
         storage.Clear();
         storage = null;
-        InitializeHexStorage(cellSize, mapData);
-        InitializeChunkStorage(chunkSize, layerOffset, libraries, scenario);
+        InitializeHexStorage(mapData);
+        InitializeChunkStorage(layerOffset, libraries, scenario);
     }
 
     public bool IsEmpty()

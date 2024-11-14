@@ -10,13 +10,11 @@ using vector;
 public class HexMapStorage
 {
     private readonly HexMapData mapData;
-    private float cellSize;
     private Dictionary<int, CubeHex> map;
 
-    public HexMapStorage(float cellSize, HexMapData mapData)
+    public HexMapStorage(HexMapData mapData)
     {
         this.mapData = mapData;
-        this.cellSize = cellSize;
         if (mapData != null)
         {
             
@@ -28,22 +26,12 @@ public class HexMapStorage
         map = new Dictionary<int, CubeHex>();
     }
     
-    public void UpdateCellSize(float cellSize)
-    {
-        this.cellSize = cellSize > 0 ? cellSize : this.cellSize;
-        foreach (var hex in map.Values)
-        {
-            hex.SetSize(this.cellSize);
-        }
-        mapData?.Serialize();
-    }
-    
     public CubeHex Add(CubeHexVector position, HexMeshData meshData, HexType type)
     {
         var hex = type switch
         {
-            HexType.Accessible => new AccessibleHex(position.Q, position.R, cellSize, meshData),
-            HexType.Base => new CubeHex(position.Q, position.R, cellSize, meshData),
+            HexType.Accessible => new AccessibleHex(position.Q, position.R, meshData),
+            HexType.Base => new CubeHex(position.Q, position.R, meshData),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
         Add(hex);

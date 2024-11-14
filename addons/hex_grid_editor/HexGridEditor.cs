@@ -6,7 +6,6 @@ using editor_grid_indicator;
 using fov_display;
 using Godot;
 using hex_editor;
-using mesh;
 using HexGridMap = scripts.hex_grid.HexGridMap;
 
 [Tool]
@@ -24,11 +23,8 @@ public partial class HexGridEditor : EditorPlugin
 	private EditorGridIndicator gridIndicator;
 	private ChunkDisplay chunkDisplay;
 	private FovDisplay fovDisplay;
-	private GridMapMeshData gridMapMeshData;
 	
 	private bool pluginEnabled;
-
-	private float CellSize => hexGridMap.CellSize;
 
 	#region EditorPlugin overrides
 
@@ -73,16 +69,14 @@ public partial class HexGridEditor : EditorPlugin
 		hexGridMap = map;
 		hexGridMap.Initialize();
 		
-		hexGridEditorInputHandler ??= new HexGridEditorInputHandler(CellSize);
+		hexGridEditorInputHandler ??= new HexGridEditorInputHandler();
 		
-		gridMapMeshData.CellSize = CellSize;
-		gridMapMeshData.World = hexGridMap.GetWorld3D();
+		var world = hexGridMap.GetWorld3D();
 		
 		hexEditor ??= new HexEditor(hexGridMap, view.HexEditor, hexGridEditorInputHandler);
-		fovDisplay ??= new FovDisplay(gridMapMeshData, view.FovDisplay, hexGridMap, hexEditor, hexGridEditorInputHandler);
-		gridIndicator ??= new EditorGridIndicator(gridMapMeshData, view.EditorGridIndicator, hexEditor, hexGridEditorInputHandler);
-		chunkDisplay ??= new ChunkDisplay(gridMapMeshData, hexGridMap.ChunkSize, view.ChunkDisplay, hexEditor, hexGridEditorInputHandler);
-		chunkDisplay.ChunkSize = hexGridMap.ChunkSize;
+		fovDisplay ??= new FovDisplay(world, view.FovDisplay, hexGridMap, hexEditor, hexGridEditorInputHandler);
+		gridIndicator ??= new EditorGridIndicator(world, view.EditorGridIndicator, hexEditor, hexGridEditorInputHandler);
+		chunkDisplay ??= new ChunkDisplay(world, view.ChunkDisplay, hexEditor, hexGridEditorInputHandler);
 
 		hexEditor.Enable();
 		fovDisplay.Enable();

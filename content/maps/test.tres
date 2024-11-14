@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="HexMapData" load_steps=2 format=3 uid="uid://by62ip7m3qmvp"]
-
-[ext_resource type="Script" path="res://scripts/hex_grid/storage/HexMapData.cs" id="1_kfgsx"]
-
-[resource]
-script = ExtResource("1_kfgsx")
-SerializedMap = ""

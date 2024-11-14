@@ -10,7 +10,6 @@ public class CubeChunk
 {
     private float verticalOffset;
     public CubeHexVector Position { get; private set; }
-    public int Size { get; private set; }
     
     private List<MultiMeshInstance> meshInstances = new();
     private List<CubeHex> hexes = new();
@@ -18,11 +17,10 @@ public class CubeChunk
     public bool IsEmpty => hexes.Count == 0;
     public IReadOnlyList<CubeHex> AssignedHexes => hexes;
     
-    public CubeChunk(CubeHexVector position, int size, float verticalOffset)
+    public CubeChunk(CubeHexVector position, float verticalOffset)
     {
         this.verticalOffset = verticalOffset;
         Position = position;
-        Size = size;
     }
     
     public void Add(CubeHex hex)
@@ -47,17 +45,16 @@ public class CubeChunk
         var sortedHexes = SortHexes();
         foreach (var hexGroup in sortedHexes)
         {
-            var hexSize = hexGroup.Value.First().Size;
             var mesh = libraries[hexGroup.Key.Item1]?.GetItemMesh(hexGroup.Key.Item2);
             if (mesh == null) continue;
             var hexRotations = hexGroup.Value.Select(hex => hex.MeshData.Radians).ToList();
             var hexPositions = hexGroup.Value.Select(hex => hex.Position).ToList();
-            var relativeHexPositions = hexPositions.Select(position => position.RelativeToChunk(Size)).ToList();
+            var relativeHexPositions = hexPositions.Select(position => position.RelativeToChunk()).ToList();
             var relativeWorldHexPositions = relativeHexPositions.Select(position => 
-                position.ToWorldPosition(hexSize)).ToList();
+                position.ToWorldPosition()).ToList();
             var transforms = hexRotations.Zip(relativeWorldHexPositions, (rotation, position) => 
                 new Transform3D(Basis.Identity.Rotated(Vector3.Up, rotation), position)).ToList();
-            var chunkWorldPosition = Position.FromChunkPosition(Size).ToWorldPosition(hexSize);
+            var chunkWorldPosition = Position.FromChunkPosition().ToWorldPosition();
             var meshInstance = new MultiMeshInstance(mesh, chunkWorldPosition + Vector3.Up * verticalOffset, transforms, scenario);
             meshInstances.Add(meshInstance);
         }
@@ -75,7 +72,7 @@ public class CubeChunk
 
     public override string ToString()
     {
-        return $"Position: {Position}, Size: {Size}, Hexes: {hexes.Count}, MeshInstances: {meshInstances.Count}";
+        return $"Position: {Position}, Hexes: {hexes.Count}, MeshInstances: {meshInstances.Count}";
     }
 
     public void Display()

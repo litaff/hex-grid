@@ -6,7 +6,7 @@ using provider;
 using scripts.hex_grid.fov;
 
 public class FovDisplay(
-    GridMapMeshData meshData,
+    World3D world,
     FovDisplayView displayView,
     IFovProvider fovProvider,
     ILayerDataProvider layerDataProvider,
@@ -51,7 +51,7 @@ public class FovDisplay(
             return;
         }
 		
-        fovMesh ??= new PrimitiveHexGridMesh(new HexGridMeshData(meshData, fovMaterial), Vector3.Up * 0.01f + layerDataProvider.CurrentLayerOffset);
+        fovMesh ??= new PrimitiveHexGridMesh(new HexGridMeshData(world, fovMaterial), Vector3.Up * 0.01f + layerDataProvider.CurrentLayerOffset);
         fovMesh.UpdateMesh(fovProvider.GetVisiblePositions(inputProvider.HexPosition, radius, layerDataProvider.CurrentLayer));
     }
 

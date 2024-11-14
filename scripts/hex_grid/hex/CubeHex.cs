@@ -7,7 +7,6 @@ using vector;
 public class CubeHex
 {
     public CubeHexVector Position { get; private set; }
-    public float Size { get; private set; }
     public HexMeshData MeshData { get; private set; }
 
     public bool IsOccluder { get; set; }
@@ -15,25 +14,17 @@ public class CubeHex
     [JsonIgnore]
     public virtual HexType Type => HexType.Base;
     
-    public CubeHex(int q, int r, float size, HexMeshData meshData)
+    public CubeHex(int q, int r, HexMeshData meshData)
     {
         Position = new CubeHexVector(q, r);
         MeshData = meshData;
-        Size = size;
     }
     
     [JsonConstructor]
-    public CubeHex(CubeHexVector position, float size, HexMeshData meshData, bool isOccluder)
+    public CubeHex(CubeHexVector position, HexMeshData meshData, bool isOccluder)
     {
         Position = position;
-        Size = size;
         MeshData = meshData;
         IsOccluder = isOccluder;
-    }
-
-    public void SetSize(float cellSize)
-    {
-        if (cellSize <= 0) return;
-        Size = cellSize;
     }
 }

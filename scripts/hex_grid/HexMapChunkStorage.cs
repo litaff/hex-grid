@@ -13,32 +13,30 @@ public class HexMapChunkStorage
     private readonly Godot.Collections.Dictionary<HexType, MeshLibrary> libraries;
     private readonly World3D scenario;
     private Dictionary<int, CubeChunk> map;
-    private int chunkSize;
     private float verticalOffset;
     
     private List<CubeChunk> hiddenChunks = [];
 
-    public HexMapChunkStorage(int chunkSize, float verticalOffset, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
+    public HexMapChunkStorage(float verticalOffset, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
-        this.chunkSize = chunkSize;
         map = new Dictionary<int, CubeChunk>();
         this.libraries = libraries;
         this.scenario = scenario;
         this.verticalOffset = verticalOffset;
     }
 
-    public bool IsUpToDate(int chunkSize, Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
+    public bool IsUpToDate(Godot.Collections.Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
     {
-        return this.chunkSize == chunkSize && this.libraries == libraries && this.scenario == scenario;
+        return this.libraries == libraries && this.scenario == scenario;
     }
     
     public void AssignHex(CubeHex hex)
     {
-        var chunkPosition = hex.Position.ToChunkPosition(chunkSize);
+        var chunkPosition = hex.Position.ToChunkPosition();
         var chunk = Get(chunkPosition);
         if (chunk == null)
         {
-            chunk = new CubeChunk(chunkPosition, chunkSize, verticalOffset);
+            chunk = new CubeChunk(chunkPosition, verticalOffset);
             AddChunk(chunk);
         }
         chunk.Add(hex);
@@ -48,7 +46,7 @@ public class HexMapChunkStorage
     
     public void RemoveHex(CubeHexVector position)
     {
-        var chunkPosition = position.ToChunkPosition(chunkSize);
+        var chunkPosition = position.ToChunkPosition();
         var chunk = Get(chunkPosition);
         if (chunk == null) return;
         chunk.Remove(position);
