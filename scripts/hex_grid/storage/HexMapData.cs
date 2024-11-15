@@ -1,6 +1,7 @@
 namespace hex_grid.scripts.hex_grid.storage;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using Godot;
 using hex;
@@ -29,7 +30,13 @@ public partial class HexMapData : Resource
     public Dictionary<int, CubeHex> Deserialize()
     {
         if (string.IsNullOrEmpty(SerializedMap)) return map;
-        map = JsonSerializer.Deserialize<Dictionary<int, CubeHex>>(SerializedMap, options);
+        var deserializedMap = JsonSerializer.Deserialize<Dictionary<int, CubeHex>>(SerializedMap, options);
+        map = new Dictionary<int, CubeHex>();
+        // Generate new hash codes for this execution of the application.
+        foreach (var value in deserializedMap.Values)
+        {
+            map.Add(value.Position.GetHashCode(), value);
+        }
         return map;
     }
     
