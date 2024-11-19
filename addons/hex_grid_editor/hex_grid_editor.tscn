@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://cvyi07qp410ei"]
+[gd_scene load_steps=10 format=3 uid="uid://cvyi07qp410ei"]
 
 [ext_resource type="Script" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
 [ext_resource type="Script" path="res://scripts/ui/DoubleConfirmButton.cs" id="3_ebrcs"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/BaseHexPropertiesView.cs" id="4_hlrgs"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/AccessibleHexPropertiesView.cs" id="5_ejbu4"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/ElevatedHexPropertiesView.cs" id="6_77sim"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
@@ -42,7 +43,8 @@ HexTypeSelector = NodePath("HexEditorContainer/HexTypeSelector")
 CurrentLayer = NodePath("HexEditorContainer/MarginContainer/CurrentLayer/SpinBox")
 HexProperties = {
 0: NodePath("HexEditorContainer/HexPropertiesContainer/BaseHexProperties"),
-1: NodePath("HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties")
+1: NodePath("HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties"),
+2: NodePath("HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties")
 }
 
 [node name="HexEditorContainer" type="VBoxContainer" parent="TabContainer/Hexes"]
@@ -110,6 +112,36 @@ IsOccluderButton = NodePath("IsOccluderButton")
 [node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/AccessibleHexProperties"]
 layout_mode = 2
 text = "IsOccluder"
+
+[node name="ElevatedHexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer" node_paths=PackedStringArray("HexHeight", "IsOccluderButton")]
+layout_mode = 2
+script = ExtResource("6_77sim")
+HexHeight = NodePath("MarginContainer/HexHeight/SpinBox")
+IsOccluderButton = NodePath("IsOccluderButton")
+
+[node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties"]
+layout_mode = 2
+text = "IsOccluder"
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_right = 2
+
+[node name="HexHeight" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties/MarginContainer/HexHeight"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Height:"
+
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/ElevatedHexProperties/MarginContainer/HexHeight"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.1
 
 [node name="MeshList" type="ItemList" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2

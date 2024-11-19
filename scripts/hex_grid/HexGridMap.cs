@@ -83,16 +83,16 @@ public partial class HexGridMap : Node3D, IFovProvider
         }
     }
 
-    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type, int layerIndex)
+    public CubeHex AddHex(CubeHex hex, int layerIndex)
     {
-        if (Layers.TryGetValue(layerIndex, out var layer)) return layer.AddHex(hexPosition, meshData, type);
+        if (Layers.TryGetValue(layerIndex, out var layer)) return layer.AddHex(hex);
 
         var data = new HexMapData();
         MapData.Add(layerIndex, data);
         NotifyPropertyListChanged();
         layer = CreateLayer(layerIndex, data);
         Layers.Add(layerIndex, layer);
-        return layer.AddHex(hexPosition, meshData, type);
+        return layer.AddHex(hex);
     }
     
     public void RemoveHex(CubeHexVector hexPosition, int layerIndex)

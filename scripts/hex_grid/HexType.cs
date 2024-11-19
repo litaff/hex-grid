@@ -7,4 +7,5 @@ public enum HexType
 {
     Base,
     Accessible,
+    Elevated
 }

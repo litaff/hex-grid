@@ -26,18 +26,6 @@ public class HexMapStorage
         map = new Dictionary<int, CubeHex>();
     }
     
-    public CubeHex Add(CubeHexVector position, HexMeshData meshData, HexType type)
-    {
-        var hex = type switch
-        {
-            HexType.Accessible => new AccessibleHex(position.Q, position.R, meshData),
-            HexType.Base => new CubeHex(position.Q, position.R, meshData),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-        };
-        Add(hex);
-        return hex;
-    }
-    
     public void Remove(CubeHexVector position)
     {
         map.Remove(position.GetHashCode());

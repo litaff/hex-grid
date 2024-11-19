@@ -46,10 +46,10 @@ public class LayerStorage
         return storage.Get(hexPosition);
     }
     
-    public CubeHex AddHex(CubeHexVector hexPosition, HexMeshData meshData, HexType type)
+    public CubeHex AddHex(CubeHex hex)
     {
-        var hex = storage.Add(hexPosition, meshData, type);
-        chunkStorage.AssignHex(storage.Get(hexPosition));
+        storage.Add(hex);
+        chunkStorage.AssignHex(hex);
         return hex;
     }
 

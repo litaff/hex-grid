@@ -1,5 +1,6 @@
 namespace hex_grid.addons.hex_grid_editor.hex_editor;
 
+using System;
 using Godot;
 using provider;
 using scripts.hex_grid;
@@ -142,7 +143,16 @@ public class HexEditor(
 	private void OnAddHexRequestedHandler()
 	{
 		if (!IsSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		var spawnedHex = gridMap.AddHex(inputHandler.HexPosition, new HexMeshData(selectedMeshIndex, -rotationAngle), selectedHexType, CurrentLayer);
+		var position = inputHandler.HexPosition;
+		var meshData = new HexMeshData(selectedMeshIndex, -rotationAngle);
+		var hex = selectedHexType switch
+		{
+			HexType.Elevated => new ElevatedHex(position.Q, position.R, meshData),
+			HexType.Accessible => new AccessibleHex(position.Q, position.R, meshData),
+			HexType.Base => new CubeHex(position.Q, position.R, meshData),
+			_ => throw new ArgumentOutOfRangeException(nameof(selectedHexType), selectedHexType, null)
+		};
+		var spawnedHex = gridMap.AddHex(hex, CurrentLayer);
 		selectedPropertiesView.Apply(spawnedHex);
 	}
 

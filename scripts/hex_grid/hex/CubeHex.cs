@@ -3,6 +3,7 @@ namespace hex_grid.scripts.hex_grid.hex;
 using System.Text.Json.Serialization;
 using vector;
 
+[JsonDerivedType(typeof(ElevatedHex), typeDiscriminator: nameof(ElevatedHex))]
 [JsonDerivedType(typeof(AccessibleHex), typeDiscriminator: nameof(AccessibleHex))]
 public class CubeHex
 {
