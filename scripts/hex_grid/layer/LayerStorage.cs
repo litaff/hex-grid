@@ -18,7 +18,7 @@ public class LayerStorage : IHexProvider
     private World3D scenario;
     private HexMapChunkStorage chunkStorage;
 
-    public void InitializeHexStorage( HexMapData data)
+    public void InitializeHexStorage(HexMapData data)
     {
         storage ??= new HexMapStorage(data);
         mapData = data;
@@ -40,6 +40,11 @@ public class LayerStorage : IHexProvider
         {
             chunkStorage.AssignHex(hex);
         }
+    }
+
+    public void Serialize()
+    {
+        storage.Serialize();
     }
 
     public CubeHex GetHex(CubeHexVector hexPosition)

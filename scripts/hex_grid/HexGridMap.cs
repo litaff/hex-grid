@@ -104,6 +104,14 @@ public partial class HexGridMap : Node3D, IFovProvider
         }
     }
 
+    public void Serialize()
+    {
+        foreach (var layer in Layers.Values)
+        {
+            layer.Serialize();
+        }
+    }
+
     public CubeHex AddHex(CubeHex hex, int layerIndex)
     {
         if (Layers.TryGetValue(layerIndex, out var layer)) return layer.AddHex(hex);

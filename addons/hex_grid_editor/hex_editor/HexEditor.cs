@@ -154,6 +154,7 @@ public class HexEditor(
 		};
 		var spawnedHex = gridMap.AddHex(hex, CurrentLayer);
 		selectedPropertiesView.Apply(spawnedHex);
+		gridMap.Serialize();
 	}
 
 	private void OnRemoveHexRequestHandler()

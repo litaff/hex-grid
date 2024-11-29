@@ -25,6 +25,11 @@ public class HexMapStorage
         GD.PushWarning("Map data is null. Created map won't be saved.");
         map = new Dictionary<int, CubeHex>();
     }
+
+    public void Serialize()
+    {
+        mapData?.Serialize();
+    }
     
     public void Remove(CubeHexVector position)
     {
