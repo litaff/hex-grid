@@ -4,10 +4,11 @@ using System.Linq;
 using Godot;
 using Godot.Collections;
 using hex;
+using interfaces;
 using storage;
 using vector;
 
-public class LayerStorage
+public class LayerStorage : IHexProvider
 {
     private HexMapData mapData;
     private HexMapStorage storage;

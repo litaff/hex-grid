@@ -20,11 +20,13 @@ public class HexGridData
 
     public float CellSize { get; }
     public int ChunkSize { get; }
+    public float LayerHeight { get; }
     
-    public HexGridData(float cellSize, int chunkSize)
+    public HexGridData(float cellSize, int chunkSize, float layerHeight)
     {
         CellSize = cellSize;
         ChunkSize = chunkSize;
+        LayerHeight = layerHeight;
         instance = this;
     }
 }

@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using fov;
 using Godot;
+using grid_object;
+using grid_object.managers;
 using hex;
+using interfaces;
 using layer;
 using storage;
 using vector;
@@ -25,7 +28,7 @@ public partial class HexGridMap : Node3D, IFovProvider
         {
             cellSize = value;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            hexGridData = new HexGridData(CellSize, ChunkSize);
+            hexGridData = new HexGridData(CellSize, ChunkSize, LayerHeight);
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
         } 
@@ -37,7 +40,7 @@ public partial class HexGridMap : Node3D, IFovProvider
         {
             chunkSize = value > 0 ? value : 1;
             if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            hexGridData = new HexGridData(CellSize, ChunkSize);
+            hexGridData = new HexGridData(CellSize, ChunkSize, LayerHeight);
             InitializeChunkStorage();
             OnPropertyChange?.Invoke();
         } 
@@ -55,18 +58,36 @@ public partial class HexGridMap : Node3D, IFovProvider
     }
     [Export]
     public Godot.Collections.Dictionary<HexType, MeshLibrary> MeshLibraries { get; private set; }
+    [Export]
+    private GridObject[] Objects { get; set; }
 
     private HexGridData hexGridData;
     private float cellSize;
     private int chunkSize;
     private float layerHeight;
 
+    public GridObjectManager GridObjectManager { get; private set; }
     public Dictionary<int, LayerStorage> Layers { get; private set; } = new();
 
     public float HexWidth => 3f / 2f * CellSize;
     public float HexHeight => Mathf.Sqrt(3) * CellSize;
 
     public event Action OnPropertyChange;
+
+    public override void _Ready()
+    {
+        hexGridData = new HexGridData(CellSize, ChunkSize, layerHeight);
+        
+        Initialize();
+
+        GridObjectManager = new GridObjectManager(Layers.ToDictionary(pair => pair.Key, pair => pair.Value as IHexProvider));
+        
+        // Temp
+        foreach (var gridObject in Objects)
+        {
+            GridObjectManager.AddGridObject(gridObject, 0);
+        }
+    }
 
     public void Initialize()
     {
