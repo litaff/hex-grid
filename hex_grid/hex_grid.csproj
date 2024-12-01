@@ -1,0 +1,18 @@
+<Project Sdk="Godot.NET.Sdk/4.2.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace></RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\grid_object\src\grid_object.csproj" />
+    <ProjectReference Include="..\hex_grid_map\src\hex_grid_map.csproj" />
+    <ProjectReference Include="..\godot_utils\src\godot_utils.csproj" />
+  </ItemGroup>
+  <!-- This forces a rebuild by deleting files which allow incremental builds. This might increase build times,
+  but ensures that changes in different projects will always apply to this core project. -->
+  <Target Name="ForceRebuild" BeforeTargets="Build">
+    <RemoveDir Directories="$(IntermediateOutputPath)" />
+  </Target>
+</Project>
