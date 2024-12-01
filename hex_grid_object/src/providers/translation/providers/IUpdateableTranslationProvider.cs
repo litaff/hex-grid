@@ -1,4 +1,4 @@
-namespace grid_object.providers.translation.providers;
+namespace hex_grid_object.providers.translation.providers;
 
 public interface IUpdateableTranslationProvider : ITranslationProvider
 {

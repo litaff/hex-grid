@@ -1,4 +1,4 @@
-namespace grid_object.managers;
+namespace hex_grid_object.managers;
 
 using System.Collections.Generic;
 using hex_grid_map;
@@ -7,45 +7,45 @@ using hex_grid_map.interfaces;
 using hex_grid_map.vector;
 using providers;
 
-public class GridObjectLayerManager : IHexStateProvider, IGridObjectLayerManager
+public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerManager
 {
-    private readonly Dictionary<int, GridObjectStack> stacks;
+    private readonly Dictionary<int, HexGridObjectStack> stacks;
     private readonly IHexProvider hexProvider;
-    private readonly IGridObjectManager manager;
+    private readonly IHexGridObjectManager manager;
     
     public int Layer { get; }
 
-    public GridObjectLayerManager(int layer, IHexProvider hexProvider, IGridObjectManager manager)
+    public HexGridObjectLayerManager(int layer, IHexProvider hexProvider, IHexGridObjectManager manager)
     {
         Layer = layer;
         this.hexProvider = hexProvider;
         this.manager = manager;
-        stacks = new Dictionary<int, GridObjectStack>();
+        stacks = new Dictionary<int, HexGridObjectStack>();
     }
     
-    public void AddGridObject(GridObject gridObject)
+    public void AddGridObject(HexGridObject hexGridObject)
     {
-        AddToStack(gridObject);
+        AddToStack(hexGridObject);
     }
     
-    public void RemoveGridObject(GridObject gridObject)
+    public void RemoveGridObject(HexGridObject hexGridObject)
     {
-        RemoveFromStack(gridObject, gridObject.GridPosition);
+        RemoveFromStack(hexGridObject, hexGridObject.GridPosition);
     }
 
-    public void UpdateGridObjectPosition(GridObject gridObject, CubeHexVector previousPosition)
+    public void UpdateGridObjectPosition(HexGridObject hexGridObject, CubeHexVector previousPosition)
     {
-        RemoveFromStack(gridObject, previousPosition);
-        AddToStack(gridObject);
+        RemoveFromStack(hexGridObject, previousPosition);
+        AddToStack(hexGridObject);
     }
 
-    public void ChangeGridObjectLayer(GridObject gridObject, int relativeLayerIndex)
+    public void ChangeGridObjectLayer(HexGridObject hexGridObject, int relativeLayerIndex)
     {
-        RemoveFromStack(gridObject, gridObject.GridPosition);
+        RemoveFromStack(hexGridObject, hexGridObject.GridPosition);
         // This will remove the object at its current position. This isn't a problem,
         // because we add this object to a different layer. 
-        manager.RemoveGridObject(gridObject, Layer); 
-        manager.AddGridObject(gridObject, Layer + relativeLayerIndex);
+        manager.RemoveGridObject(hexGridObject, Layer); 
+        manager.AddGridObject(hexGridObject, Layer + relativeLayerIndex);
     }
 
     public float GetHexHeight(CubeHexVector position)
@@ -73,21 +73,21 @@ public class GridObjectLayerManager : IHexStateProvider, IGridObjectLayerManager
         return hexProvider.GetHex(position) is T;
     }
     
-    private void AddToStack(GridObject gridObject)
+    private void AddToStack(HexGridObject hexGridObject)
     {
-        var objectPosition = gridObject.GridPosition;
+        var objectPosition = hexGridObject.GridPosition;
         if (stacks.ContainsKey(objectPosition.GetHashCode()))
         {
-            stacks[objectPosition.GetHashCode()].Add(gridObject);
+            stacks[objectPosition.GetHashCode()].Add(hexGridObject);
             return;
         }
-        stacks.Add(objectPosition.GetHashCode(), new GridObjectStack(gridObject));
+        stacks.Add(objectPosition.GetHashCode(), new HexGridObjectStack(hexGridObject));
     }
     
-    private void RemoveFromStack(GridObject gridObject, CubeHexVector position)
+    private void RemoveFromStack(HexGridObject hexGridObject, CubeHexVector position)
     {        
         if (!stacks.TryGetValue(position.GetHashCode(), out var stack)) return;
-        stack.Remove(gridObject);
+        stack.Remove(hexGridObject);
         if (stack.IsEmpty)
         {
             stacks.Remove(position.GetHashCode());

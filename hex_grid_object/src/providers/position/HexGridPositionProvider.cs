@@ -1,4 +1,4 @@
-namespace grid_object.providers.position;
+namespace hex_grid_object.providers.position;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Godot;
 using hex_grid_map.hex;
 using hex_grid_map.vector;
 
-public class GridPositionProvider : IGridPositionProvider
+public class HexGridPositionProvider : IHexGridPositionProvider
 {
     private readonly HeightData heightData;
     private Dictionary<int, IHexStateProvider> hexStateProviders;
@@ -23,7 +23,7 @@ public class GridPositionProvider : IGridPositionProvider
     /// </summary>
     public event Action<int>? OnLayerChangeRequested;
 
-    public GridPositionProvider(CubeHexVector initialPosition, HeightData heightData)
+    public HexGridPositionProvider(CubeHexVector initialPosition, HeightData heightData)
     {
         Position = initialPosition;
         this.heightData = heightData;

@@ -1,9 +1,9 @@
-namespace grid_object.providers.position;
+namespace hex_grid_object.providers.position;
 
 using System;
 using hex_grid_map.vector;
 
-public interface IGridPositionProvider
+public interface IHexGridPositionProvider
 {
     public CubeHexVector Position { get; }
     /// <summary>

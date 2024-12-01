@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\grid_object\src\grid_object.csproj" />
+    <ProjectReference Include="..\hex_grid_object\src\hex_grid_object.csproj" />
     <ProjectReference Include="..\hex_grid_map\src\hex_grid_map.csproj" />
     <ProjectReference Include="..\godot_utils\src\godot_utils.csproj" />
   </ItemGroup>

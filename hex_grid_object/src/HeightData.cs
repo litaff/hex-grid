@@ -1,4 +1,4 @@
-namespace grid_object;
+namespace hex_grid_object;
 
 public readonly struct HeightData(float height, float stepHeight)
 {

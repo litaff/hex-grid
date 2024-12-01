@@ -1,4 +1,4 @@
-namespace grid_object.managers;
+namespace hex_grid_object.managers;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -6,26 +6,26 @@ using System.Linq;
 /// <summary>
 /// Keeps the order of entry. 
 /// </summary>
-public readonly struct GridObjectStack
+public readonly struct HexGridObjectStack
 {
-    private readonly List<GridObject> objects;
+    private readonly List<HexGridObject> objects;
 
     public bool IsEmpty => objects.Count == 0;
     
-    public GridObjectStack(GridObject initialObject)
+    public HexGridObjectStack(HexGridObject initialObject)
     {
         objects = [initialObject];
     }
 
-    public void Add(GridObject gridObject)
+    public void Add(HexGridObject hexGridObject)
     {
-        if (objects.Contains(gridObject)) return;
-        objects.Add(gridObject);
+        if (objects.Contains(hexGridObject)) return;
+        objects.Add(hexGridObject);
     }
 
-    public void Remove(GridObject gridObject)
+    public void Remove(HexGridObject hexGridObject)
     {
-        objects.Remove(gridObject);
+        objects.Remove(hexGridObject);
     }
 
     public float GetStackHeight()

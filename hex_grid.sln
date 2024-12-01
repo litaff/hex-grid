@@ -2,7 +2,7 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hex_grid", "hex_grid\hex_grid.csproj", "{3EA95462-84F1-4F56-AC93-0C1DB8AD6D82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grid_object", "grid_object\src\grid_object.csproj", "{5331B4CF-9A66-40E6-8DDE-C9292EF4BB76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hex_grid_object", "hex_grid_object\src\hex_grid_object.csproj", "{5331B4CF-9A66-40E6-8DDE-C9292EF4BB76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hex_grid_map", "hex_grid_map\src\hex_grid_map.csproj", "{E796FCDB-890F-43B5-82AF-2F355ACEFBB6}"
 EndProject

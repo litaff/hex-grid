@@ -11,8 +11,8 @@ using global::hex_grid_map.storage;
 using global::hex_grid_map.vector;
 using Godot;
 using Godot.Collections;
-using grid_object;
-using grid_object.managers;
+using hex_grid_object;
+using hex_grid_object.managers;
 using hex_grid_map;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 
@@ -67,7 +67,7 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
     private HexGridData hexGridData = null!;
 
     public HexGridMap? HexGridMap { get; private set; }
-    public GridObjectManager? GridObjectManager { get; private set; }
+    public HexGridObjectManager? GridObjectManager { get; private set; }
     public IFovProvider FovProvider => this;
     public World3D World3D => GetWorld3D();
 
@@ -80,13 +80,13 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
         
         if (HexGridMap == null) return;
         
-        GridObjectManager = new GridObjectManager(HexGridMap.Layers.ToDictionary(pair => pair.Key, pair => pair.Value as IHexProvider));
+        GridObjectManager = new HexGridObjectManager(HexGridMap.Layers.ToDictionary(pair => pair.Key, pair => pair.Value as IHexProvider));
         
         // Temp
         foreach (var @object in Objects)
         {
-            if(@object is not IGridObjectHolder gridObjectHolder) continue;
-            GridObjectManager.AddGridObject(gridObjectHolder.GridObject, 0);
+            if(@object is not IHexGridObjectHolder gridObjectHolder) continue;
+            GridObjectManager.AddGridObject(gridObjectHolder.HexGridObject, 0);
         }
     }
 

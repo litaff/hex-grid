@@ -1,4 +1,4 @@
-namespace grid_object.providers;
+namespace hex_grid_object.providers;
 
 using hex_grid_map.vector;
 
