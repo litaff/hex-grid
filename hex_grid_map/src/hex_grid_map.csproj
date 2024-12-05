@@ -11,7 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\godot_utils\src\godot_utils.csproj" />
+      <Reference Include="GodotUtils">
+        <HintPath>..\..\libs\GodotUtils.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

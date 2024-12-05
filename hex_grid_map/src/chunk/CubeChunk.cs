@@ -3,7 +3,7 @@ namespace hex_grid_map.chunk;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using godot_utils.rendering_server;
+using GodotUtils.MultiMeshInstance;
 using hex;
 using vector;
 

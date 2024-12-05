@@ -3,7 +3,7 @@ namespace hex_grid_map.mesh;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using godot_utils.rendering_server;
+using GodotUtils.RidExtensions;
 using vector;
 using Array = Godot.Collections.Array;
 
@@ -43,8 +43,8 @@ public class WireHexGridMesh
     
 	public void Dispose()
 	{
-		gridInstanceRid.FreeRid();
-		gridMeshRid.FreeRid();
+		gridInstanceRid.RenderingServerFreeRid();
+		gridMeshRid.RenderingServerFreeRid();
 	}
 
 	private Array GetGridMeshData(int radius, bool useAlphaFalloff)

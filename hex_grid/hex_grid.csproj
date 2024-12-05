@@ -8,7 +8,11 @@
   <ItemGroup>
     <ProjectReference Include="..\hex_grid_object\src\hex_grid_object.csproj" />
     <ProjectReference Include="..\hex_grid_map\src\hex_grid_map.csproj" />
-    <ProjectReference Include="..\godot_utils\src\godot_utils.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="GodotUtils">
+      <HintPath>..\libs\GodotUtils.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <!-- This forces a rebuild by deleting files which allow incremental builds. This might increase build times,
   but ensures that changes in different projects will always apply to this core project. -->

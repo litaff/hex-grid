@@ -3,8 +3,8 @@ namespace hex_grid_map.mesh;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using godot_utils.rendering_server;
 using Godot.Collections;
+using GodotUtils.RidExtensions;
 using vector;
 
 public class PrimitiveHexGridMesh
@@ -57,7 +57,7 @@ public class PrimitiveHexGridMesh
     
     public void Dispose()
     {
-        instanceRid.FreeRid();
-        meshRid.FreeRid();
+        instanceRid.RenderingServerFreeRid();
+        meshRid.RenderingServerFreeRid();
     }
 }

@@ -2,7 +2,7 @@ namespace addons.hex_grid_editor.hex_editor;
 
 using System;
 using Godot;
-using godot_utils.rendering_server;
+using GodotUtils.RidExtensions;
 using hex_grid_map;
 using hex_grid_map.hex;
 using provider;
@@ -118,7 +118,7 @@ public class HexEditor(
 		inputHandler.OnRemoveHexRequest -= OnRemoveHexRequestHandler;
 		inputHandler.OnRotateRequested -= OnRotateRequestedHandler;
 		rotationAngle = 0;
-		selectedMeshInstanceRid.FreeRid();
+		selectedMeshInstanceRid.RenderingServerFreeRid();
 		IsSelectionActive = false;
 	}
 	
