@@ -1,6 +1,6 @@
 namespace addons.hex_grid_editor;
 
-using hex_grid_map.fov;
+using HexGridMap.Fov;
 
 public interface IHexGridMapEditionProvider : IHexGridMapInitializer, IHexGridMapPropertyHandler, IHexGridMapManager
 {

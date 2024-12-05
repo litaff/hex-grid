@@ -3,7 +3,7 @@ namespace addons.hex_grid_editor;
 using System;
 using Godot;
 using hex_editor;
-using hex_grid_map.vector;
+using HexGridMap.Vector;
 
 public class HexGridEditorInputHandler : IHexEditorInputProvider
 {

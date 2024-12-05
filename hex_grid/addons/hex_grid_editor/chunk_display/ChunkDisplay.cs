@@ -1,9 +1,9 @@
 namespace addons.hex_grid_editor.chunk_display;
 
 using Godot;
-using hex_grid_map;
-using hex_grid_map.mesh;
-using hex_grid_map.vector;
+using HexGridMap;
+using HexGridMap.Mesh;
+using HexGridMap.Vector;
 using provider;
 
 public class ChunkDisplay

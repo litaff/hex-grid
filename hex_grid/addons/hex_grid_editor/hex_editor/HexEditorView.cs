@@ -3,7 +3,7 @@ namespace addons.hex_grid_editor.hex_editor;
 using System;
 using Godot;
 using Godot.Collections;
-using hex_grid_map;
+using HexGridMap;
 using DoubleConfirmButton = ui.DoubleConfirmButton;
 
 [Tool]

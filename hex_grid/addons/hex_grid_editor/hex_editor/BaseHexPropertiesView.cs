@@ -1,7 +1,7 @@
 namespace addons.hex_grid_editor.hex_editor;
 
 using Godot;
-using hex_grid_map.hex;
+using HexGridMap.Hex;
 
 [Tool]
 public partial class BaseHexPropertiesView : Control

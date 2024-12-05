@@ -1,7 +1,7 @@
 namespace addons.hex_grid_editor.editor_grid_indicator;
 
 using Godot;
-using hex_grid_map.mesh;
+using HexGridMap.Mesh;
 using provider;
 
 public class EditorGridIndicator

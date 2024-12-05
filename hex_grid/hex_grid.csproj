@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\hex_grid_object\src\hex_grid_object.csproj" />
-    <ProjectReference Include="..\hex_grid_map\src\hex_grid_map.csproj" />
+    <ProjectReference Include="..\HexGridObject\src\HexGridObject.csproj" />
+    <ProjectReference Include="..\HexGridMap\src\HexGridMap.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GodotUtils">

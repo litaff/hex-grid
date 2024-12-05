@@ -2,9 +2,9 @@ namespace hex_grid.hex_grid_map;
 
 using System.Collections.Generic;
 using System.Text.Json;
-using global::hex_grid_map.hex;
-using global::hex_grid_map.storage;
 using Godot;
+using HexGridMap.Hex;
+using HexGridMap.Storage;
 
 #if TOOLS
 [Tool]

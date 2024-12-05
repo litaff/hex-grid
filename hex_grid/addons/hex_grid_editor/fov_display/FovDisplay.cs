@@ -1,8 +1,8 @@
 namespace addons.hex_grid_editor.fov_display;
 
 using Godot;
-using hex_grid_map.fov;
-using hex_grid_map.mesh;
+using HexGridMap.Fov;
+using HexGridMap.Mesh;
 using provider;
 
 public class FovDisplay

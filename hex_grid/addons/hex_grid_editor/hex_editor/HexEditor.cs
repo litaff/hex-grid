@@ -3,8 +3,8 @@ namespace addons.hex_grid_editor.hex_editor;
 using System;
 using Godot;
 using GodotUtils.RidExtensions;
-using hex_grid_map;
-using hex_grid_map.hex;
+using HexGridMap;
+using HexGridMap.Hex;
 using provider;
 
 public class HexEditor(

@@ -3,17 +3,17 @@ namespace hex_grid;
 using System;
 using System.Linq;
 using addons.hex_grid_editor;
-using global::hex_grid_map;
-using global::hex_grid_map.fov;
-using global::hex_grid_map.hex;
-using global::hex_grid_map.interfaces;
-using global::hex_grid_map.storage;
-using global::hex_grid_map.vector;
 using Godot;
 using Godot.Collections;
-using hex_grid_object;
-using hex_grid_object.managers;
 using hex_grid_map;
+using HexGridMap;
+using HexGridMap.Fov;
+using HexGridMap.Hex;
+using HexGridMap.Interfaces;
+using HexGridMap.Storage;
+using HexGridMap.Vector;
+using HexGridObject;
+using HexGridObject.Managers;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 
 [Tool]

@@ -2,7 +2,7 @@ namespace addons.hex_grid_editor.provider;
 
 using System;
 using Godot;
-using hex_grid_map.vector;
+using HexGridMap.Vector;
 
 public interface IEditorHexPositionProvider
 {

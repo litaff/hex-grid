@@ -1,11 +1,11 @@
 namespace hex_grid.grid_objects;
 
-using global::hex_grid_map.vector;
 using Godot;
-using hex_grid_object;
-using hex_grid_object.providers.position;
-using hex_grid_object.providers.translation;
-using hex_grid_object.providers.translation.providers;
+using HexGridMap.Vector;
+using HexGridObject;
+using HexGridObject.Providers.Position;
+using HexGridObject.Providers.Translation;
+using HexGridObject.Providers.Translation.Providers;
 
 [Tool]
 [GlobalClass]

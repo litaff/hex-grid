@@ -1,8 +1,8 @@
 namespace addons.hex_grid_editor;
 
 using System;
-using hex_grid_map.hex;
-using hex_grid_map.vector;
+using HexGridMap.Hex;
+using HexGridMap.Vector;
 
 public interface IHexGridMapManager
 {
