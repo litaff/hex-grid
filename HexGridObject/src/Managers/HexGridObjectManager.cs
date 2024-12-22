@@ -8,6 +8,8 @@ public class HexGridObjectManager : IHexGridObjectManager
 {
     private readonly Dictionary<int, HexGridObjectLayerManager> layerManagers;
 
+    public IReadOnlyDictionary<int, HexGridObjectLayerManager> LayerManagers => layerManagers;
+    
     public HexGridObjectManager(Dictionary<int, IHexProvider> hexProviders)
     {
         layerManagers = new Dictionary<int, HexGridObjectLayerManager>();

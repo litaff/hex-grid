@@ -11,6 +11,12 @@ public readonly struct HexGridObjectStack
     private readonly List<HexGridObject> objects;
 
     public bool IsEmpty => objects.Count == 0;
+    public IReadOnlyList<HexGridObject> Objects => objects;
+
+    public HexGridObjectStack()
+    {
+        objects = new List<HexGridObject>();
+    }
     
     public HexGridObjectStack(HexGridObject initialObject)
     {

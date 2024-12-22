@@ -1,0 +1,219 @@
+namespace HexGridObject.Tests.Managers;
+
+using global::HexGridObject.Managers;
+using global::HexGridObject.Providers.Position;
+using global::HexGridObject.Providers.Translation.Providers;
+using HexGridMap;
+using HexGridMap.Hex;
+using HexGridMap.Interfaces;
+using HexGridMap.Vector;
+using Moq;
+
+[TestFixture]
+public class HexGridObjectLayerManagerTests
+{
+    private HexGridObjectLayerManager layerManager;
+    private Mock<IHexProvider> mockHexProvider;
+    private Mock<IHexGridObjectManager> mockObjectManager;
+
+    [SetUp]
+    public void Setup()
+    {
+        mockHexProvider = new Mock<IHexProvider>();
+        mockObjectManager = new Mock<IHexGridObjectManager>();
+        layerManager = new HexGridObjectLayerManager(0, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+    }
+
+    [Test]
+    public void AddGridObject_AddsANewStackWithObject_IfThereWasNoStackAtPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+
+        layerManager.AddGridObject(hexGridObject);
+        
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+    }
+    
+    [Test]
+    public void AddGridObject_AddsObjectToExistingStack_IfThereWasStackAtPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+        layerManager.AddGridObject(hexGridObject);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+        hexGridObject = GetMockObject();
+        
+        layerManager.AddGridObject(hexGridObject);
+        
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+    }
+
+    [Test]
+    public void RemoveGridObject_Returns_IfNoStackAtPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+
+        layerManager.RemoveGridObject(hexGridObject);
+        
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+    }
+
+    [Test]
+    public void RemoveGridObject_RemovesObject_IfStackExistsAtPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+        layerManager.AddGridObject(hexGridObject);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+        
+        layerManager.RemoveGridObject(hexGridObject);
+
+        Assert.That(stack.Objects, Does.Not.Contain(hexGridObject));
+    }
+
+    [Test]
+    public void RemoveGridObject_RemovesStack_IfNothingIsLeftInStack()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+        layerManager.AddGridObject(hexGridObject);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+        
+        layerManager.RemoveGridObject(hexGridObject);
+
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+    }
+
+    [Test]
+    public void UpdateGridObjectPosition_RemovesObjectFromStackPreviousPosition()
+    {
+        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
+        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var heightData = new HeightData(0, 0);
+        var hexGridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+        layerManager.AddGridObject(hexGridObject);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.North);
+        
+        layerManager.UpdateGridObjectPosition(hexGridObject, CubeHexVector.Zero);
+        
+        Assert.That(layerManager.Stacks.TryGetValue(CubeHexVector.Zero.GetHashCode(), out _), Is.False);
+    }
+    
+    [Test]
+    public void UpdateGridObjectPosition_AddsObjectToStackAtItsPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+
+        layerManager.UpdateGridObjectPosition(hexGridObject, default);
+        
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+    }
+
+    [Test]
+    public void ChangeGridObjectLayer_RemovesObjectAtItsPosition()
+    {
+        var hexGridObject = GetMockObject();
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+        layerManager.AddGridObject(hexGridObject);
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out var stack), Is.True);
+        Assert.That(stack.Objects, Does.Contain(hexGridObject));
+        
+        layerManager.ChangeGridObjectLayer(hexGridObject, 0);
+        
+        Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.HexGridPositionProvider.Position.GetHashCode(), out _), Is.False);
+    }
+
+    [Test]
+    public void ChangeGridObjectLayer_CallsRemoveGridObject_FromIHexGridObjectManager()
+    {
+        var hexGridObject = GetMockObject();
+        
+        layerManager.ChangeGridObjectLayer(hexGridObject, 0);
+        
+        mockObjectManager.Verify(manager => manager.RemoveGridObject(hexGridObject, 0), Times.Once);
+    }
+    
+    [Test]
+    public void ChangeGridObjectLayer_CallsAddGridObject_FromIHexGridObjectManager()
+    {
+        var hexGridObject = GetMockObject();
+        
+        layerManager.ChangeGridObjectLayer(hexGridObject, 0);
+        
+        mockObjectManager.Verify(manager => manager.AddGridObject(hexGridObject, 0), Times.Once);
+    }
+
+    [Test]
+    public void GetHexHeight_ReturnsLayerHeight_IfNoHexOrStack()
+    { 
+        layerManager = new HexGridObjectLayerManager(1, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+        var hexData = new HexGridData(0, 0, 1f);
+        
+        var height = layerManager.GetHexHeight(CubeHexVector.Zero);
+        
+        Assert.That(height, Is.EqualTo(1f));
+    }
+    
+    [Test]
+    public void GetHexHeight_ReturnsLayerAndHexHeight_IfNoStack()
+    { 
+        layerManager = new HexGridObjectLayerManager(1, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+        var hexData = new HexGridData(0, 0, 1f);
+        var elevatedHex = new ElevatedHex(0, 0, default);
+        elevatedHex.SetHeight(1f);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(elevatedHex);
+        
+        var height = layerManager.GetHexHeight(CubeHexVector.Zero);
+        
+        Assert.That(height, Is.EqualTo(2f));
+    }
+    
+    [Test]
+    public void GetHexHeight_ReturnsLayerHexAndStackHeight_IfAllExist()
+    { 
+        layerManager = new HexGridObjectLayerManager(1, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+        var hexData = new HexGridData(0, 0, 1f);
+        var elevatedHex = new ElevatedHex(0, 0, default);
+        elevatedHex.SetHeight(1f);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(elevatedHex);
+        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
+        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var heightData = new HeightData(1f, 0);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        layerManager.AddGridObject(gridObject);
+        
+        var height = layerManager.GetHexHeight(CubeHexVector.Zero);
+        
+        Assert.That(height, Is.EqualTo(3f));
+    }
+    
+    private HexGridObject GetMockObject()
+    {
+        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
+        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var heightData = new HeightData(0, 0);
+        return new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+    }
+}

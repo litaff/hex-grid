@@ -6,6 +6,12 @@ using System.Collections.Generic;
 public readonly struct HexStateProviders
 {
     public IReadOnlyDictionary<int, IHexStateProvider> Providers { get; }
+
+    public HexStateProviders()
+    {
+        Providers = new Dictionary<int, IHexStateProvider>();
+        throw new ArgumentException("[HexStateProviders] There is no providers.");
+    }
     
     public HexStateProviders(Dictionary<int, IHexStateProvider> providers)
     {

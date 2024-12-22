@@ -12,7 +12,8 @@ public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerM
     private readonly Dictionary<int, HexGridObjectStack> stacks;
     private readonly IHexProvider hexProvider;
     private readonly IHexGridObjectManager manager;
-    
+
+    public IReadOnlyDictionary<int, HexGridObjectStack> Stacks => stacks;
     public int Layer { get; }
 
     public HexGridObjectLayerManager(int layer, IHexProvider hexProvider, IHexGridObjectManager manager)
