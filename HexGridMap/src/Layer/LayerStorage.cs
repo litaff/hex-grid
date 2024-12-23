@@ -12,12 +12,12 @@ public class LayerStorage : IHexProvider
     private readonly HexMapStorage storage;
     private readonly HexMapChunkStorage chunkStorage;
 
-    public LayerStorage(IHexMapData hexMapData, int layerIndex, Dictionary<HexType, MeshLibrary> libraries,
+    public LayerStorage(IHexMapData hexMapData, int layerIndex, MeshLibrary library,
         World3D scenario)
     {
         storage = new HexMapStorage(hexMapData);
         
-        chunkStorage = new HexMapChunkStorage(layerIndex * HexGridData.Instance.LayerHeight, libraries, scenario);
+        chunkStorage = new HexMapChunkStorage(layerIndex * HexGridData.Instance.LayerHeight, library, scenario);
         foreach (var hex in storage.GetMap())
         {
             chunkStorage.AssignHex(hex);

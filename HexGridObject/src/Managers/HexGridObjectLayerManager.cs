@@ -53,9 +53,9 @@ public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerM
     {
         var height = Layer * HexGridData.Instance.LayerHeight;
         var cubeHex = hexProvider.GetHex(position);
-        if (cubeHex is ElevatedHex elevatedHex)
+        if (cubeHex is not null)
         {
-            height += elevatedHex.Height;
+            height += cubeHex.Height;
         }
         if (stacks.TryGetValue(position.GetHashCode(), out var stack))
         {
@@ -69,9 +69,9 @@ public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerM
         return stacks.TryGetValue(position.GetHashCode(), out var stack) && stack.Contains<T>();
     }
     
-    public bool HexIs<T>(CubeHexVector position)
+    public bool Exists(CubeHexVector position)
     {
-        return hexProvider.GetHex(position) is T;
+        return hexProvider.GetHex(position) is not null;
     }
     
     private void AddToStack(HexGridObject hexGridObject)

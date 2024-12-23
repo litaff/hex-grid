@@ -12,17 +12,17 @@ using Vector;
 
 public class HexGridMap : IFovProvider
 {
-    private readonly Dictionary<HexType, MeshLibrary> meshLibraries;
+    private readonly MeshLibrary meshLibrary;
     private readonly IHexMapDataProvider hexMapDataProvider;
     private readonly Dictionary<int, LayerStorage> layers;
     private readonly World3D world;
 
     public IReadOnlyDictionary<int, LayerStorage> Layers => layers;
 
-    public HexGridMap(Dictionary<HexType, MeshLibrary> meshLibraries, IHexMapDataProvider hexMapDataProvider,
+    public HexGridMap(MeshLibrary meshLibrary, IHexMapDataProvider hexMapDataProvider,
         World3D world)
     {
-        this.meshLibraries = meshLibraries;
+        this.meshLibrary = meshLibrary;
         this.world = world;
         this.hexMapDataProvider = hexMapDataProvider;
 
@@ -121,7 +121,7 @@ public class HexGridMap : IFovProvider
 
     private LayerStorage CreateLayer(int layerIndex, IHexMapData data)
     {
-        var layerStorage = new LayerStorage(data, layerIndex, meshLibraries, world);
+        var layerStorage = new LayerStorage(data, layerIndex, meshLibrary, world);
         return layerStorage;
     }
 }

@@ -16,8 +16,6 @@ public class HexEditor(
 	private Rid selectedMeshInstanceRid;
 	private int selectedMeshIndex;
 	private int rotationAngle;
-	private HexType selectedHexType;
-	private BaseHexPropertiesView? selectedPropertiesView;
 
 	public int CurrentLayer { get; private set; }
 	public bool IsSelectionActive { get; private set; }
@@ -28,11 +26,11 @@ public class HexEditor(
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
 		inputHandler.OnDisplayAllLayersRequested += OnDisplayAllLayersRequestedHandler;
-		view.OnHexTypeSelected += OnHexTypeSelectedHandler;
 		view.MapResetButton.Confirmed += OnClearMapRequestedHandler;
 		view.LayerResetButton.Confirmed += OnClearLayerRequestedHandler;
 		view.OnMeshSelected += OnMeshSelectedHandler;
 		view.OnLayerChanged += OnLayerChangedHandler;
+		view.UpdateList(mapEditionProvider.MeshLibrary);
 		view.Initialize(CurrentLayer);
 	}
 	
@@ -44,7 +42,6 @@ public class HexEditor(
 		view.MapResetButton.Confirmed -= OnClearMapRequestedHandler;
 		view.LayerResetButton.Confirmed -= OnClearLayerRequestedHandler;
 		view.OnMeshSelected -= OnMeshSelectedHandler;
-		view.OnHexTypeSelected -= OnHexTypeSelectedHandler;
 		view.OnLayerChanged -= OnLayerChangedHandler;
 		view.UpdateList(null);
 		view.Dispose();
@@ -79,14 +76,6 @@ public class HexEditor(
 		mapEditionProvider.ClearMap(CurrentLayer);
 	}
 	
-	private void OnHexTypeSelectedHandler(HexType hexType, BaseHexPropertiesView propertiesView)
-	{
-		OnDeselectRequestedHandler();
-		selectedHexType = hexType;
-		selectedPropertiesView = propertiesView;
-		view.UpdateList(mapEditionProvider.MeshLibraries[hexType]);
-	}
-	
 	private void OnMeshSelectedHandler(int index)
 	{
 		OnDeselectRequestedHandler();
@@ -98,7 +87,7 @@ public class HexEditor(
 		
 		IsSelectionActive = true;
 		selectedMeshIndex = index;
-		var mesh = mapEditionProvider.MeshLibraries[selectedHexType].GetItemMesh(index);
+		var mesh = mapEditionProvider.MeshLibrary.GetItemMesh(index);
 		selectedMeshInstanceRid = RenderingServer.InstanceCreate();
 		RenderingServer.InstanceSetBase(selectedMeshInstanceRid, mesh.GetRid());
 		RenderingServer.InstanceSetScenario(selectedMeshInstanceRid, mapEditionProvider.World3D.Scenario);
@@ -145,21 +134,8 @@ public class HexEditor(
 		if (!IsSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
 		var position = inputHandler.HexPosition;
 		var meshData = new HexMeshData(selectedMeshIndex, -rotationAngle);
-		var hex = selectedHexType switch
-		{
-			HexType.Elevated => new ElevatedHex(position.Q, position.R, meshData),
-			HexType.Accessible => new AccessibleHex(position.Q, position.R, meshData),
-			HexType.Base => new CubeHex(position.Q, position.R, meshData),
-			_ => throw new ArgumentOutOfRangeException(nameof(selectedHexType), selectedHexType, null)
-		};
-		if (selectedPropertiesView != null)
-		{
-			selectedPropertiesView.Apply(hex);
-		}
-		else
-		{
-			GD.PushError("[HexEditor] Didn't apply properties, property view was null.");
-		}
+		var properties = view.HexProperties.GetProperties();
+		var hex = new CubeHex(position.Q, position.R, properties, meshData);
 		mapEditionProvider.AddHex(hex, CurrentLayer);
 	}
 
@@ -186,16 +162,8 @@ public class HexEditor(
 	{
 		var hex = mapEditionProvider.GetHex(inputHandler.HexPosition, CurrentLayer);
 		if (hex == null) return;
-		
-		view.SetCurrentHexType(hex.Type);
-		if (selectedPropertiesView != null)
-		{
-			selectedPropertiesView.SetFrom(hex);
-		}
-		else
-		{
-			GD.PushError("[HexEditor] Didn't set properties from hex, property view was null.");
-		}
+
+		view.HexProperties.SetFromProperties(hex.Properties);
 		view.SelectMesh(hex.MeshData.MeshIndex);
 		rotationAngle = -hex.MeshData.Rotation;
 		UpdateSelectedHexMesh();

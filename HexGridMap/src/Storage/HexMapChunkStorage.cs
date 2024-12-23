@@ -1,4 +1,4 @@
-namespace HexGridMap;
+namespace HexGridMap.Storage;
 
 using System;
 using System.Collections.Generic;
@@ -10,16 +10,16 @@ using Vector;
 
 public class HexMapChunkStorage
 {
-    private readonly Dictionary<HexType, MeshLibrary> libraries;
+    private readonly MeshLibrary library;
     private readonly World3D scenario;
     private readonly Dictionary<int, CubeChunk> map;
     private readonly float verticalOffset;
     private readonly List<CubeChunk> hiddenChunks = [];
 
-    public HexMapChunkStorage(float verticalOffset, Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
+    public HexMapChunkStorage(float verticalOffset, MeshLibrary library, World3D scenario)
     {
         map = new Dictionary<int, CubeChunk>();
-        this.libraries = libraries;
+        this.library = library;
         this.scenario = scenario;
         this.verticalOffset = verticalOffset;
     }
@@ -35,7 +35,7 @@ public class HexMapChunkStorage
         }
         chunk.Add(hex);
         
-        chunk.UpdateMesh(libraries, scenario);
+        chunk.UpdateMesh(library, scenario);
     }
     
     public void RemoveHex(CubeHexVector position)
@@ -44,7 +44,7 @@ public class HexMapChunkStorage
         var chunk = Get(chunkPosition);
         if (chunk == null) return;
         chunk.Remove(position);
-        chunk.UpdateMesh(libraries, scenario);
+        chunk.UpdateMesh(library, scenario);
         if (!chunk.IsEmpty) return;
         RemoveChunk(chunkPosition);
     }

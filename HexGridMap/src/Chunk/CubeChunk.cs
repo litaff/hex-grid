@@ -36,14 +36,14 @@ public class CubeChunk
         hexes.Remove(hex);
     }
 
-    public void UpdateMesh(Dictionary<HexType, MeshLibrary> libraries, World3D scenario)
+    public void UpdateMesh(MeshLibrary library, World3D scenario)
     {
         ClearMeshInstances();
         
         var sortedHexes = SortHexes();
         foreach (var hexGroup in sortedHexes)
         {
-            var mesh = libraries[hexGroup.Key.Item1].GetItemMesh(hexGroup.Key.Item2);
+            var mesh = library.GetItemMesh(hexGroup.Key);
             if (mesh == null) continue;
             var hexRotations = hexGroup.Value.Select(hex => hex.MeshData.Radians).ToList();
             var hexPositions = hexGroup.Value.Select(hex => hex.Position).ToList();
@@ -89,13 +89,13 @@ public class CubeChunk
         }
     }
 
-    private Dictionary<(HexType, int), List<CubeHex>> SortHexes()
+    private Dictionary<int, List<CubeHex>> SortHexes()
     {
-        Dictionary<(HexType, int), List<CubeHex>> sortedHexes = new();
+        Dictionary<int, List<CubeHex>> sortedHexes = new();
         
         foreach (var hex in hexes)
         {
-            var key = (hex.Type, hex.MeshData.MeshIndex);
+            var key = hex.MeshData.MeshIndex;
             if (sortedHexes.TryGetValue(key, out var value))
             {
                 value.Add(hex);

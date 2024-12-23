@@ -177,9 +177,8 @@ public class HexGridObjectLayerManagerTests
             mockHexProvider.Object, 
             mockObjectManager.Object);
         var hexData = new HexGridData(0, 0, 1f);
-        var elevatedHex = new ElevatedHex(0, 0, default);
-        elevatedHex.SetHeight(1f);
-        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(elevatedHex);
+        var hex = new CubeHex(0, 0, new HexProperties(1f), default);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
         
         var height = layerManager.GetHexHeight(CubeHexVector.Zero);
         
@@ -193,9 +192,8 @@ public class HexGridObjectLayerManagerTests
             mockHexProvider.Object, 
             mockObjectManager.Object);
         var hexData = new HexGridData(0, 0, 1f);
-        var elevatedHex = new ElevatedHex(0, 0, default);
-        elevatedHex.SetHeight(1f);
-        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(elevatedHex);
+        var hex = new CubeHex(0, 0, new HexProperties(1f), default);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
         var mockPositionProvider = new Mock<IHexGridPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
         var mockTranslationProvider = new Mock<ITranslationProvider>();

@@ -1,1753 +1,517 @@
-[gd_scene load_steps=11 format=3 uid="uid://dd70lky3grwlo"]
+[gd_scene load_steps=9 format=3 uid="uid://dd70lky3grwlo"]
 
 [ext_resource type="Script" path="res://scripts/hex_grid/grid_objects/Player.cs" id="1_dt6rp"]
 [ext_resource type="Script" path="res://scripts/hex_grid/HexGrid.cs" id="1_v00pe"]
-[ext_resource type="MeshLibrary" uid="uid://dbmuulywd58ol" path="res://mesh_libraries/base_tiles/base_tiles.tres" id="2_q07w8"]
-[ext_resource type="MeshLibrary" uid="uid://cvxh5uehtjsef" path="res://mesh_libraries/accessible_tiles/accessible_tiles.tres" id="3_aonju"]
-[ext_resource type="MeshLibrary" uid="uid://dbx5g41c0vla8" path="res://mesh_libraries/elevated_tiles/elevated_tiles.tres" id="4_1w27x"]
-[ext_resource type="Script" path="res://scripts/hex_grid/hex_grid_map/HexMapData.cs" id="5_7acu3"]
+[ext_resource type="MeshLibrary" uid="uid://dbx5g41c0vla8" path="res://mesh_libraries/elevated_tiles/elevated_tiles.tres" id="3_3lp8a"]
+[ext_resource type="Script" path="res://scripts/hex_grid/hex_grid_map/HexMapData.cs" id="4_m88uc"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_sisie"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6vj07"]
 albedo_color = Color(0.798701, 0.388845, 0.408729, 1)
 
-[sub_resource type="Resource" id="Resource_0yqav"]
-script = ExtResource("5_7acu3")
+[sub_resource type="Resource" id="Resource_jelbr"]
+script = ExtResource("4_m88uc")
 SerializedMap = "{
-  \"-1047672528\": {
+  \"2030698115\": {
     \"Position\": {
-      \"Q\": 4,
-      \"R\": -5,
+      \"Q\": 0,
+      \"R\": 0,
+      \"S\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"65099495\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -1,
       \"S\": 1
     },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"353397435\": {
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -5,
-      \"S\": 3
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
       \"MeshIndex\": 0,
       \"Rotation\": 0
-    },
-    \"IsOccluder\": false
+    }
   },
-  \"43071190\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 0,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"646436037\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 2,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1782475848\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 1,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-135628632\": {
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 3,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"897475484\": {
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 4,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"-1984868985\": {
-    \"$type\": \"AccessibleHex\",
+  \"-320412979\": {
     \"Position\": {
       \"Q\": 0,
-      \"R\": 4,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1159017750\": {
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 4,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"1227954623\": {
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 3,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"-1299443657\": {
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -6,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"97117669\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
       \"R\": -2,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-2104667398\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -1,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-319760607\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 0,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1814866077\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 1,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"559255046\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 2,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-496049882\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 3,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1062492427\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 3,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-974255887\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 0,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"362309788\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": -1,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1759403670\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": -2,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-257619693\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -1,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-88491616\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 0,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1406967202\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 1,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-10200813\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 2,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1425860582\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 3,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"57088707\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 4,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-719559475\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 5,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1948902446\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 6,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"671669182\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 5,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-998194588\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 6,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"9033392\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 5,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1786550005\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": 5,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1288611916\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 4,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-154224244\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 3,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"747120569\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 3,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1523104131\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 2,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1336251246\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": 1,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1430504622\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": 0,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1322029554\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -1,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1250503565\": {
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -6,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-403543553\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -1,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-978180164\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 1,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1246961336\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 2,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1653908346\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 4,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1123805507\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": 0,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-259608064\": {
-    \"Position\": {
-      \"Q\": 8,
-      \"R\": -3,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1077782069\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 6,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-950288774\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 5,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"699352744\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": 5,
-      \"S\": -8
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1131243034\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 5,
-      \"S\": -9
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1210844267\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": 4,
-      \"S\": -8
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1261485500\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 6,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1001436495\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 5,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2146164737\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 4,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"472661112\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 2,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-2140960326\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 2,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1743662814\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 1,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-870472683\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 1,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1963382211\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": 0,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-147517108\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": -1,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1955147447\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -2,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2125949856\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -3,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"423891644\": {
-    \"Position\": {
-      \"Q\": 9,
-      \"R\": -3,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-889118628\": {
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -3,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1853238244\": {
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -2,
-      \"S\": -5
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1534782473\": {
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -2,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-164835224\": {
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": -5,
       \"S\": 2
     },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
     \"MeshData\": {
       \"MeshIndex\": 0,
       \"Rotation\": 0
-    },
-    \"IsOccluder\": false
+    }
   },
-  \"414696997\": {
-    \"$type\": \"AccessibleHex\",
+  \"-745839146\": {
     \"Position\": {
-      \"Q\": 4,
-      \"R\": -4,
+      \"Q\": 1,
+      \"R\": -2,
+      \"S\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1314118408\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": -1,
       \"S\": 0
     },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
     \"MeshData\": {
       \"MeshIndex\": 0,
       \"Rotation\": 0
-    },
-    \"IsOccluder\": false
+    }
   },
-  \"1188737621\": {
-    \"$type\": \"ElevatedHex\",
-    \"Height\": 2.5,
+  \"-1007186235\": {
     \"Position\": {
-      \"Q\": 3,
+      \"Q\": 1,
+      \"R\": 0,
+      \"S\": -1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1247947560\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 1,
+      \"S\": -1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1937866365\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 1,
+      \"S\": -2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-32592421\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 2,
+      \"S\": -2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-741850476\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 3,
+      \"S\": -2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1163685789\": {
+    \"Position\": {
+      \"Q\": -2,
+      \"R\": 3,
+      \"S\": -1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"986812867\": {
+    \"Position\": {
+      \"Q\": -2,
+      \"R\": 2,
+      \"S\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"395963190\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 2,
+      \"S\": -1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1079227055\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 1,
+      \"S\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"574037616\": {
+    \"Position\": {
+      \"Q\": -2,
+      \"R\": 1,
+      \"S\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"982110072\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 0,
+      \"S\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1887995900\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": -1,
+      \"S\": 2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1325572701\": {
+    \"Position\": {
+      \"Q\": -2,
+      \"R\": 0,
+      \"S\": 2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1810206239\": {
+    \"Position\": {
+      \"Q\": -2,
+      \"R\": -1,
+      \"S\": 3
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-395502164\": {
+    \"Position\": {
+      \"Q\": 2,
       \"R\": -3,
+      \"S\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1433913699\": {
+    \"Position\": {
+      \"Q\": 2,
+      \"R\": -2,
       \"S\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-766610549\": {
+    \"Position\": {
+      \"Q\": 2,
+      \"R\": -1,
+      \"S\": -1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-741893595\": {
+    \"Position\": {
+      \"Q\": 2,
+      \"R\": 0,
+      \"S\": -2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1969505871\": {
+    \"Position\": {
+      \"Q\": 2,
+      \"R\": 1,
+      \"S\": -3
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"120728718\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 2,
+      \"S\": -3
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1455392990\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -3,
+      \"S\": 3
+    },
+    \"Properties\": {
+      \"Height\": 0.5,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 1,
+      \"Rotation\": -180
+    }
+  },
+  \"-1100716897\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -4,
+      \"S\": 4
+    },
+    \"Properties\": {
+      \"Height\": 1.5,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 2,
+      \"Rotation\": -180
+    }
+  },
+  \"263230037\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -5,
+      \"S\": 5
+    },
+    \"Properties\": {
+      \"Height\": 2.5,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
       \"MeshIndex\": 3,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
+      \"Rotation\": -180
+    }
   },
-  \"-1864280561\": {
+  \"1409036543\": {
     \"Position\": {
-      \"Q\": 5,
-      \"R\": -4,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2060795070\": {
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -2,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1372264098\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
+      \"Q\": -1,
       \"R\": -5,
-      \"S\": 0
+      \"S\": 6
     },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1500385326\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": 0,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-823422555\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 8,
-      \"R\": -1,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-361925201\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 8,
-      \"R\": -2,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-462187149\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -1,
-      \"S\": -6
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"622500604\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": 2,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1119976711\": {
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -5,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1162350396\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": 1,
-      \"S\": -7
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"384141124\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": 3,
-      \"S\": -8
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-23321898\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": 6,
-      \"S\": -8
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"175843506\": {
-    \"$type\": \"ElevatedHex\",
-    \"Height\": 1.5,
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -3,
-      \"S\": 1
+    \"Properties\": {
+      \"Height\": 1.5,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
       \"MeshIndex\": 2,
       \"Rotation\": -300
-    },
-    \"IsOccluder\": false
+    }
   },
-  \"1241060131\": {
-    \"$type\": \"ElevatedHex\",
-    \"Height\": 0.5,
+  \"207197642\": {
     \"Position\": {
       \"Q\": 1,
-      \"R\": -2,
-      \"S\": 1
+      \"R\": -6,
+      \"S\": 5
+    },
+    \"Properties\": {
+      \"Height\": 1.5,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
-      \"MeshIndex\": 1,
-      \"Rotation\": -240
-    },
-    \"IsOccluder\": false
+      \"MeshIndex\": 2,
+      \"Rotation\": -60
+    }
   },
-  \"939141462\": {
-    \"$type\": \"AccessibleHex\",
+  \"1697911091\": {
     \"Position\": {
       \"Q\": 0,
-      \"R\": -1,
-      \"S\": 1
+      \"R\": -6,
+      \"S\": 6
+    },
+    \"Properties\": {
+      \"Height\": 3.5,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-471997764\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": 0,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"549851001\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 1,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1759778258\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": -1,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1609639\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": -2,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-573753384\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": -3,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"412528285\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -4,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1092133582\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": -2,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"721198190\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": 0,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2062833390\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 0,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"873940917\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 1,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1164921199\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 3,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"104816543\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -4,
-      \"R\": 3,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"291011179\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": 2,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-589439502\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -4,
-      \"R\": 2,
-      \"S\": 2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-874474743\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -4,
-      \"R\": 1,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1645953386\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": -1,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"434450312\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": -3,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1638982071\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": -4,
-      \"S\": 3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1472896072\": {
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": -4,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1725036109\": {
-    \"Position\": {
-      \"Q\": 1,
-      \"R\": -5,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-2127214236\": {
-    \"Position\": {
-      \"Q\": 0,
-      \"R\": -4,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1413715382\": {
-    \"Position\": {
-      \"Q\": -1,
-      \"R\": -3,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-5635934\": {
-    \"Position\": {
-      \"Q\": -2,
-      \"R\": -2,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1549311752\": {
-    \"Position\": {
-      \"Q\": -3,
-      \"R\": -1,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1140483339\": {
-    \"Position\": {
-      \"Q\": -4,
-      \"R\": 0,
-      \"S\": 4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
+      \"MeshIndex\": 3,
+      \"Rotation\": -180
+    }
   }
 }"
 
-[sub_resource type="Resource" id="Resource_6cbvc"]
-script = ExtResource("5_7acu3")
+[sub_resource type="Resource" id="Resource_i2hrm"]
+script = ExtResource("4_m88uc")
 SerializedMap = "{
-  \"1884343758\": {
-    \"$type\": \"ElevatedHex\",
-    \"Height\": 0,
+  \"207197642\": {
     \"Position\": {
-      \"Q\": 3,
-      \"R\": -2,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": -60
-    },
-    \"IsOccluder\": false
-  },
-  \"186445968\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 2,
-      \"R\": -1,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-388348288\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 3,
-      \"R\": -1,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"740351219\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -1,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-45571668\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -2,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"530654251\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -3,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"593197359\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -2,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1294638094\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -3,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1750791582\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -3,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1582102993\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -4,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"703729820\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -4,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2076806107\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 5,
-      \"R\": -5,
-      \"S\": 0
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1597451562\": {
-    \"Position\": {
-      \"Q\": 5,
+      \"Q\": 1,
       \"R\": -6,
-      \"S\": 1
+      \"S\": 5
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
       \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
+      \"Rotation\": -240
+    }
   },
-  \"-252460565\": {
-    \"$type\": \"AccessibleHex\",
+  \"1697911091\": {
     \"Position\": {
-      \"Q\": 3,
-      \"R\": -4,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"2008691556\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -4,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1601361229\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -5,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"557777326\": {
-    \"Position\": {
-      \"Q\": 4,
-      \"R\": -5,
-      \"S\": 1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"-22950743\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -5,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"1750032741\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -4,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-1251178442\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -3,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-67886590\": {
-    \"$type\": \"AccessibleHex\",
-    \"Position\": {
-      \"Q\": 6,
-      \"R\": -2,
-      \"S\": -4
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": false
-  },
-  \"-261173937\": {
-    \"Position\": {
-      \"Q\": 6,
+      \"Q\": 0,
       \"R\": -6,
-      \"S\": 0
+      \"S\": 6
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
     },
     \"MeshData\": {
       \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"405138222\": {
-    \"Position\": {
-      \"Q\": 7,
-      \"R\": -6,
-      \"S\": -1
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"1472433896\": {
-    \"Position\": {
-      \"Q\": 8,
-      \"R\": -6,
-      \"S\": -2
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
-  },
-  \"-1825711828\": {
-    \"Position\": {
-      \"Q\": 8,
-      \"R\": -5,
-      \"S\": -3
-    },
-    \"MeshData\": {
-      \"MeshIndex\": 0,
-      \"Rotation\": 0
-    },
-    \"IsOccluder\": true
+      \"Rotation\": -180
+    }
   }
 }"
 
@@ -1772,14 +536,10 @@ script = ExtResource("1_v00pe")
 CellSize = 1.0
 ChunkSize = 10
 LayerHeight = 3.5
-MeshLibraries = {
-0: ExtResource("2_q07w8"),
-1: ExtResource("3_aonju"),
-2: ExtResource("4_1w27x")
-}
+MeshLibrary = ExtResource("3_3lp8a")
 MapData = {
-0: SubResource("Resource_0yqav"),
-1: SubResource("Resource_6cbvc")
+0: SubResource("Resource_jelbr"),
+1: SubResource("Resource_i2hrm")
 }
 Objects = [NodePath("../Player")]
 metadata/_edit_lock_ = true

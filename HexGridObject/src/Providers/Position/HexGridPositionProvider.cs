@@ -3,6 +3,7 @@ namespace HexGridObject.Providers.Position;
 using System;
 using System.Collections.Generic;
 using Godot;
+using HexGridMap;
 using HexGridMap.Hex;
 using HexGridMap.Vector;
 
@@ -43,21 +44,37 @@ public class HexGridPositionProvider : IHexGridPositionProvider
     public void Translate(CubeHexVector offset)
     {
         if (hexStateProviders.Count == 0) return;
+
+        var targetPosition = Position + offset;
         
-        // If object is on elevated hex this mean that it can go up or down a layer, so we try to do that first.
-        if (hexStateProviders[0].HexIs<ElevatedHex>(Position) && TryElevatedTranslate(offset)) return;
+        if (PlaneTranslate(targetPosition)) return;
         
-        if (!hexStateProviders[0].HexIs<AccessibleHex>(Position + offset)) return;
-        AccessibleTranslate(offset);
+        if (LayerTranslate(targetPosition)) return;
     }
 
-    private void AccessibleTranslate(CubeHexVector offset)
+    private bool PlaneTranslate(CubeHexVector targetPosition)
     {
-        if (!IsStepValid(GetHeightDifference(Position + offset))) return;
-        Position += offset;
-        OnPositionChanged?.Invoke(Position - offset);
+        if (!CanPlaneTranslate(targetPosition)) return false;
+        var previousPosition = Position;
+        Position = targetPosition;
+        OnPositionChanged?.Invoke(previousPosition);
+        return true;
     }
 
+    private bool CanPlaneTranslate(CubeHexVector targetPosition)
+    {
+        var isSpaceToStand = true;
+        if (hexStateProviders.TryGetValue(1, out var targetProvider))
+        {
+            isSpaceToStand = hexStateProviders[0].GetHexHeight(targetPosition) < HexGridData.Instance.LayerHeight ||
+                             !targetProvider.Exists(targetPosition);
+        }
+        
+        return hexStateProviders[0].Exists(targetPosition) &&
+               IsStepValid(GetHeightDifference(targetPosition)) &&
+               isSpaceToStand;
+    }
+    
     private bool IsStepValid(float step)
     {
         return step <= heightData.StepHeight;
@@ -68,40 +85,26 @@ public class HexGridPositionProvider : IHexGridPositionProvider
         return Mathf.Abs(hexStateProviders[0].GetHexHeight(target) - CurrentPositionHeight);
     }
 
-    /// <summary>
-    /// Returns false if layer could not be changed.
-    /// </summary>
-    private bool TryElevatedTranslate(CubeHexVector offset)
+    private bool LayerTranslate(CubeHexVector targetPosition)
     {
-        // Prioritize staying on the same layer if possible.
-        var targetPosition = Position + offset;
-        if (hexStateProviders[0].HexIs<ElevatedHex>(targetPosition) && IsStepValid(GetHeightDifference(targetPosition))) return false;
-
-        // Prioritize going down.
-        return TryElevateTo(offset, -1) || TryElevateTo(offset, 1);
+        return TryElevateTo(targetPosition, -1) || TryElevateTo(targetPosition, 1);
     }
     
-    /// <summary>
-    /// Returns false if this couldn't go to a relative layer.
-    /// </summary>
-    private bool TryElevateTo(CubeHexVector offset, int relativeLayerIndex)
+    private bool TryElevateTo(CubeHexVector targetPosition, int relativeLayerIndex)
     {
         if (!hexStateProviders.TryGetValue(relativeLayerIndex, out var targetHexProvider)) return false;
         
-        var targetPosition = Position + offset;
-        
-        if (!targetHexProvider.HexIs<ElevatedHex>(targetPosition)) return false;
+        if (!targetHexProvider.Exists(targetPosition)) return false;
         
         var targetHeight = targetHexProvider.GetHexHeight(targetPosition);
         if (!IsStepValid(Mathf.Abs(targetHeight - CurrentPositionHeight))) return false;
 
-        // This will move the object to another layer, potentially on an invalid hex.
-        // It doesn't matter as the checks have already been done and the translation will take place to a valid hex.
         OnLayerChangeRequested?.Invoke(relativeLayerIndex);
-        Position += offset;
+        var previousPosition = Position;
+        Position = targetPosition;
         // This will change the stack of the object. Remove does nothing as it was removed on layer change.
         // Only add will have an effect.
-        OnPositionChanged?.Invoke(Position - offset);
+        OnPositionChanged?.Invoke(previousPosition);
 
         return true;
     }

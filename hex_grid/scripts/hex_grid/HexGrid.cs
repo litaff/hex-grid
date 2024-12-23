@@ -55,7 +55,7 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
         } 
     }
     [Export]
-    public Dictionary<HexType, MeshLibrary> MeshLibraries { get; private set; } = new();
+    public MeshLibrary MeshLibrary { get; private set; } = null!;
     [Export]
     public Dictionary<int, HexMapData> MapData { get; private set; } = new();
     [Export]
@@ -94,7 +94,7 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
     {
         hexGridData = new HexGridData(CellSize, ChunkSize, LayerHeight);
         HexGridMap?.Dispose();
-        HexGridMap = new HexGridMap(MeshLibraries.ToDictionary(), this, GetWorld3D());
+        HexGridMap = new HexGridMap(MeshLibrary, this, GetWorld3D());
     }
 
     public IHexMapData? GetMap(int index)
