@@ -16,7 +16,9 @@ using HexGridObject;
 using HexGridObject.Managers;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 
+#if TOOLS
 [Tool]
+#endif
 [GlobalClass]
 public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionProvider, IFovProvider
 {

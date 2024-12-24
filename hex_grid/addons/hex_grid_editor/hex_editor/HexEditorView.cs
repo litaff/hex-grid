@@ -2,9 +2,7 @@ namespace addons.hex_grid_editor.hex_editor;
 
 using System;
 using Godot;
-using Godot.Collections;
-using HexGridMap;
-using DoubleConfirmButton = ui.DoubleConfirmButton;
+using ui;
 
 [Tool]
 public partial class HexEditorView : Control
@@ -12,9 +10,9 @@ public partial class HexEditorView : Control
     [Export]
     public ItemList MeshList { get; private set; } = null!;
     [Export]
-    public DoubleConfirmButton LayerResetButton { get; private set; } = null!;
+    public EditorDoubleConfirmButton LayerResetButton { get; private set; } = null!;
     [Export]
-    public DoubleConfirmButton MapResetButton { get; private set; } = null!;
+    public EditorDoubleConfirmButton MapResetButton { get; private set; } = null!;
     [Export]
     public SpinBox CurrentLayer { get; private set; } = null!;
     [Export]

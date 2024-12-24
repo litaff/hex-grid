@@ -1,10 +1,11 @@
-namespace ui;
+namespace addons.hex_grid_editor.ui;
 
 using System;
 using Godot;
 
+[Tool]
 [GlobalClass]
-public partial class DoubleConfirmButton : Button
+public partial class EditorDoubleConfirmButton : Button
 {
     [Export]
     private string confirmText = "Are you sure?";

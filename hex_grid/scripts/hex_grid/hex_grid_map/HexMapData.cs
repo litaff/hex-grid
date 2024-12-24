@@ -6,9 +6,6 @@ using Godot;
 using HexGridMap.Hex;
 using HexGridMap.Storage;
 
-#if TOOLS
-[Tool]
-#endif
 [GlobalClass]
 public partial class HexMapData : Resource, IHexMapData
 {

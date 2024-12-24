@@ -26,8 +26,8 @@ public class HexEditor(
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
 		inputHandler.OnDisplayAllLayersRequested += OnDisplayAllLayersRequestedHandler;
-		view.MapResetButton.Confirmed += OnClearMapRequestedHandler;
-		view.LayerResetButton.Confirmed += OnClearLayerRequestedHandler;
+		view.MapResetButton.OnConfirmed += OnClearMapRequestedHandler;
+		view.LayerResetButton.OnConfirmed += OnClearLayerRequestedHandler;
 		view.OnMeshSelected += OnMeshSelectedHandler;
 		view.OnLayerChanged += OnLayerChangedHandler;
 		view.UpdateList(mapEditionProvider.MeshLibrary);
@@ -39,8 +39,8 @@ public class HexEditor(
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
 		inputHandler.OnDisplayAllLayersRequested -= OnDisplayAllLayersRequestedHandler;
-		view.MapResetButton.Confirmed -= OnClearMapRequestedHandler;
-		view.LayerResetButton.Confirmed -= OnClearLayerRequestedHandler;
+		view.MapResetButton.OnConfirmed -= OnClearMapRequestedHandler;
+		view.LayerResetButton.OnConfirmed -= OnClearLayerRequestedHandler;
 		view.OnMeshSelected -= OnMeshSelectedHandler;
 		view.OnLayerChanged -= OnLayerChangedHandler;
 		view.UpdateList(null);

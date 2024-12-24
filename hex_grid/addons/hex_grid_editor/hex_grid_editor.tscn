@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
-[ext_resource type="Script" path="res://scripts/ui/DoubleConfirmButton.cs" id="3_ebrcs"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_27y68"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_dfndv"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
@@ -53,13 +53,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear layer"
-script = ExtResource("3_ebrcs")
+script = ExtResource("3_27y68")
 
 [node name="MapClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear map"
-script = ExtResource("3_ebrcs")
+script = ExtResource("3_27y68")
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2

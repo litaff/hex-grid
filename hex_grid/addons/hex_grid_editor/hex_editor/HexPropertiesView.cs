@@ -4,6 +4,7 @@ using Godot;
 using HexGridMap.Hex;
 
 [Tool]
+[GlobalClass]
 public partial class HexPropertiesView : Control
 {
     [Export]
