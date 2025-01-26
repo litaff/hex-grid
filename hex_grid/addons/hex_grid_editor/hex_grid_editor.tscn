@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_27y68"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_dfndv"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_yx7c0"]
+[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_d32ym"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
 [ext_resource type="Script" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
@@ -38,7 +38,7 @@ MeshList = NodePath("HexEditorContainer/MeshList")
 LayerResetButton = NodePath("HexEditorContainer/HBoxContainer/LayerClearButton")
 MapResetButton = NodePath("HexEditorContainer/HBoxContainer/MapClearButton")
 CurrentLayer = NodePath("HexEditorContainer/MarginContainer/CurrentLayer/SpinBox")
-HexProperties = NodePath("HexEditorContainer/HexPropertiesContainer")
+HexProperties = NodePath("HexEditorContainer/HexProperties")
 
 [node name="HexEditorContainer" type="VBoxContainer" parent="TabContainer/Hexes"]
 layout_mode = 2
@@ -53,13 +53,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear layer"
-script = ExtResource("3_27y68")
+script = ExtResource("3_yx7c0")
 
 [node name="MapClearButton" type="Button" parent="TabContainer/Hexes/HexEditorContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear map"
-script = ExtResource("3_27y68")
+script = ExtResource("3_yx7c0")
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
@@ -80,34 +80,34 @@ layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
 
-[node name="HexPropertiesContainer" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer" node_paths=PackedStringArray("IsOccluderButton", "HexHeight")]
-layout_mode = 2
-script = ExtResource("4_dfndv")
-IsOccluderButton = NodePath("HexProperties/IsOccluderButton")
-HexHeight = NodePath("HexProperties/MarginContainer/HexHeight/SpinBox")
-
-[node name="HexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer"]
+[node name="HexTypeSelector" type="OptionButton" parent="TabContainer/Hexes/HexEditorContainer"]
 layout_mode = 2
 
-[node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/HexProperties"]
+[node name="HexProperties" type="VBoxContainer" parent="TabContainer/Hexes/HexEditorContainer" node_paths=PackedStringArray("IsOccluderButton", "HexHeight")]
+layout_mode = 2
+script = ExtResource("4_d32ym")
+IsOccluderButton = NodePath("IsOccluderButton")
+HexHeight = NodePath("MarginContainer/HexHeight/SpinBox")
+
+[node name="IsOccluderButton" type="CheckButton" parent="TabContainer/Hexes/HexEditorContainer/HexProperties"]
 layout_mode = 2
 text = "IsOccluder"
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/HexProperties"]
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Hexes/HexEditorContainer/HexProperties"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_right = 2
 
-[node name="HexHeight" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/HexProperties/MarginContainer"]
+[node name="HexHeight" type="HBoxContainer" parent="TabContainer/Hexes/HexEditorContainer/HexProperties/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/HexProperties/MarginContainer/HexHeight"]
+[node name="Label" type="Label" parent="TabContainer/Hexes/HexEditorContainer/HexProperties/MarginContainer/HexHeight"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Height:"
 
-[node name="SpinBox" type="SpinBox" parent="TabContainer/Hexes/HexEditorContainer/HexPropertiesContainer/HexProperties/MarginContainer/HexHeight"]
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Hexes/HexEditorContainer/HexProperties/MarginContainer/HexHeight"]
 layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
