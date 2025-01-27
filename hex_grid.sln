@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexGridMap", "HexGridMap\sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexGridObject.Tests", "HexGridObject\tests\HexGridObject.Tests.csproj", "{7004DBC0-8EAA-4026-B3D3-85A2521E482C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexGridMap.Tests", "HexGridMap\tests\HexGridMap.Tests.csproj", "{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -39,5 +41,11 @@ Global
 		{7004DBC0-8EAA-4026-B3D3-85A2521E482C}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{7004DBC0-8EAA-4026-B3D3-85A2521E482C}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{7004DBC0-8EAA-4026-B3D3-85A2521E482C}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CC0385-5DEB-4CB6-A190-2C6CC34ED1C3}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
