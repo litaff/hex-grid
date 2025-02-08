@@ -2,10 +2,9 @@ namespace HexGridObject.Tests.Managers;
 
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation.Providers;
+using global::HexGridObject.Providers.Translation;
 using HexGridMap;
 using HexGridMap.Hex;
-using HexGridMap.Interfaces;
 using HexGridMap.Vector;
 using Moq;
 
@@ -163,7 +162,7 @@ public class HexGridObjectLayerManagerTests
         layerManager = new HexGridObjectLayerManager(1, 
             mockHexProvider.Object, 
             mockObjectManager.Object);
-        var hexData = new HexGridData(0, 0, 1f);
+        var hexData = new HexGridProperties(0, 0, 1f);
         
         var height = layerManager.GetHexHeight(CubeHexVector.Zero);
         
@@ -176,7 +175,7 @@ public class HexGridObjectLayerManagerTests
         layerManager = new HexGridObjectLayerManager(1, 
             mockHexProvider.Object, 
             mockObjectManager.Object);
-        var hexData = new HexGridData(0, 0, 1f);
+        var hexData = new HexGridProperties(0, 0, 1f);
         var hex = new CubeHex(0, 0, new HexProperties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
         
@@ -191,7 +190,7 @@ public class HexGridObjectLayerManagerTests
         layerManager = new HexGridObjectLayerManager(1, 
             mockHexProvider.Object, 
             mockObjectManager.Object);
-        var hexData = new HexGridData(0, 0, 1f);
+        var hexData = new HexGridProperties(0, 0, 1f);
         var hex = new CubeHex(0, 0, new HexProperties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
         var mockPositionProvider = new Mock<IHexGridPositionProvider>();

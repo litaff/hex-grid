@@ -1,7 +1,7 @@
-namespace HexGridMap.Tests.Storage;
+namespace HexGridMap.Tests.Chunk;
 
 [TestFixture]
-public class HexMapChunkStorageTests
+public class ChunkMapTests
 {
     [Test]
     public void Works_As_Expected()

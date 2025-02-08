@@ -88,7 +88,7 @@ public class HexGridPositionProvider : IHexGridPositionProvider
         var isSpaceToStand = true;
         if (hexStateProviders.TryGetValue(1, out var targetProvider))
         {
-            isSpaceToStand = hexStateProviders[0].GetHexHeight(targetPosition) < HexGridData.Instance.LayerHeight ||
+            isSpaceToStand = hexStateProviders[0].GetHexHeight(targetPosition) < HexGridProperties.LayerHeight ||
                              !targetProvider.Exists(targetPosition);
         }
         

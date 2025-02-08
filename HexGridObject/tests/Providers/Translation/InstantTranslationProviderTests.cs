@@ -1,8 +1,7 @@
-namespace HexGridObject.Tests.Providers.Translation.Providers;
+namespace HexGridObject.Tests.Providers.Translation;
 
 using global::HexGridObject.Providers;
 using global::HexGridObject.Providers.Translation;
-using global::HexGridObject.Providers.Translation.Providers;
 using Godot;
 using HexGridMap;
 using HexGridMap.Vector;
@@ -30,7 +29,7 @@ public class InstantTranslationProviderTests
     [Test]
     public void TranslateTo_CallsTranslate_FromITranslatable_WithCorrectOffset()
     {
-        var gridData = new HexGridData(1, 1, 1);
+        var gridData = new HexGridProperties(1, 1, 1);
         var mockProvider = new Mock<IHexStateProvider>();
         var position = CubeHexVector.Zero;
         mockProvider.Setup(m => m.GetHexHeight(position)).Returns(0);

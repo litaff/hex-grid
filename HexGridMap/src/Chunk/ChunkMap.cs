@@ -1,14 +1,13 @@
-namespace HexGridMap.Storage;
+namespace HexGridMap.Chunk;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chunk;
 using Godot;
 using Hex;
 using Vector;
 
-public class HexMapChunkStorage
+public class ChunkMap
 {
     private readonly MeshLibrary library;
     private readonly World3D scenario;
@@ -16,7 +15,7 @@ public class HexMapChunkStorage
     private readonly float verticalOffset;
     private readonly List<CubeChunk> hiddenChunks = [];
 
-    public HexMapChunkStorage(float verticalOffset, MeshLibrary library, World3D scenario)
+    public ChunkMap(float verticalOffset, MeshLibrary library, World3D scenario)
     {
         map = new Dictionary<int, CubeChunk>();
         this.library = library;
@@ -111,7 +110,7 @@ public class HexMapChunkStorage
         }
     }
 
-    ~HexMapChunkStorage()
+    ~ChunkMap()
     {
         Dispose();
     }

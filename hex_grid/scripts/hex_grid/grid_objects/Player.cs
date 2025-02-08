@@ -5,7 +5,6 @@ using HexGridMap.Vector;
 using HexGridObject;
 using HexGridObject.Providers.Position;
 using HexGridObject.Providers.Translation;
-using HexGridObject.Providers.Translation.Providers;
 
 [GlobalClass]
 public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder

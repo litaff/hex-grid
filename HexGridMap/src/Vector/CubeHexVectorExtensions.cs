@@ -6,7 +6,7 @@ using Godot;
 
 public static class CubeHexVectorExtensions
 {
-    private static float CellSize => HexGridData.Instance.CellSize;
+    private static float CellSize => HexGridProperties.CellSize;
     
     /// <summary>
     /// Returns the vertices of this hex position in world space.

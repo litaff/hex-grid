@@ -1,31 +1,30 @@
-namespace HexGridMap.Storage;
+namespace HexGridMap.Hex;
 
 using System.Collections.Generic;
 using System.Linq;
-using Hex;
 using Vector;
 
-public class HexMapStorage
+public class HexMap
 {
-    private readonly IHexMapData mapData;
+    private readonly IHexData data;
     private readonly Dictionary<int, CubeHex> map;
 
-    public HexMapStorage(IHexMapData mapData)
+    public HexMap(IHexData data)
     {
-        this.mapData = mapData;
-        map = mapData.Deserialize();
+        this.data = data;
+        map = data.Deserialize();
     }
 
     public void Add(CubeHex value)
     {
         map.TryAdd(value.Position.GetHashCode(), value);
-        mapData.Serialize();
+        data.Serialize();
     }
 
     public void Remove(CubeHexVector position)
     {
         map.Remove(position.GetHashCode());
-        mapData.Serialize();
+        data.Serialize();
     }
 
     public CubeHex? Get(CubeHexVector hexPosition)

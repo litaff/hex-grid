@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Godot;
 using HexGridMap.Hex;
-using HexGridMap.Storage;
 
 [GlobalClass]
-public partial class HexMapData : Resource, IHexMapData
+public partial class HexData : Resource, IHexData
 {
     [Export(PropertyHint.MultilineText)]
     public string SerializedMap { get; private set; } = "";

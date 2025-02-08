@@ -19,7 +19,7 @@ public class HexEditor(
 
 	public int CurrentLayer { get; private set; }
 	public bool IsSelectionActive { get; private set; }
-	public Vector3 CurrentLayerOffset => CurrentLayer * Vector3.Up * HexGridData.Instance.LayerHeight;
+	public Vector3 CurrentLayerOffset => CurrentLayer * Vector3.Up * HexGridProperties.LayerHeight;
 
 	public void Enable()
 	{

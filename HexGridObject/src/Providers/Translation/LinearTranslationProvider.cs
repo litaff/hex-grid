@@ -1,4 +1,4 @@
-namespace HexGridObject.Providers.Translation.Providers;
+namespace HexGridObject.Providers.Translation;
 
 using Godot;
 using HexGridMap;
@@ -20,7 +20,7 @@ public class LinearTranslationProvider : IUpdateableTranslationProvider
     public LinearTranslationProvider(float translationSpeed, ITranslatable translatable, HeightData heightData)
     {
         this.translatable = translatable;
-        this.translationSpeed = translationSpeed * HexGridData.Instance.CellSize;
+        this.translationSpeed = translationSpeed * HexGridProperties.CellSize;
         this.heightData = heightData;
         
         targetPosition = translatable.Position;

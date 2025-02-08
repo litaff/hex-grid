@@ -1,4 +1,4 @@
-namespace HexGridObject.Providers.Translation.Providers;
+namespace HexGridObject.Providers.Translation;
 
 using Godot;
 using HexGridMap.Vector;

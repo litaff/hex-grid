@@ -4,8 +4,8 @@ using Godot;
 
 public static class CubeHexVectorConverter
 {
-    private static float CellSize => HexGridData.Instance.CellSize;
-    private static int ChunkSize => HexGridData.Instance.ChunkSize;
+    private static float CellSize => HexGridProperties.CellSize;
+    private static int ChunkSize => HexGridProperties.ChunkSize;
     
     /// <summary>
     /// Converts a world position to the nearest hex position.

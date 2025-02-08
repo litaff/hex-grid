@@ -2,8 +2,8 @@ namespace HexGridObject.Tests.Managers;
 
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation.Providers;
-using HexGridMap.Interfaces;
+using global::HexGridObject.Providers.Translation;
+using HexGridMap;
 using Moq;
 
 [TestFixture]

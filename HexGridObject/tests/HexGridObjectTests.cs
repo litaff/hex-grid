@@ -3,7 +3,7 @@ namespace HexGridObject.Tests;
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation.Providers;
+using global::HexGridObject.Providers.Translation;
 using HexGridMap.Vector;
 using Moq;
 

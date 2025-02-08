@@ -50,7 +50,7 @@ public class ChunkDisplay
 		
         if (enabled)
         {
-            chunkMesh ??= new WireHexGridMesh(new HexGridMeshData(world, material), HexGridData.Instance.ChunkSize, false);
+            chunkMesh ??= new WireHexGridMesh(new HexGridMeshData(world, material), HexGridProperties.ChunkSize, false);
             UpdateChunkMesh();
         }
         else

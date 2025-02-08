@@ -4,7 +4,7 @@ using HexGridMap.Vector;
 using Managers;
 using Providers;
 using Providers.Position;
-using Providers.Translation.Providers;
+using Providers.Translation;
 
 public class HexGridObject
 {

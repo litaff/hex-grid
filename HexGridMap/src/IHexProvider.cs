@@ -1,4 +1,4 @@
-namespace HexGridMap.Interfaces;
+namespace HexGridMap;
 
 using Hex;
 using Vector;

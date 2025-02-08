@@ -1,23 +1,22 @@
-namespace HexGridMap.Tests.Storage;
+namespace HexGridMap.Tests.Hex;
 
 using global::HexGridMap.Hex;
-using global::HexGridMap.Storage;
 using global::HexGridMap.Vector;
 using Moq;
 
 [TestFixture]
-public class HexMapStorageTests
+public class HexMapTests
 {
-    private Mock<IHexMapData> mockMapData;
-    private HexMapStorage storage;
+    private Mock<IHexData> mockHexData;
+    private HexMap map;
     
     [SetUp]
     public void SetUp()
     {
-        var gridData = new HexGridData(1, 1, 1);
-        mockMapData = new Mock<IHexMapData>();
-        mockMapData.Setup(mock => mock.Deserialize()).Returns(new Dictionary<int, CubeHex>());
-        storage = new HexMapStorage(mockMapData.Object);
+        var gridData = new HexGridProperties(1, 1, 1);
+        mockHexData = new Mock<IHexData>();
+        mockHexData.Setup(mock => mock.Deserialize()).Returns(new Dictionary<int, CubeHex>());
+        map = new HexMap(mockHexData.Object);
     }
 
     [Test]
@@ -25,12 +24,12 @@ public class HexMapStorageTests
     {
         var position = CubeHexVector.Zero;
         var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
-        var stored = storage.Get(position);
+        var stored = map.Get(position);
         Assert.That(stored, Is.Null);
         
-        storage.Add(hex);
+        map.Add(hex);
         
-        stored = storage.Get(position);
+        stored = map.Get(position);
         Assert.That(stored, Is.Not.Null);
         Assert.That(stored, Is.EqualTo(hex));
     }
@@ -39,9 +38,9 @@ public class HexMapStorageTests
     public void Add_DoesNotThrow_WhenAddingSamePosition_Twice()
     {
         var hex = new CubeHex(0,0, new HexProperties(), new HexMeshData());
-        storage.Add(hex);
+        map.Add(hex);
 
-        Assert.DoesNotThrow(() => storage.Add(hex));
+        Assert.DoesNotThrow(() => map.Add(hex));
     }
 
     [Test]
@@ -49,7 +48,7 @@ public class HexMapStorageTests
     {
         var position = CubeHexVector.Zero;
 
-        Assert.DoesNotThrow(() => storage.Remove(position));
+        Assert.DoesNotThrow(() => map.Remove(position));
     }
     
     [Test]
@@ -57,14 +56,14 @@ public class HexMapStorageTests
     {
         var position = CubeHexVector.Zero;
         var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
-        storage.Add(hex);
-        var stored = storage.Get(position);
+        map.Add(hex);
+        var stored = map.Get(position);
         Assert.That(stored, Is.Not.Null);
         Assert.That(stored, Is.EqualTo(hex));
         
-        storage.Remove(position);
+        map.Remove(position);
         
-        stored = storage.Get(position);
+        stored = map.Get(position);
         Assert.That(stored, Is.Null);
     }
 
@@ -73,7 +72,7 @@ public class HexMapStorageTests
     {
         var position = CubeHexVector.Zero;
 
-        var stored = storage.Get(position);
+        var stored = map.Get(position);
         
         Assert.That(stored, Is.Null);
     }
@@ -83,9 +82,9 @@ public class HexMapStorageTests
     {
         var position = CubeHexVector.Zero;
         var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
-        storage.Add(hex);
+        map.Add(hex);
 
-        var stored = storage.Get(position);
+        var stored = map.Get(position);
         
         Assert.That(stored, Is.Not.Null);
         Assert.That(stored, Is.EqualTo(hex));
@@ -94,7 +93,7 @@ public class HexMapStorageTests
     [Test]
     public void GetMap_ReturnsNoHexes_IfEmpty()
     {
-        var hexes = storage.GetMap();
+        var hexes = map.GetMap();
         
         Assert.That(hexes, Is.Empty);
     }
@@ -103,9 +102,9 @@ public class HexMapStorageTests
     public void GetMap_ReturnsAllHexes_IfNotEmpty()
     {
         var hex = new CubeHex(0,0, new HexProperties(), new HexMeshData());
-        storage.Add(hex);
+        map.Add(hex);
         
-        var hexes = storage.GetMap();
+        var hexes = map.GetMap();
         
         Assert.That(hexes, Is.Not.Empty);
         Assert.That(hexes.Length, Is.EqualTo(1));

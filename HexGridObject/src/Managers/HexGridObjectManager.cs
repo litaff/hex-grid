@@ -1,7 +1,7 @@
 namespace HexGridObject.Managers;
 
 using System.Collections.Generic;
-using HexGridMap.Interfaces;
+using HexGridMap;
 using Providers;
 
 public class HexGridObjectManager : IHexGridObjectManager

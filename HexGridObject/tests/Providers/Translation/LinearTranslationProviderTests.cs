@@ -1,8 +1,6 @@
-namespace HexGridObject.Tests.Providers.Translation.Providers;
+namespace HexGridObject.Tests.Providers.Translation;
 
-using global::HexGridObject.Providers;
 using global::HexGridObject.Providers.Translation;
-using global::HexGridObject.Providers.Translation.Providers;
 using Godot;
 using HexGridMap;
 using HexGridMap.Vector;
@@ -19,7 +17,7 @@ public class LinearTranslationProviderTests
     [SetUp]
     public void SetUp()
     {
-        var gridData = new HexGridData(1, 1, 1);
+        var gridData = new HexGridProperties(1, 1, 1);
         initialPosition = Vector3.Zero;
         translationSpeed = 1f;
         mockTranslatable = new Mock<ITranslatable>();

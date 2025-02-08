@@ -3,7 +3,6 @@ namespace HexGridObject.Managers;
 using System.Collections.Generic;
 using HexGridMap;
 using HexGridMap.Hex;
-using HexGridMap.Interfaces;
 using HexGridMap.Vector;
 using Providers;
 
@@ -51,7 +50,7 @@ public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerM
 
     public float GetHexHeight(CubeHexVector position)
     {
-        var height = Layer * HexGridData.Instance.LayerHeight;
+        var height = Layer * HexGridProperties.LayerHeight;
         var cubeHex = hexProvider.GetHex(position);
         if (cubeHex is not null)
         {

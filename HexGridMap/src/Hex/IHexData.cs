@@ -1,8 +1,6 @@
-namespace HexGridMap.Storage;
+namespace HexGridMap.Hex;
 
-using Hex;
-
-public interface IHexMapData
+public interface IHexData
 {
     public void Serialize();
     public Dictionary<int, CubeHex> Deserialize();

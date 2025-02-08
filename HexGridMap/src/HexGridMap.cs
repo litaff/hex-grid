@@ -6,28 +6,26 @@ using System.Linq;
 using Fov;
 using Godot;
 using Hex;
-using Layer;
-using Storage;
 using Vector;
 
 public class HexGridMap : IFovProvider
 {
     private readonly MeshLibrary meshLibrary;
-    private readonly IHexMapDataProvider hexMapDataProvider;
-    private readonly Dictionary<int, LayerStorage> layers;
+    private readonly IHexDataProvider hexDataProvider;
+    private readonly Dictionary<int, HexGridLayer> layers;
     private readonly World3D world;
 
-    public IReadOnlyDictionary<int, LayerStorage> Layers => layers;
+    public IReadOnlyDictionary<int, HexGridLayer> Layers => layers;
 
-    public HexGridMap(MeshLibrary meshLibrary, IHexMapDataProvider hexMapDataProvider,
+    public HexGridMap(MeshLibrary meshLibrary, IHexDataProvider hexDataProvider,
         World3D world)
     {
         this.meshLibrary = meshLibrary;
         this.world = world;
-        this.hexMapDataProvider = hexMapDataProvider;
+        this.hexDataProvider = hexDataProvider;
 
-        layers = new Dictionary<int, LayerStorage>();
-        foreach (var data in hexMapDataProvider.GetMaps())
+        layers = new Dictionary<int, HexGridLayer>();
+        foreach (var data in hexDataProvider.GetData())
         {
             layers.Add(data.Key, CreateLayer(data.Key, data.Value));
         }
@@ -41,7 +39,7 @@ public class HexGridMap : IFovProvider
             return;
         }
 
-        var data = hexMapDataProvider.AddMap(layerIndex);
+        var data = hexDataProvider.AddData(layerIndex);
         layer = CreateLayer(layerIndex, data);
         layers.Add(layerIndex, layer);
         layer.AddHex(hex);
@@ -54,7 +52,7 @@ public class HexGridMap : IFovProvider
         
         if (!layer.IsEmpty()) return;
         layers.Remove(layerIndex);
-        hexMapDataProvider.RemoveMap(layerIndex);
+        hexDataProvider.RemoveData(layerIndex);
     }
 
     public CubeHex? GetHex(CubeHexVector hexPosition, int layerIndex)
@@ -119,9 +117,9 @@ public class HexGridMap : IFovProvider
         }
     }
 
-    private LayerStorage CreateLayer(int layerIndex, IHexMapData data)
+    private HexGridLayer CreateLayer(int layerIndex, IHexData data)
     {
-        var layerStorage = new LayerStorage(data, layerIndex, meshLibrary, world);
+        var layerStorage = new HexGridLayer(data, layerIndex, meshLibrary, world);
         return layerStorage;
     }
 }

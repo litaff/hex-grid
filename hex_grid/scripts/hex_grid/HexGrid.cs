@@ -9,8 +9,6 @@ using hex_grid_map;
 using HexGridMap;
 using HexGridMap.Fov;
 using HexGridMap.Hex;
-using HexGridMap.Interfaces;
-using HexGridMap.Storage;
 using HexGridMap.Vector;
 using HexGridObject;
 using HexGridObject.Managers;
@@ -20,7 +18,7 @@ using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 [Tool]
 #endif
 [GlobalClass]
-public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionProvider, IFovProvider
+public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvider, IFovProvider
 {
     [Export]
     public float CellSize
@@ -59,14 +57,14 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
     [Export]
     public MeshLibrary MeshLibrary { get; private set; } = null!;
     [Export]
-    public Dictionary<int, HexMapData> MapData { get; private set; } = new();
+    public Dictionary<int, HexData> MapData { get; private set; } = new();
     [Export]
     public Array<Node> Objects { get; private set; } = [];
 
     private float cellSize;
     private int chunkSize;
     private float layerHeight;
-    private HexGridData hexGridData = null!;
+    private HexGridProperties hexGridProperties = null!;
 
     public HexGridMap? HexGridMap { get; private set; }
     public HexGridObjectManager? GridObjectManager { get; private set; }
@@ -94,38 +92,43 @@ public partial class HexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionPr
 
     public void Initialize()
     {
-        hexGridData = new HexGridData(CellSize, ChunkSize, LayerHeight);
+        hexGridProperties = new HexGridProperties(CellSize, ChunkSize, LayerHeight);
         HexGridMap?.Dispose();
         HexGridMap = new HexGridMap(MeshLibrary, this, GetWorld3D());
     }
 
-    public IHexMapData? GetMap(int index)
+    public IHexData? GetData(int index)
     {
         return CollectionExtensions.GetValueOrDefault(MapData, index);
     }
 
-    public IHexMapData AddMap(int index)
+    public IHexData AddData(int index)
     {
-        var map = new HexMapData();
+        var map = new HexData();
         MapData.Add(index, map);
         return map;
     }
 
-    public void RemoveMap(int index)
+    public void RemoveData(int index)
     {
         MapData.Remove(index);
     }
 
-    public System.Collections.Generic.Dictionary<int, IHexMapData> GetMaps()
+    public System.Collections.Generic.Dictionary<int, IHexData> GetData()
     {
-        return MapData.ToDictionary(pair => pair.Key, pair => pair.Value as IHexMapData);
+        return MapData.ToDictionary(pair => pair.Key, pair => pair.Value as IHexData);
     }
 
-    public void ClearMaps()
+    public void ClearData()
     {
         MapData.Clear();
         NotifyPropertyListChanged();
         Initialize();
+    }
+
+    public void ClearMaps()
+    {
+        ClearData();
     }
 
     public void ClearMap(int index)

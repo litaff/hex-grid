@@ -1,44 +1,43 @@
-namespace HexGridMap.Layer;
+namespace HexGridMap;
 
 using System.Linq;
+using Chunk;
 using Godot;
 using Hex;
-using Interfaces;
-using Storage;
 using Vector;
 
-public class LayerStorage : IHexProvider
+public class HexGridLayer : IHexProvider
 {
-    private readonly HexMapStorage storage;
-    private readonly HexMapChunkStorage chunkStorage;
+    private readonly HexMap hexMap;
+    private readonly ChunkMap chunkMap;
 
-    public LayerStorage(IHexMapData hexMapData, int layerIndex, MeshLibrary library,
+    public HexGridLayer(IHexData hexData, int layerIndex, MeshLibrary library,
         World3D scenario)
     {
-        storage = new HexMapStorage(hexMapData);
+        hexMap = new HexMap(hexData);
         
-        chunkStorage = new HexMapChunkStorage(layerIndex * HexGridData.Instance.LayerHeight, library, scenario);
-        foreach (var hex in storage.GetMap())
+        chunkMap = new ChunkMap(layerIndex * HexGridProperties.LayerHeight, library, scenario);
+        foreach (var hex in hexMap.GetMap())
         {
-            chunkStorage.AssignHex(hex);
+            chunkMap.AssignHex(hex);
         }
     }
 
     public CubeHex? GetHex(CubeHexVector hexPosition)
     {
-        return storage.Get(hexPosition);
+        return hexMap.Get(hexPosition);
     }
     
     public void AddHex(CubeHex hex)
     {
-        storage.Add(hex);
-        chunkStorage.AssignHex(hex);
+        hexMap.Add(hex);
+        chunkMap.AssignHex(hex);
     }
 
     public void RemoveHex(CubeHexVector hexPosition)
     {
-        storage.Remove(hexPosition);
-        chunkStorage.RemoveHex(hexPosition);
+        hexMap.Remove(hexPosition);
+        chunkMap.RemoveHex(hexPosition);
     }
 
     // TODO: Why is this here? The storage is not a fov provider...
@@ -49,7 +48,7 @@ public class LayerStorage : IHexProvider
         foreach (var edgePoint in edge)
         {
             var visionLine = origin.LineTo(edgePoint);
-            var hexes = visionLine.Select(position => storage.Get(position)).Where(hex => hex != null);
+            var hexes = visionLine.Select(position => hexMap.Get(position)).Where(hex => hex != null);
             var positions = hexes.TakeWhile(hex => !hex!.IsOccluder).Select(hex => hex!.Position);
             foreach (var position in positions)
             {
@@ -61,31 +60,31 @@ public class LayerStorage : IHexProvider
 
     public bool IsEmpty()
     {
-        return storage.GetMap().Length <= 0;
+        return hexMap.GetMap().Length <= 0;
     }
     
     public void HideChunks(CubeHexVector[] chunkPositions)
     {
-        chunkStorage.HideChunks(chunkPositions);
+        chunkMap.HideChunks(chunkPositions);
     }
 
     public void Display()
     {
-        chunkStorage.HideChunks([]);
+        chunkMap.HideChunks([]);
     }
     
     public void Hide()
     {
-        chunkStorage.Hide();
+        chunkMap.Hide();
     }
     
     public void Dispose()
     {
-        chunkStorage.Dispose();
+        chunkMap.Dispose();
     }
 
-    ~LayerStorage()
+    ~HexGridLayer()
     {
-        chunkStorage.Dispose();
+        chunkMap.Dispose();
     }
 }
