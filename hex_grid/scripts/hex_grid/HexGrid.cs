@@ -18,7 +18,7 @@ using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 [Tool]
 #endif
 [GlobalClass]
-public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvider, IFovProvider
+public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvider
 {
     [Export]
     public float CellSize
@@ -68,8 +68,8 @@ public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvi
 
     public HexGridMap? HexGridMap { get; private set; }
     public HexGridObjectManager? GridObjectManager { get; private set; }
-    public IFovProvider FovProvider => this;
     public World3D World3D => GetWorld3D();
+    public System.Collections.Generic.Dictionary<int, IFovProvider> FovProviders { get; private set; }
 
     public event Action? OnPropertyChange;
     
@@ -95,6 +95,7 @@ public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvi
         hexGridProperties = new HexGridProperties(CellSize, ChunkSize, LayerHeight);
         HexGridMap?.Dispose();
         HexGridMap = new HexGridMap(MeshLibrary, this, GetWorld3D());
+        InitializeFovProviders();
     }
 
     public IHexData? GetData(int index)
@@ -146,6 +147,7 @@ public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvi
             return;
         }
         HexGridMap.RemoveHex(hexPosition, layerIndex);
+        InitializeFovProviders();
         NotifyPropertyListChanged();
     }
 
@@ -157,6 +159,7 @@ public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvi
             return;
         }
         HexGridMap.AddHex(hex, layerIndex);
+        InitializeFovProviders();
         NotifyPropertyListChanged();
     }
 
@@ -187,11 +190,13 @@ public partial class HexGrid : Node3D, IHexDataProvider, IHexGridMapEditionProvi
         return null;
     }
 
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, int layerIndex)
+    private void InitializeFovProviders()
     {
-        if (HexGridMap != null) return HexGridMap.GetVisiblePositions(origin, radius, layerIndex);
-        GD.PushError("[HexGrid] Tried to get fov from uninitialized hex grid map.");
-        return [];
-
+        FovProviders = new System.Collections.Generic.Dictionary<int, IFovProvider>();
+        if (HexGridMap == null) return;
+        foreach (var layer in HexGridMap.Layers)
+        {
+            FovProviders.Add(layer.Key, new LineFov(layer.Value));
+        }
     }
 }

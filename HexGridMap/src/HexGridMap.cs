@@ -3,12 +3,11 @@ namespace HexGridMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Fov;
 using Godot;
 using Hex;
 using Vector;
 
-public class HexGridMap : IFovProvider
+public class HexGridMap
 {
     private readonly MeshLibrary meshLibrary;
     private readonly IHexDataProvider hexDataProvider;
@@ -102,11 +101,6 @@ public class HexGridMap : IFovProvider
         {
             layer.Value.Display();
         }
-    }
-
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, int layerIndex)
-    {
-        return layers.TryGetValue(layerIndex, out var layer) ? layer.GetVisiblePositions(origin, radius) : [];
     }
 
     public void Dispose()

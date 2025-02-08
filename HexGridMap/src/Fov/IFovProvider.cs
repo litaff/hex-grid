@@ -4,5 +4,5 @@ using Vector;
 
 public interface IFovProvider
 {
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius, int layerIndex);
+    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius);
 }

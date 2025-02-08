@@ -1,6 +1,5 @@
 namespace HexGridMap;
 
-using System.Linq;
 using Chunk;
 using Godot;
 using Hex;
@@ -38,24 +37,6 @@ public class HexGridLayer : IHexProvider
     {
         hexMap.Remove(hexPosition);
         chunkMap.RemoveHex(hexPosition);
-    }
-
-    // TODO: Why is this here? The storage is not a fov provider...
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius)
-    {
-        var visiblePositions = new Dictionary<int, CubeHexVector>();
-        var edge = origin.GetRing(radius);
-        foreach (var edgePoint in edge)
-        {
-            var visionLine = origin.LineTo(edgePoint);
-            var hexes = visionLine.Select(position => hexMap.Get(position)).Where(hex => hex != null);
-            var positions = hexes.TakeWhile(hex => !hex!.IsOccluder).Select(hex => hex!.Position);
-            foreach (var position in positions)
-            {
-                visiblePositions.TryAdd(position.GetHashCode(), position);
-            }
-        }
-        return visiblePositions.Values.ToArray();
     }
 
     public bool IsEmpty()

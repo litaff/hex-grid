@@ -76,7 +76,7 @@ public partial class HexGridEditor : EditorPlugin
 			return;
 		}
 		hexEditor = new HexEditor(mapEditionProvider, view.HexEditor, hexGridEditorInputHandler);
-		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider.FovProvider, hexEditor, hexGridEditorInputHandler);
+		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider, hexEditor, hexGridEditorInputHandler);
 		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, hexEditor, hexGridEditorInputHandler);
 		chunkDisplay = new ChunkDisplay(world, view.ChunkDisplay, hexEditor, hexGridEditorInputHandler);
 
