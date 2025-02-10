@@ -10,15 +10,15 @@ public class HexGridObject
 {
     private IHexGridObjectLayerManager? layerManager;
     
-    public IHexGridPositionProvider HexGridPositionProvider { get; }
+    public IHexGridPositionProvider PositionProvider { get; }
     public ITranslationProvider TranslationProvider { get; }
 
     public HeightData HeightData { get; }
-    public CubeHexVector GridPosition => HexGridPositionProvider.Position;
+    public CubeHexVector GridPosition => PositionProvider.Position;
 
-    public HexGridObject(IHexGridPositionProvider hexGridPositionProvider, ITranslationProvider translationProvider, HeightData heightData)
+    public HexGridObject(IHexGridPositionProvider positionProvider, ITranslationProvider translationProvider, HeightData heightData)
     {
-        HexGridPositionProvider = hexGridPositionProvider;
+        PositionProvider = positionProvider;
         TranslationProvider = translationProvider;
         HeightData = heightData;
     }
@@ -26,26 +26,26 @@ public class HexGridObject
     public virtual void Enable(IHexGridObjectLayerManager layerManager, HexStateProviders hexStateProviders)
     {
         this.layerManager = layerManager;
-        HexGridPositionProvider.Enable(hexStateProviders);
+        PositionProvider.Enable(hexStateProviders);
         TranslationProvider.Enable(hexStateProviders.Providers[0]);
     }
 
     public virtual void Disable()
     {
-        HexGridPositionProvider.Disable();
+        PositionProvider.Disable();
         TranslationProvider.Disable();
     }
 
     public virtual void RegisterHandlers()
     {
-        HexGridPositionProvider.OnPositionChanged += OnHexGridPositionChangedHandler;
-        HexGridPositionProvider.OnLayerChangeRequested += OnLayerChangeRequestedHandler;
+        PositionProvider.OnPositionChanged += OnPositionChangedHandler;
+        PositionProvider.OnLayerChangeRequested += OnLayerChangeRequestedHandler;
     }
     
     public virtual void UnregisterHandlers()
     {
-        HexGridPositionProvider.OnPositionChanged -= OnHexGridPositionChangedHandler;
-        HexGridPositionProvider.OnLayerChangeRequested -= OnLayerChangeRequestedHandler;
+        PositionProvider.OnPositionChanged -= OnPositionChangedHandler;
+        PositionProvider.OnLayerChangeRequested -= OnLayerChangeRequestedHandler;
     }
     
     private void OnLayerChangeRequestedHandler(int relativeIndex)
@@ -53,10 +53,10 @@ public class HexGridObject
         layerManager?.ChangeGridObjectLayer(this, relativeIndex);
     }
 
-    private void OnHexGridPositionChangedHandler(CubeHexVector oldPosition)
+    private void OnPositionChangedHandler(CubeHexVector oldPosition)
     {
         layerManager?.UpdateGridObjectPosition(this, oldPosition);
         // Translation should always happen after the position change.
-        TranslationProvider.TranslateTo(HexGridPositionProvider.Position);
+        TranslationProvider.TranslateTo(PositionProvider.Position);
     }
 }
