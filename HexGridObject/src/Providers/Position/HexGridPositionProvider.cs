@@ -48,6 +48,20 @@ public class HexGridPositionProvider : IHexGridPositionProvider
         if (LayerTranslate(targetPosition)) return;
     }
 
+    public bool CanTranslate(CubeHexVector offset)
+    {
+        if (hexStateProviders.Count == 0) return false;
+        
+        var targetPosition = Position + offset;
+        
+        if (CanPlaneTranslate(targetPosition)) return true;
+        
+        if (CanLayerTranslateTo(targetPosition, -1) || 
+            CanLayerTranslateTo(targetPosition, 1)) return true;
+        
+        return false;
+    }
+
     public bool PlaneTranslate(CubeHexVector targetPosition)
     {
         if (hexStateProviders.Count == 0) return false;
@@ -67,11 +81,7 @@ public class HexGridPositionProvider : IHexGridPositionProvider
 
     public bool LayerTranslateTo(CubeHexVector targetPosition, int relativeLayerIndex)
     {
-        if (!hexStateProviders.TryGetValue(relativeLayerIndex, out var targetHexProvider)) return false;
-        
-        if (!targetHexProvider.Exists(targetPosition)) return false;
-        
-        if (!IsStepValid(GetHeightDifference(targetPosition, targetHexProvider))) return false;
+        if (!CanLayerTranslateTo(targetPosition, relativeLayerIndex)) return false;
 
         OnLayerChangeRequested?.Invoke(relativeLayerIndex);
         var previousPosition = Position;
@@ -79,6 +89,17 @@ public class HexGridPositionProvider : IHexGridPositionProvider
         // This will change the stack of the object. Remove does nothing as it was removed on layer change.
         // Only add will have an effect.
         OnPositionChanged?.Invoke(previousPosition);
+
+        return true;
+    }
+
+    private bool CanLayerTranslateTo(CubeHexVector targetPosition, int relativeLayerIndex)
+    {
+        if (!hexStateProviders.TryGetValue(relativeLayerIndex, out var targetHexProvider)) return false;
+        
+        if (!targetHexProvider.Exists(targetPosition)) return false;
+        
+        if (!IsStepValid(GetHeightDifference(targetPosition, targetHexProvider))) return false;
 
         return true;
     }

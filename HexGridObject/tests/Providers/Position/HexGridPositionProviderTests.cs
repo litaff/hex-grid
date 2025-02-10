@@ -28,6 +28,15 @@ public class HexGridPositionProviderTests
 
         Assert.DoesNotThrow(() => provider.Translate(CubeHexVector.Zero));
     }
+    
+    [Test]
+    public void CanTranslate_DoesNotThrow_IfNoProviders()
+    {
+        // Clear providers
+        provider.Disable();
+
+        Assert.DoesNotThrow(() => provider.CanTranslate(CubeHexVector.Zero));
+    }
 
     [Test]
     public void PlaneTranslate_ReturnsFalse_IfNoProviders()
