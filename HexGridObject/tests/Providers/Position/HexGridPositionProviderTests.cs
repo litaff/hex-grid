@@ -69,7 +69,7 @@ public class HexGridPositionProviderTests
         var target = CubeHexVector.Zero;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
-        mockStateProvider.Setup(p => p.GetHexHeight(target)).Returns(0f);
+        mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
         var providers = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             {0, mockStateProvider.Object}
@@ -86,7 +86,7 @@ public class HexGridPositionProviderTests
         var target = CubeHexVector.North;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
-        mockStateProvider.Setup(p => p.GetHexHeight(target)).Returns(0f);
+        mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
         var providers = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             {0, mockStateProvider.Object}
@@ -105,7 +105,7 @@ public class HexGridPositionProviderTests
         var target = CubeHexVector.North;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
-        mockStateProvider.Setup(p => p.GetHexHeight(target)).Returns(0f);
+        mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
         var providers = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             {0, mockStateProvider.Object}
@@ -125,7 +125,7 @@ public class HexGridPositionProviderTests
         var target = CubeHexVector.North;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
-        mockStateProvider.Setup(p => p.GetHexHeight(target)).Returns(0f);
+        mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
         var providers = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             {0, mockStateProvider.Object}

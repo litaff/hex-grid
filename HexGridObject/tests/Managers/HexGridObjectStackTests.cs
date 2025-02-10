@@ -87,6 +87,28 @@ public class HexGridObjectStackTests
         
         Assert.That(stackHeight, Is.EqualTo(heights.Sum()));
     }
+    
+    [TestCase(1)]
+    [TestCase(0.9f)]
+    [TestCase(0)]
+    [TestCase(-0.9f)]
+    [TestCase(-1)]
+    [TestCase(-1, 1, 10, -1.9f)]
+    public void GetStackHeight_ReturnsCorrectHeight_WithExcludes(params float[] heights)
+    {
+        stack = new HexGridObjectStack();
+        foreach (var height in heights)
+        {
+            var mockObject = GetMockObject(height);
+            stack.Add(mockObject);
+        }
+        Assert.That(stack.Objects, Has.Count.EqualTo(heights.Length));
+        var exclude = stack.Objects[0];
+        
+        var stackHeight = stack.GetStackHeight([exclude]);
+        
+        Assert.That(stackHeight, Is.EqualTo(heights.Sum() - exclude.HeightData.Height));
+    }
 
     [Test]
     public void Contains_ReturnsTrue_IfTypeIsPresent()

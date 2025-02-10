@@ -205,6 +205,46 @@ public class HexGridObjectLayerManagerTests
         Assert.That(height, Is.EqualTo(3f));
     }
     
+    [Test]
+    public void GetHexHeight_ReturnsLayerHexAndStackHeight_IfAllExistAndExcludingObject()
+    { 
+        layerManager = new HexGridObjectLayerManager(1, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+        var hexData = new HexGridProperties(0, 0, 1f);
+        var hex = new CubeHex(0, 0, new HexProperties(1f), default);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
+        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
+        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var heightData = new HeightData(1f, 0);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        layerManager.AddGridObject(gridObject);
+        
+        var height = layerManager.GetHexHeight(CubeHexVector.Zero, [gridObject]);
+        
+        Assert.That(height, Is.EqualTo(2f));
+    }
+    
+    [Test]
+    public void GetHexHeight_DoesNotThrow_IfNullExclude()
+    { 
+        layerManager = new HexGridObjectLayerManager(1, 
+            mockHexProvider.Object, 
+            mockObjectManager.Object);
+        var hexData = new HexGridProperties(0, 0, 1f);
+        var hex = new CubeHex(0, 0, new HexProperties(1f), default);
+        mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
+        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
+        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var heightData = new HeightData(1f, 0);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        layerManager.AddGridObject(gridObject);
+        
+        Assert.DoesNotThrow(() => layerManager.GetHexHeight(CubeHexVector.Zero, null));
+    }
+    
     private HexGridObject GetMockObject()
     {
         var mockPositionProvider = new Mock<IHexGridPositionProvider>();
