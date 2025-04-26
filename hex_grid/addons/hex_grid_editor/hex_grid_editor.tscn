@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://cvyi07qp410ei"]
 
-[ext_resource type="Script" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_yx7c0"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_d32ym"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
-[ext_resource type="Script" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
+[ext_resource type="Script" uid="uid://cf7wfqqs2iahx" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
+[ext_resource type="Script" uid="uid://c78hmr8v4p3cj" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
+[ext_resource type="Script" uid="uid://cqi0bbocmjr4" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_yx7c0"]
+[ext_resource type="Script" uid="uid://vd4jqbx16qbo" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_d32ym"]
+[ext_resource type="Script" uid="uid://bs8gt8xaauvas" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
+[ext_resource type="Script" uid="uid://kdpqfcd7jvws" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
+[ext_resource type="Script" uid="uid://b6bjygta3gqv1" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
 
 [node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "FovDisplay", "HexEditor", "EditorGridIndicator", "ChunkDisplay")]
 layout_mode = 3

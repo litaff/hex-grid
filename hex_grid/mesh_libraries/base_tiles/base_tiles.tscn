@@ -2,5 +2,4 @@
 
 [ext_resource type="PackedScene" uid="uid://cn36l2fkixcnc" path="res://mesh_libraries/base_tiles/base_tiles.glb" id="1_4ogm0"]
 
-
 [node name="base_tiles" instance=ExtResource("1_4ogm0")]
