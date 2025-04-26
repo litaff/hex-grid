@@ -32,7 +32,7 @@ public class InstantTranslationProviderTests
         var gridData = new HexGridProperties(1, 1, 1);
         var mockProvider = new Mock<IHexStateProvider>();
         var position = CubeHexVector.Zero;
-        mockProvider.Setup(m => m.GetHexHeight(position)).Returns(0);
+        mockProvider.Setup(m => m.GetHexHeight(position, null)).Returns(0);
         provider.Enable(mockProvider.Object);
         mockTranslatable.Setup(m => m.Position).Returns(Vector3.Zero);
         var offset = position.ToWorldPosition() - mockTranslatable.Object.Position;

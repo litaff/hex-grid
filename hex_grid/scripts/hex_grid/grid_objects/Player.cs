@@ -39,22 +39,22 @@ public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder
         switch (@event)
         {
             case InputEventKey { Pressed: true, Keycode: Key.Q, Echo: false }:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.WestNorth);
+                gridObject?.PositionProvider.Translate(CubeHexVector.WestNorth);
                 break;
             case InputEventKey { Pressed: true, Keycode: Key.W, Echo: false}:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.North);
+                gridObject?.PositionProvider.Translate(CubeHexVector.North);
                 break;
             case InputEventKey { Pressed: true, Keycode: Key.E, Echo: false}:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.EastNorth);
+                gridObject?.PositionProvider.Translate(CubeHexVector.EastNorth);
                 break;
             case InputEventKey { Pressed: true, Keycode: Key.A, Echo: false}:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.WestSouth);
+                gridObject?.PositionProvider.Translate(CubeHexVector.WestSouth);
                 break;
             case InputEventKey { Pressed: true, Keycode: Key.S, Echo: false}:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.South);
+                gridObject?.PositionProvider.Translate(CubeHexVector.South);
                 break;
             case InputEventKey { Pressed: true, Keycode: Key.D, Echo: false}:
-                gridObject?.HexGridPositionProvider.Translate(CubeHexVector.EastSouth);
+                gridObject?.PositionProvider.Translate(CubeHexVector.EastSouth);
                 break;
         }
         base._Input(@event);

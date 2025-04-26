@@ -15,6 +15,7 @@ public interface IHexGridPositionProvider
     /// </summary>
     public event Action<int> OnLayerChangeRequested;
     public void Translate(CubeHexVector offset);
+    public bool CanTranslate(CubeHexVector offset);
     public void Enable(HexStateProviders providers);
     public void Disable();
 }

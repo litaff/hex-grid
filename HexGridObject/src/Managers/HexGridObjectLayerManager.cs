@@ -47,19 +47,17 @@ public class HexGridObjectLayerManager : IHexStateProvider, IHexGridObjectLayerM
         manager.RemoveGridObject(hexGridObject, Layer); 
         manager.AddGridObject(hexGridObject, Layer + relativeLayerIndex);
     }
-
-    public float GetHexHeight(CubeHexVector position)
+    
+    public float GetHexHeight(CubeHexVector position, List<HexGridObject>? exclude = null)
     {
         var height = Layer * HexGridProperties.LayerHeight;
-        var cubeHex = hexProvider.GetHex(position);
-        if (cubeHex is not null)
-        {
-            height += cubeHex.Height;
-        }
-        if (stacks.TryGetValue(position.GetHashCode(), out var stack))
-        {
-            height += stack.GetStackHeight();
-        }
+        
+        height += hexProvider.GetHex(position)?.Height ?? 0;
+
+        if (!stacks.TryGetValue(position.GetHashCode(), out var stack)) return height;
+        
+        height += exclude != null ? stack.GetStackHeight(exclude) : stack.GetStackHeight();
+        
         return height;
     }
     

@@ -39,6 +39,11 @@ public readonly struct HexGridObjectStack
         return objects.Sum(gridObject => gridObject.HeightData.Height);
     }
 
+    public float GetStackHeight(List<HexGridObject> exclude)
+    {
+        return objects.Except(exclude).Sum(gridObject => gridObject.HeightData.Height);
+    }
+
     public bool Contains<T>()
     {
         return objects.Any(gridObject => gridObject is T);
