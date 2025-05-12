@@ -6,9 +6,9 @@ using HexGridMap.Vector;
 using Moq;
 
 [TestFixture]
-public class HexGridPositionProviderTests
+public class PositionProviderTests
 {
-    private HexGridPositionProvider provider;
+    private PositionProvider provider;
     private CubeHexVector initialPosition;
     private HeightData heightData;
     
@@ -17,7 +17,7 @@ public class HexGridPositionProviderTests
     {
         initialPosition = CubeHexVector.Zero;
         heightData = new HeightData(1, 1);
-        provider = new HexGridPositionProvider(initialPosition, heightData);
+        provider = new PositionProvider(initialPosition, heightData);
     }
     
     [Test]

@@ -1,17 +1,21 @@
 namespace HexGridObject.Tests;
 
+using global::HexGridObject.Handlers.Rotation;
+using global::HexGridObject.Handlers.Translation;
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation;
+using global::HexGridObject.Providers.Rotation;
 using HexGridMap.Vector;
 using Moq;
 
 [TestFixture]
 public class HexGridObjectTests
 {
-    private Mock<IHexGridPositionProvider> mockPositionProvider;
-    private Mock<ITranslationProvider> mockTranslationProvider;
+    private Mock<IPositionProvider> mockPositionProvider;
+    private Mock<IRotationProvider> mockRotationProvider;
+    private Mock<ITranslationHandler> mockTranslationHandler;
+    private Mock<IRotationHandler> mockRotationHandler;
     private Mock<IHexGridObjectLayerManager> mockLayerManager;
     private HexGridObject hexGridObject;
     private HeightData heightData;
@@ -20,15 +24,17 @@ public class HexGridObjectTests
     [SetUp]
     public void SetUp()
     {
-        mockPositionProvider = new Mock<IHexGridPositionProvider>();
-        mockTranslationProvider = new Mock<ITranslationProvider>();
+        mockPositionProvider = new Mock<IPositionProvider>();
+        mockRotationProvider = new Mock<IRotationProvider>();
+        mockTranslationHandler = new Mock<ITranslationHandler>();
+        mockRotationHandler = new Mock<IRotationHandler>();
         mockLayerManager = new Mock<IHexGridObjectLayerManager>();
         hexStateProviders = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             { 0, new Mock<IHexStateProvider>().Object }
         });
         heightData = new HeightData();
-        hexGridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        hexGridObject = new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
     }
 
     [Test]
@@ -44,7 +50,7 @@ public class HexGridObjectTests
     {
         hexGridObject.Enable(mockLayerManager.Object, hexStateProviders);
         
-        mockTranslationProvider.Verify(p => p.Enable(hexStateProviders.Providers[0]), Times.Once);
+        mockTranslationHandler.Verify(p => p.Enable(hexStateProviders.Providers[0]), Times.Once);
     }
 
     [Test]
@@ -60,7 +66,7 @@ public class HexGridObjectTests
     {
         hexGridObject.Disable();
 
-        mockTranslationProvider.Verify(p => p.Disable(), Times.Once);
+        mockTranslationHandler.Verify(p => p.Disable(), Times.Once);
     }
 
     [Test]
@@ -88,6 +94,6 @@ public class HexGridObjectTests
         mockPositionProvider.Raise(p => p.OnPositionChanged += null, oldPosition);
 
         mockLayerManager.Verify(m => m.UpdateGridObjectPosition(hexGridObject, oldPosition), Times.Once);
-        mockTranslationProvider.Verify(t => t.TranslateTo(newPosition), Times.Once);
+        mockTranslationHandler.Verify(t => t.TranslateTo(newPosition), Times.Once);
     }
 }

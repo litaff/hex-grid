@@ -1,8 +1,10 @@
 namespace HexGridObject.Tests.Managers;
 
+using global::HexGridObject.Handlers.Rotation;
+using global::HexGridObject.Handlers.Translation;
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation;
+using global::HexGridObject.Providers.Rotation;
 using Moq;
 
 [TestFixture]
@@ -134,9 +136,11 @@ public class HexGridObjectStackTests
 
     private HexGridObject GetMockObject(float height = 0)
     {
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(height, 0);
-        return new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        return new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
     }
 }

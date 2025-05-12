@@ -1,15 +1,15 @@
-namespace HexGridObject.Tests.Providers.Translation;
+namespace HexGridObject.Tests.Handlers.Translation;
 
-using global::HexGridObject.Providers.Translation;
+using global::HexGridObject.Handlers.Translation;
 using Godot;
 using HexGridMap;
 using HexGridMap.Vector;
 using Moq;
 
 [TestFixture]
-public class LinearTranslationProviderTests
+public class LinearTranslationHandlerTests
 {
-    private LinearTranslationProvider provider;
+    private LinearTranslationHandler handler;
     private Mock<ITranslatable> mockTranslatable;
     private Vector3 initialPosition;
     private float translationSpeed;
@@ -22,18 +22,18 @@ public class LinearTranslationProviderTests
         translationSpeed = 1f;
         mockTranslatable = new Mock<ITranslatable>();
         mockTranslatable.Setup(t => t.Position).Returns(initialPosition);
-        provider = new LinearTranslationProvider(translationSpeed, mockTranslatable.Object, new HeightData());
+        handler = new LinearTranslationHandler(translationSpeed, mockTranslatable.Object, new HeightData());
     }
     
     [Test]
     public void TranslateTo_DoesNotThrow_IfNoHexStateProvider()
     {
-        Assert.DoesNotThrow(() => provider.TranslateTo(CubeHexVector.Zero));
+        Assert.DoesNotThrow(() => handler.TranslateTo(CubeHexVector.Zero));
     }
 
     [Test]
     public void Update_DoesNotThrow_IfTranslationComplete_IsTrue()
     {
-        Assert.DoesNotThrow(() => provider.Update(0d));
+        Assert.DoesNotThrow(() => handler.Update(0d));
     }
 }

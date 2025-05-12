@@ -1,16 +1,17 @@
-namespace HexGridObject.Providers.Translation;
+namespace HexGridObject.Handlers.Translation;
 
 using Godot;
 using HexGridMap.Vector;
+using Providers;
 
-public class InstantTranslationProvider : ITranslationProvider
+public class InstantTranslationHandler : ITranslationHandler
 {
     private readonly ITranslatable translatable;
     private readonly HeightData heightData;
     
     private IHexStateProvider? hexStateProvider;
 
-    public InstantTranslationProvider(ITranslatable translatable, HeightData heightData)
+    public InstantTranslationHandler(ITranslatable translatable, HeightData heightData)
     {
         this.translatable = translatable;
         this.heightData = heightData;

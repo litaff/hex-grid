@@ -3,11 +3,13 @@ namespace hex_grid.grid_objects;
 using Godot;
 using HexGridMap.Vector;
 using HexGridObject;
+using HexGridObject.Handlers.Rotation;
+using HexGridObject.Handlers.Translation;
 using HexGridObject.Providers.Position;
-using HexGridObject.Providers.Translation;
+using HexGridObject.Providers.Rotation;
 
 [GlobalClass]
-public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder
+public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder, IRotatable
 {
     [Export]
     private Vector2I awakePosition;
@@ -25,7 +27,7 @@ public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder
     public override void _Process(double delta)
     {
         base._Process(delta);
-        if (HexGridObject.TranslationProvider is IUpdateableTranslationProvider updateable)
+        if (HexGridObject.TranslationHandler is IUpdateableTranslationHandler updateable)
         {
             updateable.Update(delta);
         }
@@ -34,39 +36,56 @@ public partial class Player : Node3D, ITranslatable, IHexGridObjectHolder
     public override void _Input(InputEvent @event)
     {
         // Lock input before translation is complete.
-        if (HexGridObject.TranslationProvider is IUpdateableTranslationProvider { TranslationComplete: false }) return;
-        
-        switch (@event)
-        {
-            case InputEventKey { Pressed: true, Keycode: Key.Q, Echo: false }:
-                gridObject?.PositionProvider.Translate(CubeHexVector.WestNorth);
-                break;
-            case InputEventKey { Pressed: true, Keycode: Key.W, Echo: false}:
-                gridObject?.PositionProvider.Translate(CubeHexVector.North);
-                break;
-            case InputEventKey { Pressed: true, Keycode: Key.E, Echo: false}:
-                gridObject?.PositionProvider.Translate(CubeHexVector.EastNorth);
-                break;
-            case InputEventKey { Pressed: true, Keycode: Key.A, Echo: false}:
-                gridObject?.PositionProvider.Translate(CubeHexVector.WestSouth);
-                break;
-            case InputEventKey { Pressed: true, Keycode: Key.S, Echo: false}:
-                gridObject?.PositionProvider.Translate(CubeHexVector.South);
-                break;
-            case InputEventKey { Pressed: true, Keycode: Key.D, Echo: false}:
-                gridObject?.PositionProvider.Translate(CubeHexVector.EastSouth);
-                break;
-        }
+        if (HexGridObject.TranslationHandler is IUpdateableTranslationHandler { TranslationComplete: false }) return;
         base._Input(@event);
+        OnMovementKeyPressedHandler(@event);
+    }
+
+    private void OnMovementKeyPressedHandler(InputEvent @event)
+    {
+        if (@event is not InputEventKey { Pressed: true } eventKey) return;
+        var direction = eventKey.Keycode switch
+        {
+            Key.Q => CubeHexVector.WestNorth,
+            Key.W => CubeHexVector.North,
+            Key.E => CubeHexVector.EastNorth,
+            Key.A => CubeHexVector.WestSouth,
+            Key.S => CubeHexVector.South,
+            Key.D => CubeHexVector.EastSouth,
+            _ => CubeHexVector.Zero
+        };
+        if (direction == CubeHexVector.Zero) return;
+        
+        MoveTowards(direction, eventKey.CtrlPressed);
+        
+    }
+    
+    private void MoveTowards(CubeHexVector direction, bool inPlace)
+    {
+        gridObject?.RotationProvider.RotateTowards(direction);
+        if (inPlace) return;
+        gridObject?.PositionProvider.Translate(direction);
+    }
+
+    void ITranslatable.Translate(Vector3 offset)
+    {
+        Position += offset;
+    }
+
+    public void LookTowards(Vector3 direction)
+    {
+        LookAt(Position + direction, useModelFront: true);
     }
 
     private HexGridObject GetGridObject()
     {
         if (gridObject != null) return gridObject;
         var heightData = new HeightData(height, stepHeight);
-        var gridPositionProvider = new HexGridPositionProvider(new CubeHexVector(awakePosition.X, awakePosition.Y), heightData);
-        var translationProvider = new LinearTranslationProvider(speed, this, heightData);
-        gridObject = new HexGridObject(gridPositionProvider, translationProvider, heightData);
+        var gridPositionProvider = new PositionProvider(new CubeHexVector(awakePosition.X, awakePosition.Y), heightData);
+        var rotationProvider = new RotationProvider(CubeHexVector.North);
+        var translationProvider = new LinearTranslationHandler(speed, this, heightData);
+        var rotationHandler = new InstantRotationHandler(this);
+        gridObject = new HexGridObject(gridPositionProvider, rotationProvider, translationProvider, rotationHandler, heightData);
         
         return gridObject;
     }

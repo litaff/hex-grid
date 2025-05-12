@@ -1,8 +1,10 @@
 namespace HexGridObject.Tests.Managers;
 
+using global::HexGridObject.Handlers.Rotation;
+using global::HexGridObject.Handlers.Translation;
 using global::HexGridObject.Managers;
 using global::HexGridObject.Providers.Position;
-using global::HexGridObject.Providers.Translation;
+using global::HexGridObject.Providers.Rotation;
 using HexGridMap;
 using HexGridMap.Hex;
 using HexGridMap.Vector;
@@ -94,11 +96,13 @@ public class HexGridObjectLayerManagerTests
     [Test]
     public void UpdateGridObjectPosition_RemovesObjectFromStackPreviousPosition()
     {
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(0, 0);
-        var hexGridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        var hexGridObject = new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
         Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.PositionProvider.Position.GetHashCode(), out _), Is.False);
         layerManager.AddGridObject(hexGridObject);
         Assert.That(layerManager.Stacks.TryGetValue(hexGridObject.PositionProvider.Position.GetHashCode(), out var stack), Is.True);
@@ -193,11 +197,13 @@ public class HexGridObjectLayerManagerTests
         var hexData = new HexGridProperties(0, 0, 1f);
         var hex = new CubeHex(0, 0, new HexProperties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(1f, 0);
-        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
         layerManager.AddGridObject(gridObject);
         
         var height = layerManager.GetHexHeight(CubeHexVector.Zero);
@@ -214,11 +220,13 @@ public class HexGridObjectLayerManagerTests
         var hexData = new HexGridProperties(0, 0, 1f);
         var hex = new CubeHex(0, 0, new HexProperties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(1f, 0);
-        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
         layerManager.AddGridObject(gridObject);
         
         var height = layerManager.GetHexHeight(CubeHexVector.Zero, [gridObject]);
@@ -235,11 +243,13 @@ public class HexGridObjectLayerManagerTests
         var hexData = new HexGridProperties(0, 0, 1f);
         var hex = new CubeHex(0, 0, new HexProperties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(CubeHexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(1f, 0);
-        var gridObject = new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        var gridObject = new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
         layerManager.AddGridObject(gridObject);
         
         Assert.DoesNotThrow(() => layerManager.GetHexHeight(CubeHexVector.Zero, null));
@@ -247,10 +257,12 @@ public class HexGridObjectLayerManagerTests
     
     private HexGridObject GetMockObject()
     {
-        var mockPositionProvider = new Mock<IHexGridPositionProvider>();
+        var mockPositionProvider = new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(CubeHexVector.Zero);
-        var mockTranslationProvider = new Mock<ITranslationProvider>();
+        var mockRotationProvider = new Mock<IRotationProvider>();
+        var mockTranslationHandler = new Mock<ITranslationHandler>();
+        var mockRotationHandler = new Mock<IRotationHandler>();
         var heightData = new HeightData(0, 0);
-        return new HexGridObject(mockPositionProvider.Object, mockTranslationProvider.Object, heightData);
+        return new HexGridObject(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
     }
 }

@@ -194,4 +194,45 @@ public class CubeHexVectorTests
         
         Assert.That(calculatedDistance, Is.EqualTo(expectedDistance));
     }
+
+    [TestCase(0, 0)]
+    [TestCase(100, 100)]
+    [TestCase(1, 0)]
+    [TestCase(0, 1)]
+    [TestCase(-100, -100)]
+    [TestCase(-1, 0)]
+    [TestCase(0, -1)]
+    [TestCase(1, -1)]
+    [TestCase(-1, -1)]
+    [TestCase(100, -100)]
+    [TestCase(-100, 100)]
+    [TestCase(0, 100)]
+    [TestCase(100, 0)]
+    [TestCase(0, -100)]
+    [TestCase(-100, 0)]
+    public void Normalized_ReturnsVector_OfAbsoluteSumOf2Or0(int q, int r)
+    {
+        var vector = new CubeHexVector(q, r);
+
+        var normalized = vector.Normalized();
+        
+        var absoluteSum = Math.Abs(normalized.Q) + Math.Abs(normalized.R) + Math.Abs(normalized.S); 
+        Assert.That(absoluteSum, Is.EqualTo(2).Or.Zero);
+    }
+    
+    [TestCase(2, -1, 1, 0)]
+    [TestCase(-2, 1, -1, 0)]
+    [TestCase(-1, 2, -1, 1)]
+    [TestCase(1, -2, 1, -1)]
+    [TestCase(-1, -1, 0, -1)]
+    [TestCase(1, 1, 0, 1)]
+    public void Normalized_ReturnsClockWiseVector_WhenDiagonal(int q, int r, int expQ, int expR)
+    {
+        var vector = new CubeHexVector(q, r);
+        var expected = new CubeHexVector(expQ, expR);
+
+        var normalized = vector.Normalized();
+        
+        Assert.That(normalized, Is.EqualTo(expected));
+    }
 }

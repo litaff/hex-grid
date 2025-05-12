@@ -6,7 +6,7 @@ using Godot;
 using HexGridMap;
 using HexGridMap.Vector;
 
-public class HexGridPositionProvider : IHexGridPositionProvider
+public class PositionProvider : IPositionProvider
 {
     private readonly HeightData heightData;
     private Dictionary<int, IHexStateProvider> hexStateProviders;
@@ -22,7 +22,7 @@ public class HexGridPositionProvider : IHexGridPositionProvider
     /// </summary>
     public event Action<int>? OnLayerChangeRequested;
 
-    public HexGridPositionProvider(CubeHexVector initialPosition, HeightData heightData)
+    public PositionProvider(CubeHexVector initialPosition, HeightData heightData)
     {
         Position = initialPosition;
         this.heightData = heightData;

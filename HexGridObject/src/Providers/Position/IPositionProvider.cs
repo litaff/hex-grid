@@ -3,7 +3,7 @@ namespace HexGridObject.Providers.Position;
 using System;
 using HexGridMap.Vector;
 
-public interface IHexGridPositionProvider
+public interface IPositionProvider
 {
     public CubeHexVector Position { get; }
     /// <summary>

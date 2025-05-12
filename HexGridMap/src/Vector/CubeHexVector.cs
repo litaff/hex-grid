@@ -55,6 +55,39 @@ public struct CubeHexVector : IEquatable<CubeHexVector>
         var direction = this - target;
         return (Math.Abs(direction.Q) + Math.Abs(direction.R) + Math.Abs(direction.S)) / 2;
     }
+
+    /// <summary>
+    /// Returns the closest normal approximation of this vector. If the vector is perfectly diagonal,
+    /// returns a normal vector clockwise.
+    /// </summary>
+    public CubeHexVector Normalized()
+    {
+        if (Q == 0 || R == 0 || S == 0)
+        {
+            return new CubeHexVector(Math.Sign(Q), Math.Sign(R));
+        }
+        // Vector needs an approximation.
+        var q = Math.Abs(Q);
+        var r = Math.Abs(R);
+        var s = Math.Abs(S);
+        if (q > r && q > s)
+        {
+            return r > s ? new CubeHexVector(Math.Sign(Q), Math.Sign(R)) : new CubeHexVector(Math.Sign(Q), 0);
+        }
+
+        if (r > q && r > s)
+        {
+            return s > q ? new CubeHexVector(0, Math.Sign(R)) : new CubeHexVector(Math.Sign(Q), Math.Sign(R));
+        }
+
+        if (s > q && s > r)
+        {
+            return q > r ? new CubeHexVector(Math.Sign(Q), 0) : new CubeHexVector(0, Math.Sign(R));
+        }
+
+        // Catch case: Likely will never happen.
+        return this;
+    }
     
     public static CubeHexVector operator +(CubeHexVector a, CubeHexVector b)
     {
@@ -64,6 +97,11 @@ public struct CubeHexVector : IEquatable<CubeHexVector>
     public static CubeHexVector operator -(CubeHexVector a, CubeHexVector b)
     {
         return new CubeHexVector(a.Q - b.Q, a.R - b.R);
+    }
+
+    public static CubeHexVector operator -(CubeHexVector a)
+    {
+        return new CubeHexVector(-a.Q, -a.R);
     }
     
     public static CubeHexVector operator *(CubeHexVector a, int b)

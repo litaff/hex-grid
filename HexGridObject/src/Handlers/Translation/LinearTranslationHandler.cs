@@ -1,10 +1,11 @@
-namespace HexGridObject.Providers.Translation;
+namespace HexGridObject.Handlers.Translation;
 
 using Godot;
 using HexGridMap;
 using HexGridMap.Vector;
+using Providers;
 
-public class LinearTranslationProvider : IUpdateableTranslationProvider
+public class LinearTranslationHandler : IUpdateableTranslationHandler
 {
     private readonly ITranslatable translatable;
     private readonly float translationSpeed;
@@ -17,7 +18,7 @@ public class LinearTranslationProvider : IUpdateableTranslationProvider
 
     public bool TranslationComplete => translatable.Position.IsEqualApprox(targetPosition);
 
-    public LinearTranslationProvider(float translationSpeed, ITranslatable translatable, HeightData heightData)
+    public LinearTranslationHandler(float translationSpeed, ITranslatable translatable, HeightData heightData)
     {
         this.translatable = translatable;
         this.translationSpeed = translationSpeed * HexGridProperties.CellSize;
