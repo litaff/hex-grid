@@ -5,6 +5,7 @@ using HexGrid.Entity.Handlers.Rotation;
 using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Managers;
 using HexGrid.Entity.Providers;
+using HexGrid.Entity.Providers.Block;
 using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
 using Map.Vector;
@@ -17,6 +18,7 @@ public class EntityTests
     private Mock<IRotationProvider> mockRotationProvider;
     private Mock<ITranslationHandler> mockTranslationHandler;
     private Mock<IRotationHandler> mockRotationHandler;
+    private Mock<IBlockProvider> mockBlockProvider;
     private Mock<IEntityLayerManager> mockLayerManager;
     private Entity entity;
     private HeightData heightData;
@@ -29,13 +31,14 @@ public class EntityTests
         mockRotationProvider = new Mock<IRotationProvider>();
         mockTranslationHandler = new Mock<ITranslationHandler>();
         mockRotationHandler = new Mock<IRotationHandler>();
+        mockBlockProvider = new Mock<IBlockProvider>();
         mockLayerManager = new Mock<IEntityLayerManager>();
         hexStateProviders = new HexStateProviders(new Dictionary<int, IHexStateProvider>
         {
             { 0, new Mock<IHexStateProvider>().Object }
         });
         heightData = new HeightData();
-        entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, mockBlockProvider.Object, heightData);
     }
 
     [Test]
@@ -83,7 +86,7 @@ public class EntityTests
     }
 
     [Test]
-    public void OnHexGridPositionChangedHandler_IsCalled_WithPositionAndTranslationUpdates()
+    public void OnPositionChangedHandler_IsCalled_WithPositionAndTranslationUpdates()
     {
         entity.Enable(mockLayerManager.Object, hexStateProviders);
         entity.RegisterHandlers();

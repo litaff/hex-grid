@@ -32,6 +32,7 @@ public class PositionProvider : IPositionProvider
     public void Enable(HexStateProviders providers)
     {
         hexStateProviders = providers.Providers.ToDictionary();
+        OnPositionChanged?.Invoke(Position);
     }
 
     public void Disable()
@@ -101,6 +102,10 @@ public class PositionProvider : IPositionProvider
         
         if (!IsStepValid(GetHeightDifference(targetPosition, targetHexProvider))) return false;
 
+        if (targetHexProvider.IsBlocked(targetPosition, Position.DirectionTo(targetPosition).Normalized())) return false;
+        
+        if (hexStateProviders[0].IsBlocked(Position, targetPosition.DirectionTo(Position).Normalized())) return false;
+        
         return true;
     }
 
@@ -112,10 +117,20 @@ public class PositionProvider : IPositionProvider
             isSpaceToStand = hexStateProviders[0].GetHexHeight(targetPosition) < Properties.LayerHeight ||
                              !targetProvider.Exists(targetPosition);
         }
+
+        if (!isSpaceToStand) return false;
         
-        return hexStateProviders[0].Exists(targetPosition) &&
-               IsStepValid(GetHeightDifference(targetPosition, hexStateProviders[0])) &&
-               isSpaceToStand;
+        if (!hexStateProviders[0].Exists(targetPosition)) return false;
+
+        if (!IsStepValid(GetHeightDifference(targetPosition, hexStateProviders[0]))) return false;
+
+        if (hexStateProviders[0].IsBlocked(targetPosition, Position.DirectionTo(targetPosition).Normalized()))
+            return false;
+        
+        if (hexStateProviders[0].IsBlocked(Position, targetPosition.DirectionTo(Position).Normalized()))
+            return false;
+
+        return true;
     }
 
     private bool IsStepValid(float step)

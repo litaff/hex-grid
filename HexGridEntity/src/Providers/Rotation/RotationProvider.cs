@@ -11,7 +11,12 @@ public class RotationProvider : IRotationProvider
     public HexVector BackRight => -ForLeft;
     public HexVector BackLeft => -ForRight;
 
-    public event Action? OnRotationChanged; 
+    public event Action? OnRotationChanged;
+    
+    public RotationProvider()
+    {
+        Forward = HexVector.North;
+    }
     
     public RotationProvider(HexVector initialForward)
     {

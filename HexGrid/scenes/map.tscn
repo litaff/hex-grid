@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dd70lky3grwlo"]
+[gd_scene load_steps=12 format=3 uid="uid://dd70lky3grwlo"]
 
 [ext_resource type="Script" uid="uid://6k4rarao4l5a" path="res://scripts/hex_grid/grid_objects/Player.cs" id="1_dt6rp"]
 [ext_resource type="Script" uid="uid://dsgftcnuyb5i3" path="res://scripts/hex_grid/StandaloneHexGrid.cs" id="2_0cso3"]
 [ext_resource type="MeshLibrary" uid="uid://dbmuulywd58ol" path="res://mesh_libraries/base_tiles/base_tiles.tres" id="2_q07w8"]
 [ext_resource type="Script" uid="uid://b5p6tdloufj82" path="res://scripts/hex_grid/hex_grid_map/HexMapData.cs" id="4_0cso3"]
+[ext_resource type="Script" uid="uid://b0aj7u8gsppfi" path="res://scripts/hex_grid/grid_objects/Blocker.cs" id="5_2klcf"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_sisie"]
 
@@ -363,6 +364,12 @@ SerializedMap = "{
   }
 }"
 
+[sub_resource type="BoxMesh" id="BoxMesh_2klcf"]
+size = Vector3(1, 1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2klcf"]
+albedo_color = Color(0.808012, 0.823363, 7.70092e-07, 1)
+
 [node name="Map" type="Node3D"]
 
 [node name="Player" type="Node3D" parent="."]
@@ -390,8 +397,18 @@ MeshLibrary = ExtResource("2_q07w8")
 MapData = Dictionary[int, ExtResource("4_0cso3")]({
 0: SubResource("Resource_0cso3")
 })
-Entities = [NodePath("../Player")]
+Entities = [NodePath("../Player"), NodePath("../Blocker")]
 metadata/_edit_lock_ = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, -1.61536e-07, 6.69104e-08, 0, 0.382683, 0.92388, -1.74846e-07, -0.92388, 0.382683, 7.62852e-07, 11.172, 4.363)
+
+[node name="Blocker" type="Node3D" parent="."]
+script = ExtResource("5_2klcf")
+awakePosition = Vector2i(1, 0)
+blocks = Array[int]([0])
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Blocker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.835773)
+mesh = SubResource("BoxMesh_2klcf")
+surface_material_override/0 = SubResource("StandardMaterial3D_2klcf")

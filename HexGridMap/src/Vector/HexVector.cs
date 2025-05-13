@@ -25,6 +25,16 @@ public struct HexVector : IEquatable<HexVector>
         if (Q + R + S == 0) return;
         throw new ArgumentException("[HexVector] Q + R + S must be 0!");
     }
+
+    public static Dictionary<Direction, HexVector> Directions => new()
+    {
+        {Direction.North, North},
+        {Direction.EastNorth, EastNorth},
+        {Direction.EastSouth, EastSouth},
+        {Direction.South, South},
+        {Direction.WestSouth, WestSouth},
+        {Direction.WestNorth, WestNorth}
+    };
     
     public static HexVector Zero => new(0, 0);
 
@@ -87,6 +97,11 @@ public struct HexVector : IEquatable<HexVector>
 
         // Catch case: Likely will never happen.
         return this;
+    }
+
+    public HexVector DirectionTo(HexVector target)
+    {
+        return target - this;
     }
     
     public static HexVector operator +(HexVector a, HexVector b)

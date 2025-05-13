@@ -4,9 +4,9 @@ using HexGrid.Entity;
 using HexGrid.Entity.Handlers.Rotation;
 using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Managers;
+using HexGrid.Entity.Providers.Block;
 using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
-using Map;
 using Map.Hex;
 using Map.Vector;
 using Moq;
@@ -99,12 +99,7 @@ public class EntityLayerManagerTests
     public void UpdatePosition_RemovesEntityFromStackPreviousPosition()
     {
         var mockPositionProvider = new Mock<IPositionProvider>();
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(0, 0);
-        var entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        var entity = GetMockEntity(mockPositionProvider: mockPositionProvider);
         Assert.That(layerManager.Stacks.TryGetValue(entity.PositionProvider.Position.GetHashCode(), out _), Is.False);
         layerManager.Add(entity);
         Assert.That(layerManager.Stacks.TryGetValue(entity.PositionProvider.Position.GetHashCode(), out var stack), Is.True);
@@ -199,13 +194,7 @@ public class EntityLayerManagerTests
         var hexData = new Map.Properties(0, 0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IPositionProvider>();
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(1f, 0);
-        var entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        var entity = GetMockEntity(heightData: new HeightData(1, 0));
         layerManager.Add(entity);
         
         var height = layerManager.GetHexHeight(HexVector.Zero);
@@ -222,13 +211,7 @@ public class EntityLayerManagerTests
         var hexData = new Map.Properties(0, 0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IPositionProvider>();
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(1f, 0);
-        var entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        var entity = GetMockEntity(heightData: new HeightData(1, 0));
         layerManager.Add(entity);
         
         var height = layerManager.GetHexHeight(HexVector.Zero, [entity]);
@@ -245,26 +228,26 @@ public class EntityLayerManagerTests
         var hexData = new Map.Properties(0, 0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
-        var mockPositionProvider = new Mock<IPositionProvider>();
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(1f, 0);
-        var entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        var entity = GetMockEntity(heightData: new HeightData(1, 0));
         layerManager.Add(entity);
         
         Assert.DoesNotThrow(() => layerManager.GetHexHeight(HexVector.Zero, null));
     }
     
-    private Entity GetMockEntity()
+    private Entity GetMockEntity(
+        Mock<IPositionProvider>? mockPositionProvider = null,
+        Mock<IRotationProvider>? mockRotationProvider = null,
+        Mock<ITranslationHandler>? mockTranslationHandler = null,
+        Mock<IRotationHandler>? mockRotationHandler = null,
+        Mock<IBlockProvider>? mockBlockProvider = null,
+        HeightData heightData = new())
     {
-        var mockPositionProvider = new Mock<IPositionProvider>();
+        mockPositionProvider ??= new Mock<IPositionProvider>();
         mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(0, 0);
-        return new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        mockRotationProvider ??= new Mock<IRotationProvider>();
+        mockTranslationHandler ??= new Mock<ITranslationHandler>();
+        mockRotationHandler ??= new Mock<IRotationHandler>();
+        mockBlockProvider ??= new Mock<IBlockProvider>();
+        return new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, mockBlockProvider.Object, heightData);
     }
 }

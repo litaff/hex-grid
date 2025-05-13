@@ -23,15 +23,15 @@ public class EntityManager : IEntityManager
     {
         if (!layerManagers.TryGetValue(layer, out var layerManager)) return;
         layerManager.Add(entity);
-        entity.Enable(layerManager, GetProviders(layer, layerManager.Layer));
         entity.RegisterHandlers();
+        entity.Enable(layerManager, GetProviders(layer, layerManager.Layer));
     }
     
     public void Remove(Entity entity, int layer)
     {
         if (!layerManagers.TryGetValue(layer, out var layerManager)) return;
-        entity.UnregisterHandlers();
         entity.Disable();
+        entity.UnregisterHandlers();
         layerManager.Remove(entity);
     }
 

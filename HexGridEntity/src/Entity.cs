@@ -5,6 +5,7 @@ using Handlers.Translation;
 using Managers;
 using Map.Vector;
 using Providers;
+using Providers.Block;
 using Providers.Position;
 using Providers.Rotation;
 
@@ -13,28 +14,30 @@ public class Entity
     private IEntityLayerManager? layerManager;
     
     public IPositionProvider PositionProvider { get; }
-    public IRotationProvider RotationProvider { get; }
     public ITranslationHandler TranslationHandler { get; }
+    public IBlockProvider BlockProvider { get; }
+    public IRotationProvider RotationProvider { get; }
     public IRotationHandler RotationHandler { get; }
 
     public HeightData HeightData { get; }
     public HexVector GridPosition => PositionProvider.Position;
 
     public Entity(IPositionProvider positionProvider, IRotationProvider rotationProvider, 
-        ITranslationHandler translationHandler, IRotationHandler rotationHandler, HeightData heightData)
+        ITranslationHandler translationHandler, IRotationHandler rotationHandler, IBlockProvider blockProvider, HeightData heightData)
     {
         PositionProvider = positionProvider;
         RotationProvider = rotationProvider;
         TranslationHandler = translationHandler;
         RotationHandler = rotationHandler;
+        BlockProvider = blockProvider;
         HeightData = heightData;
     }
 
     public virtual void Enable(IEntityLayerManager layerManager, HexStateProviders hexStateProviders)
     {
         this.layerManager = layerManager;
-        PositionProvider.Enable(hexStateProviders);
         TranslationHandler.Enable(hexStateProviders.Providers[0]);
+        PositionProvider.Enable(hexStateProviders);
     }
 
     public virtual void Disable()

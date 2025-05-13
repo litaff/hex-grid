@@ -4,9 +4,11 @@ using HexGrid.Entity;
 using HexGrid.Entity.Handlers.Rotation;
 using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Managers;
+using HexGrid.Entity.Providers.Block;
 using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
 using Map.Hex;
+using Map.Vector;
 using Moq;
 
 [TestFixture]
@@ -84,13 +86,20 @@ public class EntityManagerTests
         Assert.Inconclusive("Can not check if method was called.");
     }
     
-    private Entity GetMockEntity()
+    private Entity GetMockEntity(
+        Mock<IPositionProvider>? mockPositionProvider = null,
+        Mock<IRotationProvider>? mockRotationProvider = null,
+        Mock<ITranslationHandler>? mockTranslationHandler = null,
+        Mock<IRotationHandler>? mockRotationHandler = null,
+        Mock<IBlockProvider>? mockBlockProvider = null,
+        HeightData heightData = new())
     {
-        var mockPositionProvider = new Mock<IPositionProvider>();
-        var mockTranslationHandler = new Mock<ITranslationHandler>();
-        var mockRotationProvider = new Mock<IRotationProvider>();
-        var mockRotationHandler = new Mock<IRotationHandler>();
-        var heightData = new HeightData(0, 0);
-        return new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, heightData);
+        mockPositionProvider ??= new Mock<IPositionProvider>();
+        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
+        mockRotationProvider ??= new Mock<IRotationProvider>();
+        mockTranslationHandler ??= new Mock<ITranslationHandler>();
+        mockRotationHandler ??= new Mock<IRotationHandler>();
+        mockBlockProvider ??= new Mock<IBlockProvider>();
+        return new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, mockBlockProvider.Object, heightData);
     }
 }

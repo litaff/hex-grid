@@ -1,7 +1,6 @@
 namespace HexGrid.Entity.Managers;
 
 using System.Collections.Generic;
-using Map;
 using Map.Hex;
 using Map.Vector;
 using Providers;
@@ -65,6 +64,12 @@ public class EntityLayerManager : IHexStateProvider, IEntityLayerManager
     public bool Contains<T>(HexVector position)
     {
         return stacks.TryGetValue(position.GetHashCode(), out var stack) && stack.Contains<T>();
+    }
+
+    public bool IsBlocked(HexVector position, HexVector direction)
+    {
+        return stacks.TryGetValue(position.GetHashCode(), out var stack) && 
+               stack.Entities.Any(entity => entity.BlockProvider.Blocks(direction));
     }
     
     public bool Exists(HexVector position)

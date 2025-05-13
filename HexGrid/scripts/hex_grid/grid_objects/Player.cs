@@ -7,6 +7,7 @@ using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
 using HexGrid.Map.Vector;
 using Godot;
+using HexGrid.Entity.Providers.Block;
 
 [GlobalClass]
 public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
@@ -86,7 +87,8 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         var rotationProvider = new RotationProvider(HexVector.North);
         var translationHandler = new LinearTranslationHandler(speed, this, heightData);
         var rotationHandler = new InstantRotationHandler(this);
-        entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, heightData);
+        var blockProvider = new BlockProvider();
+        entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, blockProvider, heightData);
         
         return entity;
     }
