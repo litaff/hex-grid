@@ -1,5 +1,6 @@
-namespace HexGridMap.Fov;
+namespace HexGrid.Map.Fov;
 
+using Hex;
 using Vector;
 
 /// <summary>
@@ -14,9 +15,9 @@ public class LineFov : IFovProvider
         this.hexProvider = hexProvider;
     }
     
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius)
+    public HexVector[] GetVisiblePositions(HexVector origin, int radius)
     {
-        var visiblePositions = new Dictionary<int, CubeHexVector>();
+        var visiblePositions = new Dictionary<int, HexVector>();
         var edge = origin.GetRing(radius);
         foreach (var edgePoint in edge)
         {

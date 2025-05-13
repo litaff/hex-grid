@@ -1,4 +1,4 @@
-namespace HexGridMap.Hex;
+namespace HexGrid.Map.Hex;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -6,33 +6,33 @@ using Vector;
 
 public class HexMap
 {
-    private readonly IHexData data;
-    private readonly Dictionary<int, CubeHex> map;
+    private readonly IHexMapData mapData;
+    private readonly Dictionary<int, Hex> map;
 
-    public HexMap(IHexData data)
+    public HexMap(IHexMapData mapData)
     {
-        this.data = data;
-        map = data.Deserialize();
+        this.mapData = mapData;
+        map = mapData.Deserialize();
     }
 
-    public void Add(CubeHex value)
+    public void Add(Hex hex)
     {
-        map.TryAdd(value.Position.GetHashCode(), value);
-        data.Serialize();
+        map.TryAdd(hex.Position.GetHashCode(), hex);
+        mapData.Serialize();
     }
 
-    public void Remove(CubeHexVector position)
+    public void Remove(HexVector position)
     {
         map.Remove(position.GetHashCode());
-        data.Serialize();
+        mapData.Serialize();
     }
 
-    public CubeHex? Get(CubeHexVector hexPosition)
+    public Hex? Get(HexVector position)
     {
-        return map.GetValueOrDefault(hexPosition.GetHashCode());
+        return map.GetValueOrDefault(position.GetHashCode());
     }
     
-    public CubeHex[] GetMap()
+    public Hex[] GetMap()
     {
         return map.Values.ToArray();
     }

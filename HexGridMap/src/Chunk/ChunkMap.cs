@@ -1,4 +1,4 @@
-namespace HexGridMap.Chunk;
+namespace HexGrid.Map.Chunk;
 
 using System;
 using System.Collections.Generic;
@@ -11,25 +11,25 @@ public class ChunkMap
 {
     private readonly MeshLibrary library;
     private readonly World3D scenario;
-    private readonly Dictionary<int, CubeChunk> map;
+    private readonly Dictionary<int, Chunk> map;
     private readonly float verticalOffset;
-    private readonly List<CubeChunk> hiddenChunks = [];
+    private readonly List<Chunk> hiddenChunks = [];
 
     public ChunkMap(float verticalOffset, MeshLibrary library, World3D scenario)
     {
-        map = new Dictionary<int, CubeChunk>();
+        map = new Dictionary<int, Chunk>();
         this.library = library;
         this.scenario = scenario;
         this.verticalOffset = verticalOffset;
     }
     
-    public void AssignHex(CubeHex hex)
+    public void AssignHex(Hex hex)
     {
         var chunkPosition = hex.Position.ToChunkPosition();
         var chunk = Get(chunkPosition);
         if (chunk == null)
         {
-            chunk = new CubeChunk(chunkPosition, verticalOffset);
+            chunk = new Chunk(chunkPosition, verticalOffset);
             AddChunk(chunk);
         }
         chunk.Add(hex);
@@ -37,7 +37,7 @@ public class ChunkMap
         chunk.UpdateMesh(library, scenario);
     }
     
-    public void RemoveHex(CubeHexVector position)
+    public void RemoveHex(HexVector position)
     {
         var chunkPosition = position.ToChunkPosition();
         var chunk = Get(chunkPosition);
@@ -48,7 +48,7 @@ public class ChunkMap
         RemoveChunk(chunkPosition);
     }
     
-    public void HideChunks(CubeHexVector[] chunkPositions)
+    public void HideChunks(HexVector[] chunkPositions)
     {
         var chunksToHide = chunkPositions.Select(Get).Where(chunk => chunk != null).ToList();
         foreach (var hiddenChunk in hiddenChunks.Where(hiddenChunk => !chunksToHide.Contains(hiddenChunk)))
@@ -58,7 +58,7 @@ public class ChunkMap
         
         hiddenChunks.Clear();
         
-        foreach (var chunkToHide in chunksToHide.OfType<CubeChunk>())
+        foreach (var chunkToHide in chunksToHide.OfType<Chunk>())
         {
             chunkToHide.Hide();
             hiddenChunks.Add(chunkToHide);
@@ -74,25 +74,25 @@ public class ChunkMap
         }
     }
 
-    private void AddChunk(CubeChunk value)
+    private void AddChunk(Chunk value)
     {
         var hash = HashCode.Combine(value.Position.Q, value.Position.R);
         map.TryAdd(hash, value);
     }
 
-    private void RemoveChunk(CubeHexVector position)
+    private void RemoveChunk(HexVector position)
     {
         var hash = HashCode.Combine(position.Q, position.R);
         map.Remove(hash);
     }
 
-    private CubeChunk? Get(int q, int r)
+    private Chunk? Get(int q, int r)
     {
         var hash = HashCode.Combine(q, r);
         return map.GetValueOrDefault(hash);
     }
 
-    private CubeChunk? Get(CubeHexVector hexPosition)
+    private Chunk? Get(HexVector hexPosition)
     {
         return Get(hexPosition.Q, hexPosition.R);
     }

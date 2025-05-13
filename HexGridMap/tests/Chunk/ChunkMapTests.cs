@@ -1,4 +1,4 @@
-namespace HexGridMap.Tests.Chunk;
+namespace HexGrid.Map.Tests.Chunk;
 
 [TestFixture]
 public class ChunkMapTests

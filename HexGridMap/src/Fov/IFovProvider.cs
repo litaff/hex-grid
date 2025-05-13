@@ -1,8 +1,8 @@
-namespace HexGridMap.Fov;
+namespace HexGrid.Map.Fov;
 
 using Vector;
 
 public interface IFovProvider
 {
-    public CubeHexVector[] GetVisiblePositions(CubeHexVector origin, int radius);
+    public HexVector[] GetVisiblePositions(HexVector origin, int radius);
 }

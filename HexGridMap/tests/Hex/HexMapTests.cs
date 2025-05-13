@@ -1,29 +1,29 @@
-namespace HexGridMap.Tests.Hex;
+namespace HexGrid.Map.Tests.Hex;
 
-using global::HexGridMap.Hex;
-using global::HexGridMap.Vector;
+using Map.Hex;
+using Map.Vector;
 using Moq;
 
 [TestFixture]
 public class HexMapTests
 {
-    private Mock<IHexData> mockHexData;
+    private Mock<IHexMapData> mockHexData;
     private HexMap map;
     
     [SetUp]
     public void SetUp()
     {
-        var gridData = new HexGridProperties(1, 1, 1);
-        mockHexData = new Mock<IHexData>();
-        mockHexData.Setup(mock => mock.Deserialize()).Returns(new Dictionary<int, CubeHex>());
+        var gridData = new Map.Properties(1, 1, 1);
+        mockHexData = new Mock<IHexMapData>();
+        mockHexData.Setup(mock => mock.Deserialize()).Returns(new Dictionary<int, Hex>());
         map = new HexMap(mockHexData.Object);
     }
 
     [Test]
     public void Add_AddsHex_AtPosition()
     {
-        var position = CubeHexVector.Zero;
-        var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
+        var position = HexVector.Zero;
+        var hex = new Hex(position, new Properties(), new MeshData());
         var stored = map.Get(position);
         Assert.That(stored, Is.Null);
         
@@ -37,7 +37,7 @@ public class HexMapTests
     [Test]
     public void Add_DoesNotThrow_WhenAddingSamePosition_Twice()
     {
-        var hex = new CubeHex(0,0, new HexProperties(), new HexMeshData());
+        var hex = new Hex(0,0, new Properties(), new MeshData());
         map.Add(hex);
 
         Assert.DoesNotThrow(() => map.Add(hex));
@@ -46,7 +46,7 @@ public class HexMapTests
     [Test]
     public void Remove_DoesNotThrow_IfNothingAtPosition()
     {
-        var position = CubeHexVector.Zero;
+        var position = HexVector.Zero;
 
         Assert.DoesNotThrow(() => map.Remove(position));
     }
@@ -54,8 +54,8 @@ public class HexMapTests
     [Test]
     public void Remove_RemovesHex_AtPosition()
     {
-        var position = CubeHexVector.Zero;
-        var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
+        var position = HexVector.Zero;
+        var hex = new Hex(position, new Properties(), new MeshData());
         map.Add(hex);
         var stored = map.Get(position);
         Assert.That(stored, Is.Not.Null);
@@ -70,7 +70,7 @@ public class HexMapTests
     [Test]
     public void Get_ReturnsNull_IfDoesNotExists()
     {
-        var position = CubeHexVector.Zero;
+        var position = HexVector.Zero;
 
         var stored = map.Get(position);
         
@@ -80,8 +80,8 @@ public class HexMapTests
     [Test]
     public void Get_ReturnsHex_IfExists()
     {
-        var position = CubeHexVector.Zero;
-        var hex = new CubeHex(position, new HexProperties(), new HexMeshData());
+        var position = HexVector.Zero;
+        var hex = new Hex(position, new Properties(), new MeshData());
         map.Add(hex);
 
         var stored = map.Get(position);
@@ -101,7 +101,7 @@ public class HexMapTests
     [Test]
     public void GetMap_ReturnsAllHexes_IfNotEmpty()
     {
-        var hex = new CubeHex(0,0, new HexProperties(), new HexMeshData());
+        var hex = new Hex(0,0, new Properties(), new MeshData());
         map.Add(hex);
         
         var hexes = map.GetMap();
