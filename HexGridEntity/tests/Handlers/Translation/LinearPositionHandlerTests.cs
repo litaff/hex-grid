@@ -2,15 +2,15 @@ namespace HexGrid.Entity.Tests.Handlers.Translation;
 
 using Godot;
 using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Translation;
+using HexGrid.Entity.Handlers.Position;
 using Map;
 using Map.Vector;
 using Moq;
 
 [TestFixture]
-public class LinearTranslationHandlerTests
+public class LinearPositionHandlerTests
 {
-    private LinearTranslationHandler handler;
+    private LinearPositionHandler handler;
     private Mock<ITranslatable> mockTranslatable;
     private Vector3 initialPosition;
     private float translationSpeed;
@@ -23,7 +23,7 @@ public class LinearTranslationHandlerTests
         translationSpeed = 1f;
         mockTranslatable = new Mock<ITranslatable>();
         mockTranslatable.Setup(t => t.Position).Returns(initialPosition);
-        handler = new LinearTranslationHandler(translationSpeed, mockTranslatable.Object, new HeightData());
+        handler = new LinearPositionHandler(translationSpeed, mockTranslatable.Object, new HeightData());
     }
     
     [Test]

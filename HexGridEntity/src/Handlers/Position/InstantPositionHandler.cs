@@ -1,17 +1,17 @@
-namespace HexGrid.Entity.Handlers.Translation;
+namespace HexGrid.Entity.Handlers.Position;
 
 using Godot;
-using Map.Vector;
 using Providers;
+using Map.Vector;
 
-public class InstantTranslationHandler : ITranslationHandler
+public class InstantPositionHandler : IPositionHandler
 {
     private readonly ITranslatable translatable;
     private readonly HeightData heightData;
     
     private IHexStateProvider? hexStateProvider;
 
-    public InstantTranslationHandler(ITranslatable translatable, HeightData heightData)
+    public InstantPositionHandler(ITranslatable translatable, HeightData heightData)
     {
         this.translatable = translatable;
         this.heightData = heightData;

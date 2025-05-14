@@ -2,23 +2,23 @@ namespace HexGrid.Entity.Tests.Handlers.Translation;
 
 using Godot;
 using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Translation;
+using HexGrid.Entity.Handlers.Position;
 using HexGrid.Entity.Providers;
 using Map;
 using Map.Vector;
 using Moq;
 
 [TestFixture]
-public class InstantTranslationHandlerTests
+public class InstantPositionHandlerTests
 {
-    private InstantTranslationHandler handler;
+    private InstantPositionHandler handler;
     private Mock<ITranslatable> mockTranslatable;
 
     [SetUp]
     public void Setup()
     {
         mockTranslatable = new Mock<ITranslatable>();
-        handler = new InstantTranslationHandler(mockTranslatable.Object, new HeightData());
+        handler = new InstantPositionHandler(mockTranslatable.Object, new HeightData());
     }
 
     [Test]

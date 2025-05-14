@@ -1,11 +1,11 @@
-namespace HexGrid.Entity.Handlers.Translation;
+namespace HexGrid.Entity.Handlers.Position;
 
 using Godot;
+using Providers;
 using Map;
 using Map.Vector;
-using Providers;
 
-public class LinearTranslationHandler : IUpdateableTranslationHandler
+public class LinearPositionHandler : IUpdateablePositionHandler
 {
     private readonly ITranslatable translatable;
     private readonly float translationSpeed;
@@ -18,7 +18,7 @@ public class LinearTranslationHandler : IUpdateableTranslationHandler
 
     public bool TranslationComplete => translatable.Position.IsEqualApprox(targetPosition);
 
-    public LinearTranslationHandler(float translationSpeed, ITranslatable translatable, HeightData heightData)
+    public LinearPositionHandler(float translationSpeed, ITranslatable translatable, HeightData heightData)
     {
         this.translatable = translatable;
         this.translationSpeed = translationSpeed * Properties.CellSize;

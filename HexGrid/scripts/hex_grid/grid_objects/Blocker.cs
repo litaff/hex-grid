@@ -3,8 +3,8 @@ namespace hex_grid.grid_objects;
 using System.Linq;
 using Godot;
 using HexGrid.Entity;
+using HexGrid.Entity.Handlers.Position;
 using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Providers.Block;
 using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
@@ -40,7 +40,7 @@ public partial class Blocker : Node3D, ITranslatable, IEntityProvider, IRotatabl
         var heightData = new HeightData(height, 0);
         var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
         var rotationProvider = new RotationProvider();
-        var translationHandler = new InstantTranslationHandler(this, heightData);
+        var translationHandler = new InstantPositionHandler(this, heightData);
         var rotationHandler = new InstantRotationHandler(this);
         var blockProvider = new BlockProvider(blocks.Select(dir => HexVector.Directions[dir]).ToList());
         entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, blockProvider, heightData);

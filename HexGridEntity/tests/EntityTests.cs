@@ -1,8 +1,8 @@
 namespace HexGrid.Entity.Tests;
 
 using HexGrid.Entity;
+using HexGrid.Entity.Handlers.Position;
 using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Managers;
 using HexGrid.Entity.Providers;
 using HexGrid.Entity.Providers.Block;
@@ -16,7 +16,7 @@ public class EntityTests
 {
     private Mock<IPositionProvider> mockPositionProvider;
     private Mock<IRotationProvider> mockRotationProvider;
-    private Mock<ITranslationHandler> mockTranslationHandler;
+    private Mock<IPositionHandler> mockTranslationHandler;
     private Mock<IRotationHandler> mockRotationHandler;
     private Mock<IBlockProvider> mockBlockProvider;
     private Mock<IEntityLayerManager> mockLayerManager;
@@ -29,7 +29,7 @@ public class EntityTests
     {
         mockPositionProvider = new Mock<IPositionProvider>();
         mockRotationProvider = new Mock<IRotationProvider>();
-        mockTranslationHandler = new Mock<ITranslationHandler>();
+        mockTranslationHandler = new Mock<IPositionHandler>();
         mockRotationHandler = new Mock<IRotationHandler>();
         mockBlockProvider = new Mock<IBlockProvider>();
         mockLayerManager = new Mock<IEntityLayerManager>();

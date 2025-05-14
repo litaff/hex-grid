@@ -1,7 +1,7 @@
 namespace HexGrid.Entity;
 
+using Handlers.Position;
 using Handlers.Rotation;
-using Handlers.Translation;
 using Managers;
 using Map.Vector;
 using Providers;
@@ -14,7 +14,7 @@ public class Entity
     private IEntityLayerManager? layerManager;
     
     public IPositionProvider PositionProvider { get; }
-    public ITranslationHandler TranslationHandler { get; }
+    public IPositionHandler PositionHandler { get; }
     public IBlockProvider BlockProvider { get; }
     public IRotationProvider RotationProvider { get; }
     public IRotationHandler RotationHandler { get; }
@@ -23,11 +23,11 @@ public class Entity
     public HexVector GridPosition => PositionProvider.Position;
 
     public Entity(IPositionProvider positionProvider, IRotationProvider rotationProvider, 
-        ITranslationHandler translationHandler, IRotationHandler rotationHandler, IBlockProvider blockProvider, HeightData heightData)
+        IPositionHandler positionHandler, IRotationHandler rotationHandler, IBlockProvider blockProvider, HeightData heightData)
     {
         PositionProvider = positionProvider;
         RotationProvider = rotationProvider;
-        TranslationHandler = translationHandler;
+        PositionHandler = positionHandler;
         RotationHandler = rotationHandler;
         BlockProvider = blockProvider;
         HeightData = heightData;
@@ -36,7 +36,7 @@ public class Entity
     public virtual void Enable(IEntityLayerManager layerManager, HexStateProviders hexStateProviders)
     {
         this.layerManager = layerManager;
-        TranslationHandler.Enable(hexStateProviders.Providers[0]);
+        PositionHandler.Enable(hexStateProviders.Providers[0]);
         PositionProvider.Enable(hexStateProviders);
         RotationProvider.Enable();
     }
@@ -45,7 +45,7 @@ public class Entity
     {
         RotationProvider.Disable();
         PositionProvider.Disable();
-        TranslationHandler.Disable();
+        PositionHandler.Disable();
     }
 
     public virtual void RegisterHandlers()
@@ -71,7 +71,7 @@ public class Entity
     {
         layerManager?.UpdatePosition(this, oldPosition);
         // Translation should always happen after the position change.
-        TranslationHandler.TranslateTo(PositionProvider.Position);
+        PositionHandler.TranslateTo(PositionProvider.Position);
     }
 
     private void OnRotationChangedHandler()

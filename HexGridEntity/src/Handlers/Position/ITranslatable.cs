@@ -1,4 +1,4 @@
-namespace HexGrid.Entity.Handlers.Translation;
+namespace HexGrid.Entity.Handlers.Position;
 
 using Godot;
 

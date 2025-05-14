@@ -2,11 +2,11 @@ namespace hex_grid.grid_objects;
 
 using HexGrid.Entity;
 using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Handlers.Translation;
 using HexGrid.Entity.Providers.Position;
 using HexGrid.Entity.Providers.Rotation;
 using HexGrid.Map.Vector;
 using Godot;
+using HexGrid.Entity.Handlers.Position;
 using HexGrid.Entity.Providers.Block;
 
 [GlobalClass]
@@ -30,7 +30,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     public override void _Process(double delta)
     {
         base._Process(delta);
-        if (Entity.TranslationHandler is IUpdateableTranslationHandler updateable)
+        if (Entity.PositionHandler is IUpdateablePositionHandler updateable)
         {
             updateable.Update(delta);
         }
@@ -39,7 +39,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     public override void _Input(InputEvent @event)
     {
         // Lock input before translation is complete.
-        if (Entity.TranslationHandler is IUpdateableTranslationHandler { TranslationComplete: false }) return;
+        if (Entity.PositionHandler is IUpdateablePositionHandler { TranslationComplete: false }) return;
         base._Input(@event);
         OnMovementKeyPressedHandler(@event);
     }
@@ -87,7 +87,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         var heightData = new HeightData(height, stepHeight);
         var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
         var rotationProvider = new RotationProvider(HexVector.Directions[initialForward]);
-        var translationHandler = new LinearTranslationHandler(speed, this, heightData);
+        var translationHandler = new LinearPositionHandler(speed, this, heightData);
         var rotationHandler = new InstantRotationHandler(this);
         var blockProvider = new BlockProvider();
         entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, blockProvider, heightData);
