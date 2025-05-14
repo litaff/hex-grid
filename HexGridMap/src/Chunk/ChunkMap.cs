@@ -9,13 +9,13 @@ using Vector;
 
 public class ChunkMap
 {
-    private readonly MeshLibrary library;
-    private readonly World3D scenario;
+    private readonly MeshLibrary? library;
+    private readonly World3D? scenario;
     private readonly Dictionary<int, Chunk> map;
     private readonly float verticalOffset;
     private readonly List<Chunk> hiddenChunks = [];
 
-    public ChunkMap(float verticalOffset, MeshLibrary library, World3D scenario)
+    public ChunkMap(float verticalOffset, MeshLibrary? library, World3D? scenario)
     {
         map = new Dictionary<int, Chunk>();
         this.library = library;

@@ -10,8 +10,7 @@ public class Layer : IHexProvider
     private readonly HexMap hexMap;
     private readonly ChunkMap chunkMap;
 
-    public Layer(IHexMapData hexMapData, int layerIndex, MeshLibrary library,
-        World3D scenario)
+    public Layer(IHexMapData hexMapData, int layerIndex, MeshLibrary? library, World3D? scenario)
     {
         hexMap = new HexMap(hexMapData);
         

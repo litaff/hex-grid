@@ -36,9 +36,11 @@ public class Chunk
         hexes.Remove(hex);
     }
 
-    public void UpdateMesh(MeshLibrary library, World3D scenario)
+    public void UpdateMesh(MeshLibrary? library, World3D? scenario)
     {
         ClearMeshInstances();
+
+        if (library is null || scenario is null) return;
         
         var sortedHexes = SortHexes();
         foreach (var hexGroup in sortedHexes)
