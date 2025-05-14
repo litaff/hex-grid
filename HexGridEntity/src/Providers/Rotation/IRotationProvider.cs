@@ -14,4 +14,6 @@ public interface IRotationProvider
     public event Action OnRotationChanged; 
     
     public bool RotateTowards(HexVector direction);
+    public void Enable();
+    public void Disable();
 }

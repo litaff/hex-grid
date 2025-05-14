@@ -20,6 +20,8 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     private float stepHeight;
     [Export]
     private float speed;
+    [Export]
+    private Direction initialForward;
 
     public Entity Entity => GetEntity();
 
@@ -84,7 +86,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         
         var heightData = new HeightData(height, stepHeight);
         var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
-        var rotationProvider = new RotationProvider(HexVector.North);
+        var rotationProvider = new RotationProvider(HexVector.Directions[initialForward]);
         var translationHandler = new LinearTranslationHandler(speed, this, heightData);
         var rotationHandler = new InstantRotationHandler(this);
         var blockProvider = new BlockProvider();

@@ -31,4 +31,14 @@ public class RotationProvider : IRotationProvider
         OnRotationChanged?.Invoke();
         return true;
     }
+
+    public void Enable()
+    {
+        OnRotationChanged?.Invoke();
+    }
+
+    public void Disable()
+    {
+        
+    }
 }

@@ -38,10 +38,12 @@ public class Entity
         this.layerManager = layerManager;
         TranslationHandler.Enable(hexStateProviders.Providers[0]);
         PositionProvider.Enable(hexStateProviders);
+        RotationProvider.Enable();
     }
 
     public virtual void Disable()
     {
+        RotationProvider.Disable();
         PositionProvider.Disable();
         TranslationHandler.Disable();
     }
