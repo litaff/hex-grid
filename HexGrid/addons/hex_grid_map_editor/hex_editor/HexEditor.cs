@@ -1,9 +1,7 @@
-namespace addons.hex_grid_editor.hex_editor;
+namespace addons.hex_grid_map_editor.hex_editor;
 
-using System;
 using Godot;
 using GodotUtils.RidExtensions;
-using HexGrid.Map;
 using HexGrid.Map.Hex;
 using provider;
 using Properties = HexGrid.Map.Properties;

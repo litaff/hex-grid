@@ -1,17 +1,16 @@
-namespace hex_grid;
+namespace addons.hex_grid_map_editor;
 
 using System;
 using System.Linq;
-using addons.hex_grid_editor;
+using Godot;
+using Godot.Collections;
+using hex_grid.hex_grid_map;
 using HexGrid.Entity;
 using HexGrid.Entity.Managers;
 using HexGrid.Map;
 using HexGrid.Map.Fov;
 using HexGrid.Map.Hex;
 using HexGrid.Map.Vector;
-using Godot;
-using Godot.Collections;
-using hex_grid_map;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 using GridMap = HexGrid.Map.GridMap;
 using Properties = HexGrid.Map.Properties;
@@ -20,7 +19,7 @@ using Properties = HexGrid.Map.Properties;
 [Tool]
 #endif
 [GlobalClass]
-public partial class StandaloneHexGrid : Node3D, IHexMapDataProvider, IHexGridMapEditionProvider
+public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMapEditionProvider
 {
     [Export]
     public float CellSize

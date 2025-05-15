@@ -22,4 +22,4 @@ project/solution_directory="../"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/hex_grid_editor/plugin.cfg")
+enabled=PackedStringArray("res://addons/hex_grid_map_editor/plugin.cfg")

@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor.provider;
+namespace addons.hex_grid_map_editor.provider;
 
 using System;
 using Godot;

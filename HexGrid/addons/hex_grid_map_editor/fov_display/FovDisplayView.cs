@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor.fov_display;
+namespace addons.hex_grid_map_editor.fov_display;
 
 using System;
 using Godot;

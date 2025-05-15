@@ -31,6 +31,19 @@ public static class HexVectorConverter
     }
     
     /// <summary>
+    /// Converts a hex position to a world position without the use of Properties,
+    /// so this is safe to use for uninitialized properties.
+    /// </summary>
+    public static Vector3 ToWorldPositionUnscaled(this HexVector hexPosition)
+    {
+        var qBasis = new Vector2(3f / 2f, Mathf.Sqrt(3) / 2f);
+        var rBasis = new Vector2(0, Mathf.Sqrt(3));
+        
+        var x = (qBasis.X * hexPosition.Q + rBasis.X * hexPosition.R);
+        var z = (qBasis.Y * hexPosition.Q + rBasis.Y * hexPosition.R);
+        return new Vector3(x, 0, z);
+    }
+    /// <summary>
     /// Converts a hex position to a chunk position.
     /// https://observablehq.com/@sanderevers/hexagon-tiling-of-an-hexagonal-grid#small_to_big
     /// </summary>

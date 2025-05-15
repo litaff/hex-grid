@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor.hex_editor;
+namespace addons.hex_grid_map_editor.hex_editor;
 
 using Godot;
 using HexGrid.Map.Hex;

@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor.chunk_display;
+namespace addons.hex_grid_map_editor.chunk_display;
 
 using System;
 using Godot;

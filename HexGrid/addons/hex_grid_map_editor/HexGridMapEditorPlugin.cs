@@ -1,5 +1,5 @@
 #if TOOLS
-namespace addons.hex_grid_editor;
+namespace addons.hex_grid_map_editor;
 
 using chunk_display;
 using editor_grid_indicator;
@@ -8,15 +8,15 @@ using Godot;
 using hex_editor;
 
 [Tool]
-public partial class HexGridEditor : EditorPlugin
+public partial class HexGridMapEditorPlugin : EditorPlugin
 {
-	private PackedScene editorScene = GD.Load<PackedScene>("res://addons/hex_grid_editor/hex_grid_editor.tscn");
+	private PackedScene editorScene = GD.Load<PackedScene>("res://addons/hex_grid_map_editor/hex_grid_editor.tscn");
 
 	private Control rootView = null!;
 	private HexGridEditorView? view;
 
 	private IHexGridMapEditionProvider mapEditionProvider = null!;
-	private HexGridEditorInputHandler hexGridEditorInputHandler = null!;
+	private HexGridEditorInputHandler? hexGridEditorInputHandler;
 
 	private HexEditor hexEditor = null!;
 	private EditorGridIndicator gridIndicator = null!;
@@ -29,11 +29,34 @@ public partial class HexGridEditor : EditorPlugin
 
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
+		if (@event is InputEventMouseMotion)
+		{
+			UpdateOverlays();
+		}
+
+		if (hexGridEditorInputHandler is null) return base._Forward3DGuiInput(viewportCamera, @event);
+		
 		hexGridEditorInputHandler.UpdateCursorPosition(mapEditionProvider.Position + hexEditor.CurrentLayerOffset, viewportCamera, @event as InputEventMouseMotion);
 
 		return (int)hexGridEditorInputHandler.FinalizeInput(viewportCamera, @event, hexEditor.IsSelectionActive);
 	}
-
+	
+	public override void _Forward3DDrawOverViewport(Control viewportControl)
+	{
+		base._Forward3DDrawOverViewport(viewportControl);
+		if (hexGridEditorInputHandler is null) return;
+		var hexPosition = hexGridEditorInputHandler.HexPosition;
+		var text = $"Q: {hexPosition.Q} R: {hexPosition.R} S: {hexPosition.S}";
+		viewportControl.DrawString(
+			ThemeDB.FallbackFont, 
+			new Vector2(0, viewportControl.Size.Y - 8), 
+			text, 
+			HorizontalAlignment.Right,
+			viewportControl.Size.X - 8,
+			14,
+			new Color(.5f, .5f, .5f));
+	}
+	
 	public override void _EnterTree()
 	{
 		rootView = editorScene.Instantiate<Control>();
@@ -50,7 +73,7 @@ public partial class HexGridEditor : EditorPlugin
 		if (@object is not IHexGridMapEditionProvider mapProvider)
 		{
 			Disable();
-			return false;
+			return true;
 		}
 		Enable(mapProvider);
 		return true;

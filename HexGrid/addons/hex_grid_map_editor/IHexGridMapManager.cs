@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor;
+namespace addons.hex_grid_map_editor;
 
 using System;
 using System.Collections.Generic;

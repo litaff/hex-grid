@@ -1,4 +1,4 @@
-namespace addons.hex_grid_editor.ui;
+namespace addons.hex_grid_map_editor.ui;
 
 using System;
 using Godot;
