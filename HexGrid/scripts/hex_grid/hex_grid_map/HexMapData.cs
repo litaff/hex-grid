@@ -11,41 +11,49 @@ public partial class HexMapData : Resource, IHexMapData
     [Export(PropertyHint.MultilineText)]
     public string SerializedMap { get; private set; } = "";
     
-    private Dictionary<int, Hex> map = new();
+    public Dictionary<int, Hex> Map { get; private set; }
 
     private JsonSerializerOptions options = new()
     {
         WriteIndented = true
     };
+
+    public HexMapData()
+    {
+        Map = new Dictionary<int, Hex>();
+    }
     
     public void Serialize()
     {
-        SerializedMap = JsonSerializer.Serialize(map, options);
+        SerializedMap = JsonSerializer.Serialize(Map, options);
     }
     
-    public Dictionary<int, Hex> Deserialize()
+    public void Deserialize()
     {
-        if (string.IsNullOrEmpty(SerializedMap)) return map;
+        if (string.IsNullOrEmpty(SerializedMap))
+        {
+            Map = new Dictionary<int, Hex>();
+            return;
+        }
         var deserializedMap = JsonSerializer.Deserialize<Dictionary<int, Hex>>(SerializedMap, options);
-        map = new Dictionary<int, Hex>();
+        Map = new Dictionary<int, Hex>();
 
         if (deserializedMap == null)
         {
             GD.PushError($"[HexMapData] Deserialization failed for: {SerializedMap}");
-            return map;
+            return;
         }
         
         // Generate new hash codes for this execution of the application.
         foreach (var value in deserializedMap.Values)
         {
-            map.Add(value.Position.GetHashCode(), value);
+            Map.Add(value.Position.GetHashCode(), value);
         }
-        return map;
     }
     
     public void Clear()
     {
-        map.Clear();
+        Map.Clear();
         SerializedMap = string.Empty;
     }
 }

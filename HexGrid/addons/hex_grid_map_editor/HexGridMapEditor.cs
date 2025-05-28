@@ -10,6 +10,9 @@ using HexGrid.Entity.Managers;
 using HexGrid.Map;
 using HexGrid.Map.Fov;
 using HexGrid.Map.Hex;
+using HexGrid.Map.Renderer;
+using HexGrid.Map.Renderer.Chunk;
+using HexGrid.Map.Renderer.Room;
 using HexGrid.Map.Vector;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 using GridMap = HexGrid.Map.GridMap;
@@ -95,7 +98,16 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     {
         properties = new Properties(CellSize, ChunkSize, LayerHeight);
         HexGridMap?.Dispose();
-        HexGridMap = new GridMap(MeshLibrary, this, GetWorld3D());
+        IRendererMapFactory factory;
+        if (chunkSize > 1)
+        {
+            factory = new ChunkMapFactory(MeshLibrary, GetWorld3D());
+        }
+        else
+        {
+            factory = new RoomMapFactory(MeshLibrary, this);
+        }
+        HexGridMap = new GridMap(this, factory);
         InitializeFovProviders();
     }
 
@@ -144,7 +156,7 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     {
         if (HexGridMap == null)
         {
-            GD.PushError("[StandaloneHexGrid] Tried to remove hexes from uninitialized hex grid map.");
+            GD.PushError("[HexGridMapEditor] Tried to remove hexes from uninitialized hex grid map.");
             return;
         }
         HexGridMap.RemoveHex(hexPosition, layerIndex);
@@ -156,7 +168,7 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     {
         if (HexGridMap == null)
         {
-            GD.PushError("[StandaloneHexGrid] Tried to add hexes to uninitialized hex grid map.");
+            GD.PushError("[HexGridMapEditor] Tried to add hexes to uninitialized hex grid map.");
             return;
         }
         HexGridMap.AddHex(hex, layerIndex);
@@ -171,7 +183,7 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
             HexGridMap.HideLayers(layerIndexes);
             return;
         }
-        GD.PushError("[StandaloneHexGrid] Tried to hide layers of uninitialized hex grid map.");
+        GD.PushError("[HexGridMapEditor] Tried to hide layers of uninitialized hex grid map.");
     }
 
     public void HideLayers(Predicate<int> predicate)
@@ -181,13 +193,13 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
             HexGridMap.HideLayers(predicate);
             return;
         }
-        GD.PushError("[StandaloneHexGrid] Tried to hide layers of uninitialized hex grid map.");
+        GD.PushError("[HexGridMapEditor] Tried to hide layers of uninitialized hex grid map.");
     }
 
     public Hex? GetHex(HexVector hexPosition, int layerIndex)
     {
         if (HexGridMap != null) return HexGridMap.GetHex(hexPosition, layerIndex);
-        GD.PushError("[StandaloneHexGrid] Tried to get hex from uninitialized hex grid map.");
+        GD.PushError("[HexGridMapEditor] Tried to get hex from uninitialized hex grid map.");
         return null;
     }
 

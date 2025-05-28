@@ -3,24 +3,21 @@ namespace HexGrid.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 using Hex;
+using Renderer;
 using Vector;
 
 public class GridMap
 {
-    private readonly MeshLibrary meshLibrary;
     private readonly IHexMapDataProvider hexMapDataProvider;
     private readonly Dictionary<int, Layer> layers;
-    private readonly World3D world;
+    private readonly IRendererMapFactory rendererMapFactory;
 
     public IReadOnlyDictionary<int, Layer> Layers => layers;
 
-    public GridMap(MeshLibrary meshLibrary, IHexMapDataProvider hexMapDataProvider,
-        World3D world)
+    public GridMap(IHexMapDataProvider hexMapDataProvider, IRendererMapFactory rendererMapFactory)
     {
-        this.meshLibrary = meshLibrary;
-        this.world = world;
+        this.rendererMapFactory = rendererMapFactory;
         this.hexMapDataProvider = hexMapDataProvider;
 
         layers = new Dictionary<int, Layer>();
@@ -57,23 +54,6 @@ public class GridMap
     public Hex.Hex? GetHex(HexVector hexPosition, int layerIndex)
     {
         return layers.TryGetValue(layerIndex, out var layer) ? layer.GetHex(hexPosition) : null;
-    }
-    
-    public void HideChunks(HexVector[] chunkPositions, int[] layerIndexes)
-    {
-        foreach (var layerIndex in layerIndexes)
-        {
-            if (!layers.TryGetValue(layerIndex, out var layer)) continue;
-            layer.HideChunks(chunkPositions);
-        }
-    }
-    
-    public void HideChunks(HexVector[] chunkPositions, Predicate<int> layerPredicate)
-    {
-        foreach (var layer in layers.Where(layer => layerPredicate(layer.Key)))
-        {
-            layer.Value.HideChunks(chunkPositions);
-        }
     }
     
     public void HideLayers(int[] layerIndexes)
@@ -113,7 +93,10 @@ public class GridMap
 
     private Layer CreateLayer(int layerIndex, IHexMapData mapData)
     {
-        var layerStorage = new Layer(mapData, layerIndex, meshLibrary, world);
+        var rendererMap = rendererMapFactory.New(layerIndex);
+        mapData.Deserialize();
+        rendererMap.AddTo(mapData.Map.Values.ToArray(), HexVector.Zero);
+        var layerStorage = new Layer(mapData, rendererMap);
         return layerStorage;
     }
 }

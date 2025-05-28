@@ -1,26 +1,31 @@
 namespace HexGrid.Map;
 
-using Chunk;
-using Godot;
 using Hex;
+using Renderer;
 using Vector;
 
 public class Layer : IHexProvider
 {
     private readonly HexMap hexMap;
-    private readonly ChunkMap chunkMap;
+    private readonly IRendererMap rendererMap;
 
-    public Layer(IHexMapData hexMapData, int layerIndex, MeshLibrary? library, World3D? scenario)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hexMapData">Map data to be assigned to the hex map.</param>
+    /// <param name="rendererMap">Map renderer with the <see cref="hexMapData"/> already assigned</param>
+    public Layer(IHexMapData hexMapData, IRendererMap rendererMap)
     {
         hexMap = new HexMap(hexMapData);
-        
-        chunkMap = new ChunkMap(layerIndex * Properties.LayerHeight, library, scenario);
-        foreach (var hex in hexMap.GetMap())
-        {
-            chunkMap.AssignHex(hex);
-        }
+        this.rendererMap = rendererMap;
     }
 
+    public void AddMap(IHexMapData mapData, IRenderer renderer)
+    {
+        hexMap.Add(mapData);
+        rendererMap.AddRenderer(renderer);
+    }
+    
     public Hex.Hex? GetHex(HexVector position)
     {
         return hexMap.Get(position);
@@ -29,13 +34,13 @@ public class Layer : IHexProvider
     public void AddHex(Hex.Hex hex)
     {
         hexMap.Add(hex);
-        chunkMap.AssignHex(hex);
+        rendererMap.AddHex(hex);
     }
 
     public void RemoveHex(HexVector position)
     {
         hexMap.Remove(position);
-        chunkMap.RemoveHex(position);
+        rendererMap.RemoveHex(position);
     }
 
     public bool IsEmpty()
@@ -43,28 +48,28 @@ public class Layer : IHexProvider
         return hexMap.GetMap().Length <= 0;
     }
     
-    public void HideChunks(HexVector[] positions)
+    public void DisplayChunks(HexVector[] positions)
     {
-        chunkMap.HideChunks(positions);
+        rendererMap.Show(positions);
     }
 
     public void Display()
     {
-        chunkMap.HideChunks([]);
+        rendererMap.Show();
     }
     
     public void Hide()
     {
-        chunkMap.Hide();
+        rendererMap.Show([]);
     }
     
     public void Dispose()
     {
-        chunkMap.Dispose();
+        rendererMap.Dispose();
     }
 
     ~Layer()
     {
-        chunkMap.Dispose();
+        rendererMap.Dispose();
     }
 }

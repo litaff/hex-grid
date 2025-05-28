@@ -1,4 +1,4 @@
-namespace HexGrid.Map.Chunk;
+namespace HexGrid.Map.Renderer.Chunk;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +7,24 @@ using GodotUtils.MultiMeshInstance;
 using Hex;
 using Vector;
 
-public class Chunk
+public class Chunk : IRenderer
 {
     private readonly float verticalOffset;
     private readonly List<MultiMeshInstance> meshInstances = [];
     private readonly List<Hex> hexes = [];
+    private readonly MeshLibrary? library;
+    private readonly World3D? scenario;
 
     public HexVector Position { get; }
-    public bool IsEmpty => hexes.Count == 0;
-    public IReadOnlyList<Hex> AssignedHexes => hexes;
-    
-    public Chunk(HexVector position, float verticalOffset)
+    public bool IsEmpty => Hexes.Count == 0;
+    public IReadOnlyList<Hex> Hexes => hexes;
+ 
+    public Chunk(HexVector position, float verticalOffset, MeshLibrary? library = null, World3D? scenario = null)
     {
         this.verticalOffset = verticalOffset;
         Position = position;
+        this.library = library;
+        this.scenario = scenario;
     }
     
     public void Add(Hex hex)
@@ -36,7 +40,7 @@ public class Chunk
         hexes.Remove(hex);
     }
 
-    public void UpdateMesh(MeshLibrary? library, World3D? scenario)
+    public void Update()
     {
         ClearMeshInstances();
 
@@ -91,6 +95,16 @@ public class Chunk
         }
     }
 
+    public bool Overlaps(IRenderer renderer)
+    {
+        return Position == renderer.Position;
+    }
+
+    public void Dispose()
+    {
+        ClearMeshInstances();
+    }
+
     private Dictionary<int, List<Hex>> SortHexes()
     {
         Dictionary<int, List<Hex>> sortedHexes = new();
@@ -109,11 +123,6 @@ public class Chunk
         }
 
         return sortedHexes;
-    }
-
-    public void Dispose()
-    {
-        ClearMeshInstances();
     }
 
     ~Chunk()

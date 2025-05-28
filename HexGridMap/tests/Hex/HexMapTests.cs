@@ -7,18 +7,56 @@ using Moq;
 [TestFixture]
 public class HexMapTests
 {
-    private Mock<IHexMapData> mockHexData;
+    private Mock<IHexMapData> mockHexMapData;
     private HexMap map;
     
     [SetUp]
     public void SetUp()
     {
-        var gridData = new Map.Properties(1, 1, 1);
-        mockHexData = new Mock<IHexMapData>();
-        mockHexData.Setup(mock => mock.Deserialize()).Returns(new Dictionary<int, Hex>());
-        map = new HexMap(mockHexData.Object);
+        var properties = new Map.Properties(1, 1, 1);
+        mockHexMapData = new Mock<IHexMapData>();
+        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Hex>());
+        map = new HexMap(mockHexMapData.Object);
     }
 
+    [Test]
+    public void Add_DeserializesMapData()
+    {
+        var mockData = new Mock<IHexMapData>();
+        mockData.Setup(mock => mock.Map).Returns(new Dictionary<int, Hex>());
+        
+        map.Add(mockData.Object);
+        
+        mockData.Verify(data => data.Deserialize(), Times.Once);
+    }
+
+    [Test]
+    public void Add_SerializesPrimaryData()
+    {
+        var mockData = new Mock<IHexMapData>();
+        mockData.Setup(mock => mock.Map).Returns(new Dictionary<int, Hex>());
+        
+        map.Add(mockData.Object);
+        
+        mockHexMapData.Verify(data => data.Serialize(), Times.Once);
+    }
+
+    [Test]
+    public void Add_AddsHexes_FromPassedData()
+    {
+        var mockData = new Mock<IHexMapData>();
+        var hex = new Hex(HexVector.Zero, new Properties(), new MeshData());
+        mockData.Setup(mock => mock.Map).Returns(new Dictionary<int, Hex>
+        {
+            { hex.Position.GetHashCode(), hex }
+        });
+        Assert.That(map.GetMap(), Is.Empty);
+        
+        map.Add(mockData.Object);
+        
+        Assert.That(map.GetMap(), Is.Not.Empty);
+    }
+    
     [Test]
     public void Add_AddsHex_AtPosition()
     {
