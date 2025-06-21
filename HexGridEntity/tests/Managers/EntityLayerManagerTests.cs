@@ -104,7 +104,7 @@ public class EntityLayerManagerTests
         layerManager.Add(entity);
         Assert.That(layerManager.Stacks.TryGetValue(entity.PositionProvider.Position.GetHashCode(), out var stack), Is.True);
         Assert.That(stack.Entities, Does.Contain(entity));
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.North);
+        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Forward);
         
         layerManager.UpdatePosition(entity, HexVector.Zero);
         

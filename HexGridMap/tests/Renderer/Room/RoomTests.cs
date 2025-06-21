@@ -34,7 +34,7 @@ public class RoomTests
         var overlap = new Room(roomPosition);
         var hex = new Hex(HexVector.Zero, new Properties(), new MeshData());
         room.Add(hex);
-        hex = new Hex(HexVector.North, new Properties(), new MeshData());
+        hex = new Hex(HexVector.Forward, new Properties(), new MeshData());
         overlap.Add(hex);
         
         Assert.That(room.Overlaps(overlap), Is.False);

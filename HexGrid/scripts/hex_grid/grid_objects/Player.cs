@@ -49,12 +49,12 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         if (@event is not InputEventKey { Pressed: true } eventKey) return;
         var direction = eventKey.Keycode switch
         {
-            Key.Q => HexVector.WestNorth,
-            Key.W => HexVector.North,
-            Key.E => HexVector.EastNorth,
-            Key.A => HexVector.WestSouth,
-            Key.S => HexVector.South,
-            Key.D => HexVector.EastSouth,
+            Key.Q => HexVector.ForLeft,
+            Key.W => HexVector.Forward,
+            Key.E => HexVector.ForRight,
+            Key.A => HexVector.BackLeft,
+            Key.S => HexVector.Backward,
+            Key.D => HexVector.BackRight,
             _ => HexVector.Zero
         };
         if (direction == HexVector.Zero) return;

@@ -89,11 +89,11 @@ public static class HexVectorExtensions
     {
         var directions = new[]
         {
-            HexVector.EastSouth, HexVector.South, HexVector.WestSouth, 
-            HexVector.WestNorth, HexVector.North, HexVector.EastNorth
+            HexVector.BackRight, HexVector.Backward, HexVector.BackLeft, 
+            HexVector.ForLeft, HexVector.Forward, HexVector.ForRight
         };
         var results = new List<HexVector>();
-        var hex = center.GetNeighbor(HexVector.North * radius);
+        var hex = center.GetNeighbor(HexVector.Forward * radius);
         for (var i = 0; i < 6; i++)
         {
             for (var j = 0; j < radius; j++)

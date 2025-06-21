@@ -67,7 +67,7 @@ public class RoomMapTests
     public void FromHexPosition_ReturnsRenderer_WithHexOfPosition()
     {
         var rendererPosition = HexVector.Zero;
-        var hexPosition = HexVector.North;
+        var hexPosition = HexVector.Forward;
         var hex = new Hex(hexPosition, new Properties(), new MeshData());
         Assert.That(map.Renderers, Is.Empty);
         map.AddTo([hex], rendererPosition);

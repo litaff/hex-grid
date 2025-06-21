@@ -20,35 +20,35 @@ public struct HexVector : IEquatable<HexVector>
 
     public static Dictionary<Direction, HexVector> Directions => new()
     {
-        {Direction.North, North},
-        {Direction.EastNorth, EastNorth},
-        {Direction.EastSouth, EastSouth},
-        {Direction.South, South},
-        {Direction.WestSouth, WestSouth},
-        {Direction.WestNorth, WestNorth}
+        {Direction.Forward, Forward},
+        {Direction.ForRight, ForRight},
+        {Direction.BackRight, BackRight},
+        {Direction.Backward, Backward},
+        {Direction.BackLeft, BackLeft},
+        {Direction.ForLeft, ForLeft}
     };
     
     public static HexVector Zero => new(0, 0);
 
     #region Direct directions
 
-    public static HexVector North => new(0, -1);
-    public static HexVector EastNorth => new(1, -1);
-    public static HexVector EastSouth => new(1, 0);
-    public static HexVector South => new(0, 1);
-    public static HexVector WestSouth => new(-1, 1);
-    public static HexVector WestNorth => new(-1, 0);
+    public static HexVector Forward => new(0, -1);
+    public static HexVector ForRight => new(1, -1);
+    public static HexVector BackRight => new(1, 0);
+    public static HexVector Backward => new(0, 1);
+    public static HexVector BackLeft => new(-1, 1);
+    public static HexVector ForLeft => new(-1, 0);
 
     #endregion
 
     #region Diagonal directions
 
-    public static HexVector DiagonalEast => new(2, -1);
-    public static HexVector DiagonalSouthEast => new(1, 1);
-    public static HexVector DiagonalSouthWest => new(-1, 2);
-    public static HexVector DiagonalWest => new(-2, 1);
-    public static HexVector DiagonalNorthWest => new(-1, -1);
-    public static HexVector DiagonalNorthEast => new(1, -2);
+    public static HexVector DiagonalRight => new(2, -1);
+    public static HexVector DiagonalBackRight => new(1, 1);
+    public static HexVector DiagonalBackLeft => new(-1, 2);
+    public static HexVector DiagonalLeft => new(-2, 1);
+    public static HexVector DiagonalForLeft => new(-1, -1);
+    public static HexVector DiagonalForRight => new(1, -2);
 
     #endregion
 

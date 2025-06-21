@@ -84,7 +84,7 @@ public class PositionProviderTests
     [Test]
     public void PlaneTranslate_ChangesPositionToTarget()
     {
-        var target = HexVector.North;
+        var target = HexVector.Forward;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
         mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
@@ -103,7 +103,7 @@ public class PositionProviderTests
     [Test]
     public void PlaneTranslate_Invokes_OnPositionChanged()
     {
-        var target = HexVector.North;
+        var target = HexVector.Forward;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
         mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);
@@ -123,7 +123,7 @@ public class PositionProviderTests
     [Test]
     public void PlaneTranslate_Invokes_OnPositionChanged_WithPreviousPosition()
     {
-        var target = HexVector.North;
+        var target = HexVector.Forward;
         var mockStateProvider = new Mock<IHexStateProvider>();
         mockStateProvider.Setup(p => p.Exists(target)).Returns(true);
         mockStateProvider.Setup(p => p.GetHexHeight(target, null)).Returns(0f);

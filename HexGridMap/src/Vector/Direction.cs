@@ -2,10 +2,10 @@ namespace HexGrid.Map.Vector;
 
 public enum Direction
 {
-    North,
-    EastNorth,
-    EastSouth,
-    South,
-    WestSouth,
-    WestNorth
+    Forward,
+    ForRight,
+    BackRight,
+    Backward,
+    BackLeft,
+    ForLeft
 }

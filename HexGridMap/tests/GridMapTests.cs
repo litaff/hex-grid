@@ -50,11 +50,11 @@ public class GridMapTests
         gridMap.AddHex(hex, 0);
         Assert.That(gridMap.Layers, Is.Not.Empty);
         Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Zero), Is.EqualTo(hex));
-        hex = new Map.Hex.Hex(HexVector.North, new Properties(), new MeshData());
+        hex = new Map.Hex.Hex(HexVector.Forward, new Properties(), new MeshData());
 
         gridMap.AddHex(hex, 0);
         
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.North), Is.EqualTo(hex));
+        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.EqualTo(hex));
     }
 
     [Test]
@@ -68,13 +68,13 @@ public class GridMapTests
         gridMap.AddHex(hex, 0);
         Assert.That(gridMap.Layers, Is.Not.Empty);
         Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Zero), Is.EqualTo(hex));
-        hex = new Map.Hex.Hex(HexVector.North, new Properties(), new MeshData());
+        hex = new Map.Hex.Hex(HexVector.Forward, new Properties(), new MeshData());
         gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.North), Is.EqualTo(hex));
+        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.EqualTo(hex));
         
-        gridMap.RemoveHex(HexVector.North, 0);
+        gridMap.RemoveHex(HexVector.Forward, 0);
         
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.North), Is.Null);
+        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.Null);
     }
     
     [Test]
@@ -110,6 +110,6 @@ public class GridMapTests
         gridMap.AddHex(hex, 0);
         Assert.That(gridMap.Layers, Is.Not.Empty);
         
-        Assert.That(gridMap.GetHex(HexVector.North, 0), Is.Null);
+        Assert.That(gridMap.GetHex(HexVector.Forward, 0), Is.Null);
     }
 }

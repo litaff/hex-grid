@@ -35,134 +35,134 @@ public class HexVectorTests
     }
     
     [Test]
-    public void North_Is_0_Minus1_1()
+    public void Forward_Is_0_Minus1_1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.North.Q, Is.EqualTo(0));
-            Assert.That(HexVector.North.R, Is.EqualTo(-1));
-            Assert.That(HexVector.North.S, Is.EqualTo(1));
+            Assert.That(HexVector.Forward.Q, Is.EqualTo(0));
+            Assert.That(HexVector.Forward.R, Is.EqualTo(-1));
+            Assert.That(HexVector.Forward.S, Is.EqualTo(1));
         });
     }
     
     [Test]
-    public void EastNorth_Is_1_Minus1_0()
+    public void ForRight_Is_1_Minus1_0()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.EastNorth.Q, Is.EqualTo(1));
-            Assert.That(HexVector.EastNorth.R, Is.EqualTo(-1));
-            Assert.That(HexVector.EastNorth.S, Is.EqualTo(0));
+            Assert.That(HexVector.ForRight.Q, Is.EqualTo(1));
+            Assert.That(HexVector.ForRight.R, Is.EqualTo(-1));
+            Assert.That(HexVector.ForRight.S, Is.EqualTo(0));
         });
     }
     
     [Test]
-    public void EastSouth_Is_1_0_Minus1()
+    public void BackRight_Is_1_0_Minus1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.EastSouth.Q, Is.EqualTo(1));
-            Assert.That(HexVector.EastSouth.R, Is.EqualTo(0));
-            Assert.That(HexVector.EastSouth.S, Is.EqualTo(-1));
+            Assert.That(HexVector.BackRight.Q, Is.EqualTo(1));
+            Assert.That(HexVector.BackRight.R, Is.EqualTo(0));
+            Assert.That(HexVector.BackRight.S, Is.EqualTo(-1));
         });
     }
     
     [Test]
-    public void South_Is_0_1_Minus1()
+    public void Backward_Is_0_1_Minus1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.South.Q, Is.EqualTo(0));
-            Assert.That(HexVector.South.R, Is.EqualTo(1));
-            Assert.That(HexVector.South.S, Is.EqualTo(-1));
+            Assert.That(HexVector.Backward.Q, Is.EqualTo(0));
+            Assert.That(HexVector.Backward.R, Is.EqualTo(1));
+            Assert.That(HexVector.Backward.S, Is.EqualTo(-1));
         });
     }
     
     [Test]
-    public void WestSouth_Is_Minus1_1_0()
+    public void BackLeft_Is_Minus1_1_0()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.WestSouth.Q, Is.EqualTo(-1));
-            Assert.That(HexVector.WestSouth.R, Is.EqualTo(1));
-            Assert.That(HexVector.WestSouth.S, Is.EqualTo(0));
+            Assert.That(HexVector.BackLeft.Q, Is.EqualTo(-1));
+            Assert.That(HexVector.BackLeft.R, Is.EqualTo(1));
+            Assert.That(HexVector.BackLeft.S, Is.EqualTo(0));
         });
     }
     
     [Test]
-    public void WestNorth_Is_Minus1_0_1()
+    public void ForLeft_Is_Minus1_0_1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.WestNorth.Q, Is.EqualTo(-1));
-            Assert.That(HexVector.WestNorth.R, Is.EqualTo(0));
-            Assert.That(HexVector.WestNorth.S, Is.EqualTo(1));
+            Assert.That(HexVector.ForLeft.Q, Is.EqualTo(-1));
+            Assert.That(HexVector.ForLeft.R, Is.EqualTo(0));
+            Assert.That(HexVector.ForLeft.S, Is.EqualTo(1));
         });
     }
     
     [Test]
-    public void DiagonalEast_Is_2_Minus1_Minus1()
+    public void DiagonalRight_Is_2_Minus1_Minus1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalEast.Q, Is.EqualTo(2));
-            Assert.That(HexVector.DiagonalEast.R, Is.EqualTo(-1));
-            Assert.That(HexVector.DiagonalEast.S, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalRight.Q, Is.EqualTo(2));
+            Assert.That(HexVector.DiagonalRight.R, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalRight.S, Is.EqualTo(-1));
         });
     }
     
     [Test]
-    public void DiagonalSouthEast_Is_1_1_Minus2()
+    public void DiagonalBackRight_Is_1_1_Minus2()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalSouthEast.Q, Is.EqualTo(1));
-            Assert.That(HexVector.DiagonalSouthEast.R, Is.EqualTo(1));
-            Assert.That(HexVector.DiagonalSouthEast.S, Is.EqualTo(-2));
+            Assert.That(HexVector.DiagonalBackRight.Q, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalBackRight.R, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalBackRight.S, Is.EqualTo(-2));
         });
     }
     
     [Test]
-    public void DiagonalSouthWest_Is_Minus1_2_Minus1()
+    public void DiagonalBackLeft_Is_Minus1_2_Minus1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalSouthWest.Q, Is.EqualTo(-1));
-            Assert.That(HexVector.DiagonalSouthWest.R, Is.EqualTo(2));
-            Assert.That(HexVector.DiagonalSouthWest.S, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalBackLeft.Q, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalBackLeft.R, Is.EqualTo(2));
+            Assert.That(HexVector.DiagonalBackLeft.S, Is.EqualTo(-1));
         });
     }
     
     [Test]
-    public void DiagonalWest_Is_Minus2_1_1()
+    public void DiagonalLeft_Is_Minus2_1_1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalWest.Q, Is.EqualTo(-2));
-            Assert.That(HexVector.DiagonalWest.R, Is.EqualTo(1));
-            Assert.That(HexVector.DiagonalWest.S, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalLeft.Q, Is.EqualTo(-2));
+            Assert.That(HexVector.DiagonalLeft.R, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalLeft.S, Is.EqualTo(1));
         });
     }
     
     [Test]
-    public void DiagonalNorthWest_Is_Minus1_Minus1_2()
+    public void DiagonalForLeft_Is_Minus1_Minus1_2()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalNorthWest.Q, Is.EqualTo(-1));
-            Assert.That(HexVector.DiagonalNorthWest.R, Is.EqualTo(-1));
-            Assert.That(HexVector.DiagonalNorthWest.S, Is.EqualTo(2));
+            Assert.That(HexVector.DiagonalForLeft.Q, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalForLeft.R, Is.EqualTo(-1));
+            Assert.That(HexVector.DiagonalForLeft.S, Is.EqualTo(2));
         });
     }
     
     [Test]
-    public void DiagonalNorthEast_Is_1_Minus2_1()
+    public void DiagonalForRight_Is_1_Minus2_1()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(HexVector.DiagonalNorthEast.Q, Is.EqualTo(1));
-            Assert.That(HexVector.DiagonalNorthEast.R, Is.EqualTo(-2));
-            Assert.That(HexVector.DiagonalNorthEast.S, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalForRight.Q, Is.EqualTo(1));
+            Assert.That(HexVector.DiagonalForRight.R, Is.EqualTo(-2));
+            Assert.That(HexVector.DiagonalForRight.S, Is.EqualTo(1));
         });
     }
 

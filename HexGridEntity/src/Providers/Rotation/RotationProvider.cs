@@ -15,7 +15,7 @@ public class RotationProvider : IRotationProvider
     
     public RotationProvider()
     {
-        Forward = HexVector.North;
+        Forward = HexVector.Forward;
     }
     
     public RotationProvider(HexVector initialForward)

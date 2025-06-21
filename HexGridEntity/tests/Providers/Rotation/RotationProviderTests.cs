@@ -12,7 +12,7 @@ public class RotationProviderTests
     [SetUp]
     public void Setup()
     {
-        initialRotation = HexVector.North;
+        initialRotation = HexVector.Forward;
         provider = new RotationProvider(initialRotation);
     }
 
@@ -42,13 +42,13 @@ public class RotationProviderTests
     [Test]
     public void RotateTowards_ReturnsTrue_WhenTargetIsNotEqualToForward()
     {
-        Assert.That(provider.RotateTowards(HexVector.South), Is.True);
+        Assert.That(provider.RotateTowards(HexVector.Backward), Is.True);
     }
 
     [Test]
     public void RotateTowards_NormalizesTarget()
     {
-        var rotation = HexVector.South;
+        var rotation = HexVector.Backward;
         provider.RotateTowards(rotation * 5);
         
         Assert.That(provider.Forward, Is.EqualTo(rotation));
@@ -60,7 +60,7 @@ public class RotationProviderTests
         var called = false;
         provider.OnRotationChanged += () => called = true;
 
-        provider.RotateTowards(HexVector.South);
+        provider.RotateTowards(HexVector.Backward);
         
         Assert.That(called, Is.True);
     }

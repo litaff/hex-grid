@@ -23,8 +23,8 @@ public class InstantRotationHandlerTestes
     {
         var gridData = new Properties(1, 1);
         
-        handler.RotateTowards(HexVector.North);
+        handler.RotateTowards(HexVector.Forward);
         
-        mockRotatable.Verify(m => m.LookTowards(HexVector.North.ToWorldPosition()), Times.Once);
+        mockRotatable.Verify(m => m.LookTowards(HexVector.Forward.ToWorldPosition()), Times.Once);
     }
 }
