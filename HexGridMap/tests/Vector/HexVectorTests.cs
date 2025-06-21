@@ -24,12 +24,6 @@ public class HexVectorTests
     }
 
     [Test]
-    public void Constructor_ThrowsArgumentException_ForIncorrectComponents()
-    {
-        Assert.Throws<ArgumentException>(() => { _ = new HexVector(1, 1, 1); });
-    }
-
-    [Test]
     public void Zero_Is_0_0_0()
     {
         Assert.Multiple(() =>

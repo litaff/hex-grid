@@ -7,23 +7,15 @@ public struct HexVector : IEquatable<HexVector>
 {
     public int Q { get; private set; }
     public int R { get; private set; }
+    [JsonIgnore]
     public int S { get; private set; }
     
+    [JsonConstructor]
     public HexVector(int q, int r)
     {
         Q = q;
         R = r;
         S = -q - r;
-    }
-    
-    [JsonConstructor]
-    public HexVector(int q, int r, int s)
-    {
-        Q = q;
-        R = r;
-        S = s;
-        if (Q + R + S == 0) return;
-        throw new ArgumentException("[HexVector] Q + R + S must be 0!");
     }
 
     public static Dictionary<Direction, HexVector> Directions => new()
