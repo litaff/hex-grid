@@ -1,14 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvyi07qp410ei"]
+[gd_scene load_steps=7 format=3 uid="uid://cvyi07qp410ei"]
 
-[ext_resource type="Script" uid="uid://cf7wfqqs2iahx" path="res://addons/hex_grid_editor/HexGridEditorView.cs" id="1_41alb"]
-[ext_resource type="Script" uid="uid://c78hmr8v4p3cj" path="res://addons/hex_grid_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
-[ext_resource type="Script" uid="uid://cqi0bbocmjr4" path="res://addons/hex_grid_editor/ui/EditorDoubleConfirmButton.cs" id="3_yx7c0"]
-[ext_resource type="Script" uid="uid://vd4jqbx16qbo" path="res://addons/hex_grid_editor/hex_editor/HexPropertiesView.cs" id="4_d32ym"]
-[ext_resource type="Script" uid="uid://bs8gt8xaauvas" path="res://addons/hex_grid_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
-[ext_resource type="Script" uid="uid://kdpqfcd7jvws" path="res://addons/hex_grid_editor/chunk_display/ChunkDisplayView.cs" id="7_yiypl"]
-[ext_resource type="Script" uid="uid://b6bjygta3gqv1" path="res://addons/hex_grid_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
+[ext_resource type="Script" uid="uid://cf7wfqqs2iahx" path="res://addons/hex_grid_map_editor/HexGridEditorView.cs" id="1_41alb"]
+[ext_resource type="Script" uid="uid://c78hmr8v4p3cj" path="res://addons/hex_grid_map_editor/hex_editor/HexEditorView.cs" id="2_n44jm"]
+[ext_resource type="Script" uid="uid://cqi0bbocmjr4" path="res://addons/hex_grid_map_editor/ui/EditorDoubleConfirmButton.cs" id="3_yx7c0"]
+[ext_resource type="Script" uid="uid://vd4jqbx16qbo" path="res://addons/hex_grid_map_editor/hex_editor/HexPropertiesView.cs" id="4_d32ym"]
+[ext_resource type="Script" uid="uid://bs8gt8xaauvas" path="res://addons/hex_grid_map_editor/editor_grid_indicator/EditorGridIndicatorView.cs" id="6_wblny"]
+[ext_resource type="Script" uid="uid://b6bjygta3gqv1" path="res://addons/hex_grid_map_editor/fov_display/FovDisplayView.cs" id="8_sxwwd"]
 
-[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "FovDisplay", "HexEditor", "EditorGridIndicator", "ChunkDisplay")]
+[node name="HexGridEditorView" type="Control" node_paths=PackedStringArray("TabContainer", "FovDisplay", "HexEditor", "EditorGridIndicator")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +19,6 @@ TabContainer = NodePath("TabContainer")
 FovDisplay = NodePath("TabContainer/Settings/VBoxContainer/FovDebug")
 HexEditor = NodePath("TabContainer/Hexes")
 EditorGridIndicator = NodePath("TabContainer/Settings/VBoxContainer/MarginContainer")
-ChunkDisplay = NodePath("TabContainer/Settings/VBoxContainer/DisplayChunks")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
@@ -147,19 +145,6 @@ min_value = 2.0
 value = 10.0
 
 [node name="HSeparator" type="HSeparator" parent="TabContainer/Settings/VBoxContainer"]
-layout_mode = 2
-
-[node name="DisplayChunks" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("displayChunkButton")]
-layout_mode = 2
-script = ExtResource("7_yiypl")
-displayChunkButton = NodePath("CheckButton")
-
-[node name="CheckButton" type="CheckButton" parent="TabContainer/Settings/VBoxContainer/DisplayChunks"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Display chunks"
-
-[node name="HSeparator2" type="HSeparator" parent="TabContainer/Settings/VBoxContainer"]
 layout_mode = 2
 
 [node name="FovDebug" type="HBoxContainer" parent="TabContainer/Settings/VBoxContainer" node_paths=PackedStringArray("enableFovButton", "fovRadius")]

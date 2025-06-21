@@ -1,6 +1,5 @@
 namespace addons.hex_grid_map_editor;
 
-using chunk_display;
 using editor_grid_indicator;
 using fov_display;
 using Godot;
@@ -17,6 +16,4 @@ public partial class HexGridEditorView : Control
     public HexEditorView HexEditor { get; private set; } = null!;
     [Export]
     public EditorGridIndicatorView EditorGridIndicator { get; private set; } = null!;
-    [Export]
-    public ChunkDisplayView ChunkDisplay { get; private set; } = null!;
 }

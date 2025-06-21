@@ -21,7 +21,7 @@ public class InstantRotationHandlerTestes
     [Test]
     public void RotateTowards_CallsLookTowardsOnIRotatable_WithWorldDirection()
     {
-        var gridData = new Properties(1, 1, 1);
+        var gridData = new Properties(1, 1);
         
         handler.RotateTowards(HexVector.North);
         

@@ -30,7 +30,7 @@ public class InstantPositionHandlerTests
     [Test]
     public void TranslateTo_CallsTranslate_FromITranslatable_WithCorrectOffset()
     {
-        var gridData = new Properties(1, 1, 1);
+        var gridData = new Properties(1, 1);
         var mockProvider = new Mock<IHexStateProvider>();
         var position = HexVector.Zero;
         mockProvider.Setup(m => m.GetHexHeight(position, null)).Returns(0);

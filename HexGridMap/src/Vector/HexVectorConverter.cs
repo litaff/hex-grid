@@ -5,7 +5,6 @@ using Godot;
 public static class HexVectorConverter
 {
     private static float CellSize => Properties.CellSize;
-    private static int ChunkSize => Properties.ChunkSize;
     
     /// <summary>
     /// Converts a world position to the nearest hex position.
@@ -42,43 +41,5 @@ public static class HexVectorConverter
         var x = (qBasis.X * hexPosition.Q + rBasis.X * hexPosition.R);
         var z = (qBasis.Y * hexPosition.Q + rBasis.Y * hexPosition.R);
         return new Vector3(x, 0, z);
-    }
-    /// <summary>
-    /// Converts a hex position to a chunk position.
-    /// https://observablehq.com/@sanderevers/hexagon-tiling-of-an-hexagonal-grid#small_to_big
-    /// </summary>
-    public static HexVector ToChunkPosition(this HexVector hexPosition)
-    {
-        var shift = 3 * ChunkSize + 2;
-        var area = 3 * ChunkSize * ChunkSize + 3 * ChunkSize + 1;
-        var intermediateVector = new Vector3I(
-            Mathf.FloorToInt((hexPosition.R + shift * hexPosition.Q) / (float)area),
-            Mathf.FloorToInt((hexPosition.S + shift * hexPosition.R) / (float)area),
-            Mathf.FloorToInt((hexPosition.Q + shift * hexPosition.S) / (float)area));
-        var chunkPos = new HexVector(
-            Mathf.FloorToInt((1 + intermediateVector.X - intermediateVector.Y) / 3f),
-            Mathf.FloorToInt((1 + intermediateVector.Y - intermediateVector.Z) / 3f));
-        return chunkPos;
-    }
-
-    /// <summary>
-    /// Converts a chunk position to a hex position.
-    /// https://observablehq.com/@sanderevers/hexmod-representation#center_of
-    /// </summary>
-    public static HexVector FromChunkPosition(this HexVector chunkPosition)
-    {
-        return new HexVector(
-            (ChunkSize + 1) * chunkPosition.Q - ChunkSize * chunkPosition.S,
-            (ChunkSize + 1) * chunkPosition.R - ChunkSize * chunkPosition.Q);
-    }
-    
-    /// <summary>
-    /// Returns a hex position relative to the chunk, which contains the hex position.
-    /// https://observablehq.com/@sanderevers/hexmod-representation#rel_coords
-    /// </summary>
-    public static HexVector RelativeToChunk(this HexVector hexPosition)
-    {
-        var chunkPosition = hexPosition.ToChunkPosition();
-        return hexPosition - chunkPosition.FromChunkPosition();
     }
 }

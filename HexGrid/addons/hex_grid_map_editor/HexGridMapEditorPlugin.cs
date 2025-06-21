@@ -1,7 +1,6 @@
 #if TOOLS
 namespace addons.hex_grid_map_editor;
 
-using chunk_display;
 using editor_grid_indicator;
 using fov_display;
 using Godot;
@@ -20,7 +19,6 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 
 	private HexEditor hexEditor = null!;
 	private EditorGridIndicator gridIndicator = null!;
-	private ChunkDisplay chunkDisplay = null!;
 	private FovDisplay fovDisplay = null!;
 	
 	private bool pluginEnabled;
@@ -101,12 +99,10 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 		hexEditor = new HexEditor(mapEditionProvider, view.HexEditor, hexGridEditorInputHandler);
 		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider, hexEditor, hexGridEditorInputHandler);
 		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, hexEditor, hexGridEditorInputHandler);
-		chunkDisplay = new ChunkDisplay(world, view.ChunkDisplay, hexEditor, hexGridEditorInputHandler);
 
 		hexEditor.Enable();
 		fovDisplay.Enable();
 		gridIndicator.Enable();
-		chunkDisplay.Enable();
 		
 		mapEditionProvider.OnPropertyChange += Reset;
 		view.TabContainer.TabChanged += OnTabChangedHandler;
@@ -132,7 +128,6 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 		hexEditor.Disable();
 		fovDisplay.Disable();
 		gridIndicator.Disable();
-		chunkDisplay.Disable();
 	}
 
 	private void Reset()

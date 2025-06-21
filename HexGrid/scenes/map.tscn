@@ -34,7 +34,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_6vj07")
 [node name="HexGrid" type="Node3D" parent="."]
 script = ExtResource("2_gldc4")
 CellSize = 1.0
-ChunkSize = 1
 LayerHeight = 3.5
 MeshLibrary = ExtResource("2_q07w8")
 metadata/_edit_lock_ = true

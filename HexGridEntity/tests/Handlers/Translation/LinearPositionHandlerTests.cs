@@ -18,7 +18,7 @@ public class LinearPositionHandlerTests
     [SetUp]
     public void SetUp()
     {
-        var gridData = new Properties(1, 1, 1);
+        var gridData = new Properties(1, 1);
         initialPosition = Vector3.Zero;
         translationSpeed = 1f;
         mockTranslatable = new Mock<ITranslatable>();

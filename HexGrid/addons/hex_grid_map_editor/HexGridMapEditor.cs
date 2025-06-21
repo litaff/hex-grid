@@ -11,7 +11,6 @@ using HexGrid.Map;
 using HexGrid.Map.Fov;
 using HexGrid.Map.Hex;
 using HexGrid.Map.Renderer;
-using HexGrid.Map.Renderer.Chunk;
 using HexGrid.Map.Renderer.Room;
 using HexGrid.Map.Vector;
 using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
@@ -37,17 +36,6 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
         } 
     }
     [Export]
-    public int ChunkSize {
-        get => chunkSize;
-        private set
-        {
-            chunkSize = value > 0 ? value : 1;
-            if (!IsInsideTree()) return; // Don't initialize if the node is not in the tree
-            Initialize();
-            OnPropertyChange?.Invoke();
-        } 
-    }
-    [Export]
     public float LayerHeight {
         get => layerHeight;
         private set
@@ -66,7 +54,6 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     public Array<Node> Entities { get; private set; } = [];
 
     private float cellSize;
-    private int chunkSize;
     private float layerHeight;
     private Properties properties = null!;
 
@@ -96,17 +83,9 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
 
     public void Initialize()
     {
-        properties = new Properties(CellSize, ChunkSize, LayerHeight);
+        properties = new Properties(CellSize, LayerHeight);
         HexGridMap?.Dispose();
-        IRendererMapFactory factory;
-        if (chunkSize > 1)
-        {
-            factory = new ChunkMapFactory(MeshLibrary, GetWorld3D());
-        }
-        else
-        {
-            factory = new RoomMapFactory(MeshLibrary, this);
-        }
+        IRendererMapFactory factory = new RoomMapFactory(MeshLibrary, this);
         HexGridMap = new GridMap(this, factory);
         InitializeFovProviders();
     }

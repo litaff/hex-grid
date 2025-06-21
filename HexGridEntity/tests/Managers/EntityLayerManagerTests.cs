@@ -163,7 +163,7 @@ public class EntityLayerManagerTests
         layerManager = new EntityLayerManager(1, 
             mockHexProvider.Object, 
             mockEntityManager.Object);
-        var hexData = new Map.Properties(0, 0, 1f);
+        var hexData = new Map.Properties(0, 1f);
         
         var height = layerManager.GetHexHeight(HexVector.Zero);
         
@@ -176,7 +176,7 @@ public class EntityLayerManagerTests
         layerManager = new EntityLayerManager(1, 
             mockHexProvider.Object, 
             mockEntityManager.Object);
-        var hexData = new Map.Properties(0, 0, 1f);
+        var hexData = new Map.Properties(0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
         
@@ -191,7 +191,7 @@ public class EntityLayerManagerTests
         layerManager = new EntityLayerManager(1, 
             mockHexProvider.Object, 
             mockEntityManager.Object);
-        var hexData = new Map.Properties(0, 0, 1f);
+        var hexData = new Map.Properties(0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
         var entity = GetMockEntity(heightData: new HeightData(1, 0));
@@ -208,7 +208,7 @@ public class EntityLayerManagerTests
         layerManager = new EntityLayerManager(1, 
             mockHexProvider.Object, 
             mockEntityManager.Object);
-        var hexData = new Map.Properties(0, 0, 1f);
+        var hexData = new Map.Properties(0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
         var entity = GetMockEntity(heightData: new HeightData(1, 0));
@@ -225,7 +225,7 @@ public class EntityLayerManagerTests
         layerManager = new EntityLayerManager(1, 
             mockHexProvider.Object, 
             mockEntityManager.Object);
-        var hexData = new Map.Properties(0, 0, 1f);
+        var hexData = new Map.Properties(0, 1f);
         var hex = new Hex(0, 0, new Properties(1f), default);
         mockHexProvider.Setup(p => p.GetHex(HexVector.Zero)).Returns(hex);
         var entity = GetMockEntity(heightData: new HeightData(1, 0));

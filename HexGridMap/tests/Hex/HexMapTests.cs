@@ -13,7 +13,7 @@ public class HexMapTests
     [SetUp]
     public void SetUp()
     {
-        var properties = new Map.Properties(1, 1, 1);
+        var properties = new Map.Properties(1, 1);
         mockHexMapData = new Mock<IHexMapData>();
         mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Hex>());
         map = new HexMap(mockHexMapData.Object);
