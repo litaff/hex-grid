@@ -1,7 +1,7 @@
 namespace HexGrid.Entity;
 
-public readonly struct HeightData(float height, float stepHeight)
+public readonly struct HeightData(float height, int stepRange)
 {
     public float Height { get; } = height;
-    public float StepHeight { get; } = stepHeight;
+    public int StepRange { get; } = stepRange;
 }

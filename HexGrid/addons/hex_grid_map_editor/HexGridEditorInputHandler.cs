@@ -7,12 +7,15 @@ using HexGrid.Map.Vector;
 
 public class HexGridEditorInputHandler : IHexEditorInputProvider
 {
+    private InputEventMouseMotion? previousMotion;
+    
     public bool IsAddHexHeld { get; private set; }
     public bool IsRemoveHexHeld { get; private set; }
     public bool IsDisplayAllLayersHeld { get; private set; }
     public Vector3 CursorPosition { get; private set; }
     public HexVector HexPosition { get; private set; }
     public Vector3 HexCenter { get; private set; }
+    public float Elevation { get; private set; } = 0;
 
     public event Action? OnRotateRequested;
     public event Action? OnPipetteRequested;
@@ -21,13 +24,16 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
     public event Action<Vector3>? OnHexCenterUpdated;
     public event Action? OnAddHexRequested;
     public event Action? OnRemoveHexRequest;
+    public event Action? OnHeightChanged;
 
-    public void UpdateCursorPosition(Vector3 planePosition, Camera3D viewportCamera, InputEventMouseMotion? motion)
+    public void UpdateCursorPosition(Camera3D viewportCamera, InputEventMouseMotion? motion)
     {
-        if (motion == null) return;
-        var targetPlane = new Plane(Vector3.Up, planePosition);
-        var from = viewportCamera.ProjectRayOrigin(motion.Position);
-        var to = viewportCamera.ProjectRayNormal(motion.Position);
+        var currentMotion = motion ?? previousMotion;
+        if (currentMotion == null) return;
+        previousMotion = currentMotion;
+        var targetPlane = new Plane(Vector3.Up, Vector3.Up * Elevation);
+        var from = viewportCamera.ProjectRayOrigin(currentMotion.Position);
+        var to = viewportCamera.ProjectRayNormal(currentMotion.Position);
         var currentCursorPosition = targetPlane.IntersectsRay(from, to);
 
         if (currentCursorPosition == null) return;
@@ -78,6 +84,16 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
                 return EditorPlugin.AfterGuiInput.Stop;
             case InputEventMouseButton { Pressed: false, ButtonIndex: MouseButton.Right } when isSelectionActive:
                 IsRemoveHexHeld = false;
+                return EditorPlugin.AfterGuiInput.Stop;
+            case InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Xbutton1}:
+                Elevation += 1;
+                UpdateCursorPosition(viewportCamera, previousMotion);
+                OnHeightChanged?.Invoke();
+                return EditorPlugin.AfterGuiInput.Stop;
+            case InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Xbutton2}:
+                Elevation -= 1;
+                UpdateCursorPosition(viewportCamera, previousMotion);
+                OnHeightChanged?.Invoke();
                 return EditorPlugin.AfterGuiInput.Stop;
             default:
                 // Makes it so that input in viewport does not deselect the node, but keeps the camera control behaviour.

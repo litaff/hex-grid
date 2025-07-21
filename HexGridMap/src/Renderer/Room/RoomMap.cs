@@ -45,6 +45,7 @@ public class RoomMap : IRendererMap
     {
         if (!renderers.TryGetValue(DefaultRenderer.GetHashCode(), out var room)) return;
         room.Remove(position);
+        room.Update();
         if (room.Hexes.Count != 0) return;
         renderers.Remove(room.Position.GetHashCode());
         room.Dispose();
@@ -60,31 +61,15 @@ public class RoomMap : IRendererMap
     {
         renderers.Remove(position.GetHashCode());
     }
-
-    public void Show(HexVector[] rendererPositions)
-    {
-        foreach (var renderer in renderers.Values)
-        {
-            if (rendererPositions.Contains(renderer.Position))
-            {
-                renderer.Display();
-                continue;
-            }
-            renderer.Hide();
-        }
-    }
-
-    public void Show()
-    {
-        foreach (var renderer in renderers.Values)
-        {
-            renderer.Display();
-        }
-    }
-
+    
     public IRenderer? FromHexPosition(HexVector position)
     {
         return renderers.Values.FirstOrDefault(renderer => renderer.Hexes.Any(hex => hex.Position == position));
+    }
+
+    public void Occlude(Predicate<HexVector> hexPositionPredicate)
+    {
+        GD.Print("TODO occlusion.");
     }
 
     public void Dispose()

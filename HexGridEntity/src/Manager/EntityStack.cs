@@ -1,4 +1,4 @@
-namespace HexGrid.Entity.Managers;
+namespace HexGrid.Entity.Manager;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -34,14 +34,10 @@ public readonly struct EntityStack
         entities.Remove(entity);
     }
 
-    public float GetStackHeight()
+    public float GetStackHeight(List<Entity>? exclude = null)
     {
-        return entities.Sum(entity => entity.HeightData.Height);
-    }
-
-    public float GetStackHeight(List<Entity> exclude)
-    {
-        return entities.Except(exclude).Sum(entity => entity.HeightData.Height);
+        var relevant = exclude is not null ? entities.Except(exclude) : entities;
+        return relevant.Sum(entity => entity.HeightData.Height);
     }
 
     public bool Contains<T>()

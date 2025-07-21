@@ -10,7 +10,6 @@ public class FovDisplay
     private readonly World3D world;
     private readonly FovDisplayView displayView;
     private readonly IHexGridMapManager hexGridMapManager;
-    private readonly ILayerDataProvider layerDataProvider;
     private readonly IEditorHexPositionProvider inputProvider;
     private readonly Material material;
     
@@ -19,12 +18,11 @@ public class FovDisplay
     private bool fovEnabled;
 
     public FovDisplay(World3D world, FovDisplayView displayView, IHexGridMapManager hexGridMapManager, 
-        ILayerDataProvider layerDataProvider, IEditorHexPositionProvider inputProvider)
+        IEditorHexPositionProvider inputProvider)
     {
         this.world = world;
         this.displayView = displayView;
         this.hexGridMapManager = hexGridMapManager;
-        this.layerDataProvider = layerDataProvider;
         this.inputProvider = inputProvider;
         material = PrimitiveMesh.GetStandardMaterial(new Color(0f, 1f, 0f, 0.5f));
     }
@@ -61,8 +59,8 @@ public class FovDisplay
             return;
         }
 		
-        fovMesh ??= new PrimitiveMesh(new MeshData(world, material), Vector3.Up * 0.01f + layerDataProvider.CurrentLayerOffset);
-        fovMesh.UpdateMesh(hexGridMapManager.FovProviders[layerDataProvider.CurrentLayer].GetVisiblePositions(inputProvider.HexPosition, radius));
+        fovMesh ??= new PrimitiveMesh(new MeshData(world, material), Vector3.Up * (0.01f + inputProvider.HexPosition.H));
+        fovMesh.UpdateMesh(hexGridMapManager.FovProvider.GetVisiblePositions(inputProvider.HexPosition, radius));
     }
 
     private void OnHexCenterUpdatedHandler(Vector3 position)

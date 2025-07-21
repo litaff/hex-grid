@@ -27,14 +27,13 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 
 	public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event)
 	{
-		if (@event is InputEventMouseMotion)
+		if (@event is InputEventMouse)
 		{
 			UpdateOverlays();
 		}
 
 		if (hexGridEditorInputHandler is null) return base._Forward3DGuiInput(viewportCamera, @event);
-		
-		hexGridEditorInputHandler.UpdateCursorPosition(mapEditionProvider.Position + hexEditor.CurrentLayerOffset, viewportCamera, @event as InputEventMouseMotion);
+		hexGridEditorInputHandler.UpdateCursorPosition(viewportCamera, @event as InputEventMouseMotion);
 
 		return (int)hexGridEditorInputHandler.FinalizeInput(viewportCamera, @event, hexEditor.IsSelectionActive);
 	}
@@ -44,7 +43,7 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 		base._Forward3DDrawOverViewport(viewportControl);
 		if (hexGridEditorInputHandler is null) return;
 		var hexPosition = hexGridEditorInputHandler.HexPosition;
-		var text = $"Q: {hexPosition.Q} R: {hexPosition.R} S: {hexPosition.S}";
+		var text = $"Q: {hexPosition.Q} R: {hexPosition.R} S: {hexPosition.S}, H: {hexPosition.H:F}";
 		viewportControl.DrawString(
 			ThemeDB.FallbackFont, 
 			new Vector2(0, viewportControl.Size.Y - 8), 
@@ -97,8 +96,8 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 			return;
 		}
 		hexEditor = new HexEditor(mapEditionProvider, view.HexEditor, hexGridEditorInputHandler);
-		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider, hexEditor, hexGridEditorInputHandler);
-		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, hexEditor, hexGridEditorInputHandler);
+		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider, hexGridEditorInputHandler);
+		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, hexGridEditorInputHandler);
 
 		hexEditor.Enable();
 		fovDisplay.Enable();
@@ -147,7 +146,7 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 	private void OnPipetteRequestedHandler()
 	{
 		// Check if a hex was under pointer to switch to hex editor tab.
-		var hex = mapEditionProvider.GetHex(hexGridEditorInputHandler.HexPosition, hexEditor.CurrentLayer);
+		var hex = mapEditionProvider.GetHex(hexGridEditorInputHandler.HexPosition);
 		if (hex == null) return;
 
 		view!.TabContainer.CurrentTab = 0;

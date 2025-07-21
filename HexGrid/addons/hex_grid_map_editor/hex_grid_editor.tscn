@@ -29,14 +29,13 @@ grow_horizontal = 2
 grow_vertical = 2
 current_tab = 0
 
-[node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "LayerResetButton", "MapResetButton", "CurrentLayer", "HexProperties")]
+[node name="Hexes" type="ScrollContainer" parent="TabContainer" node_paths=PackedStringArray("MeshList", "LayerResetButton", "MapResetButton", "HexProperties")]
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("2_n44jm")
 MeshList = NodePath("HexEditorContainer/MeshList")
 LayerResetButton = NodePath("HexEditorContainer/HBoxContainer/LayerClearButton")
 MapResetButton = NodePath("HexEditorContainer/HBoxContainer/MapClearButton")
-CurrentLayer = NodePath("HexEditorContainer/MarginContainer/CurrentLayer/SpinBox")
 HexProperties = NodePath("HexEditorContainer/HexProperties")
 metadata/_tab_index = 0
 

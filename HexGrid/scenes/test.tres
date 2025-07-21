@@ -1,0 +1,413 @@
+[gd_resource type="Resource" script_class="HexMapData" load_steps=2 format=3 uid="uid://bhixsuo0tjgay"]
+
+[ext_resource type="Script" uid="uid://b5p6tdloufj82" path="res://scripts/hex_grid/hex_grid_map/HexMapData.cs" id="1_o5mtx"]
+
+[resource]
+script = ExtResource("1_o5mtx")
+SerializedMap = "{
+  \"1282789092\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 0,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1053923275\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 0,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-114951299\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1222767807\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1677716643\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 0,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"211124403\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": -1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-861477359\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"2077117052\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": -1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1691629563\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": -2,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-261833915\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": -2,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1940095136\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 2,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"166494873\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 2,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1299190584\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 1,
+      \"H\": 0
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"224941118\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 3,
+      \"H\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1822282064\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 4,
+      \"H\": 2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"914861077\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 5,
+      \"H\": 3
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1298110035\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 6,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1393458139\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 5,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"100334379\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 6,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1076466696\": {
+    \"Position\": {
+      \"Q\": 0,
+      \"R\": 7,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1922195547\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 7,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"937138568\": {
+    \"Position\": {
+      \"Q\": -1,
+      \"R\": 6,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"194383755\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 4,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1132249999\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 3,
+      \"H\": 4
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1521260472\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 2,
+      \"H\": 3
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"-1165450548\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 1,
+      \"H\": 2
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  },
+  \"1077381546\": {
+    \"Position\": {
+      \"Q\": 1,
+      \"R\": 0,
+      \"H\": 1
+    },
+    \"Properties\": {
+      \"Height\": 0,
+      \"IsOccluder\": false
+    },
+    \"MeshData\": {
+      \"MeshIndex\": 0,
+      \"Rotation\": 0
+    }
+  }
+}"

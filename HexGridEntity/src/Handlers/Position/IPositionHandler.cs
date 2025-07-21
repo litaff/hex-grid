@@ -10,6 +10,6 @@ using Map.Vector;
 public interface IPositionHandler
 {
     public void TranslateTo(HexVector position);
-    public void Enable(IHexStateProvider provider);
+    public void Enable(IHexStateProvider hexStateProvider);
     public void Disable();
 }

@@ -1,14 +1,7 @@
-namespace HexGrid.Entity.Tests.Managers;
+namespace HexGrid.Entity.Tests.Manager;
 
 using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Position;
-using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Managers;
-using HexGrid.Entity.Providers.Block;
-using HexGrid.Entity.Providers.Position;
-using HexGrid.Entity.Providers.Rotation;
-using Map.Vector;
-using Moq;
+using HexGrid.Entity.Manager;
 
 [TestFixture]
 public class EntityStackTests
@@ -19,7 +12,7 @@ public class EntityStackTests
     [SetUp]
     public void Setup()
     {
-        entity = GetMockEntity();
+        entity = new MockEntity().Entity;
         stack = new EntityStack(entity);
     }
 
@@ -84,7 +77,7 @@ public class EntityStackTests
         stack = new EntityStack();
         foreach (var height in heights)
         {
-            stack.Add(GetMockEntity(heightData: new HeightData(height, 0)));
+            stack.Add(new MockEntity(new HeightData(height, 0)).Entity);
         }
         Assert.That(stack.Entities, Has.Count.EqualTo(heights.Length));
 
@@ -104,7 +97,7 @@ public class EntityStackTests
         stack = new EntityStack();
         foreach (var height in heights)
         {
-            stack.Add(GetMockEntity(heightData: new HeightData(height, 0)));
+            stack.Add(new MockEntity(new HeightData(height, 0)).Entity);
         }
         Assert.That(stack.Entities, Has.Count.EqualTo(heights.Length));
         var exclude = stack.Entities[0];
@@ -134,22 +127,5 @@ public class EntityStackTests
         var contains = stack.Contains<int>();
         
         Assert.That(contains, Is.False);
-    }
-
-    private Entity GetMockEntity(
-        Mock<IPositionProvider>? mockPositionProvider = null,
-        Mock<IRotationProvider>? mockRotationProvider = null,
-        Mock<IPositionHandler>? mockTranslationHandler = null,
-        Mock<IRotationHandler>? mockRotationHandler = null,
-        Mock<IBlockProvider>? mockBlockProvider = null,
-        HeightData heightData = new())
-    {
-        mockPositionProvider ??= new Mock<IPositionProvider>();
-        mockPositionProvider.Setup(p => p.Position).Returns(HexVector.Zero);
-        mockRotationProvider ??= new Mock<IRotationProvider>();
-        mockTranslationHandler ??= new Mock<IPositionHandler>();
-        mockRotationHandler ??= new Mock<IRotationHandler>();
-        mockBlockProvider ??= new Mock<IBlockProvider>();
-        return new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, mockBlockProvider.Object, heightData);
     }
 }

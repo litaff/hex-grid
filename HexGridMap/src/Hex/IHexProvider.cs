@@ -4,5 +4,5 @@ using Vector;
 
 public interface IHexProvider
 {
-    public Hex? GetHex(HexVector position);
+    public Hex? Get(HexVector position);
 }

@@ -5,6 +5,7 @@ using System.Text.Json;
 using HexGrid.Map.Hex;
 using Godot;
 
+[Tool] // This is a tool cause Godot will throw on startup and lose all data.
 [GlobalClass]
 public partial class HexMapData : Resource, IHexMapData
 {

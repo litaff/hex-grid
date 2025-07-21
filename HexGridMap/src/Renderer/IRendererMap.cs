@@ -12,8 +12,7 @@ public interface IRendererMap
     public void RemoveHex(HexVector position);
     public void AddRenderer(IRenderer renderer);
     public void RemoveRenderer(HexVector position);
-    public void Show();
-    public void Show(HexVector[] rendererPositions);
+    public void Occlude(Predicate<HexVector> hexPositionPredicate);
     public IRenderer? FromHexPosition(HexVector position);
     public void Dispose();
 }

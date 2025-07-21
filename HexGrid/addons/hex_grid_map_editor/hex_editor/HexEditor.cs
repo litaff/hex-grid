@@ -10,38 +10,33 @@ public class HexEditor(
 	IHexGridMapEditionProvider mapEditionProvider, 
 	HexEditorView view, 
 	IHexEditorInputProvider inputHandler)
-	: ILayerDataProvider
 {
 	private Rid selectedMeshInstanceRid;
 	private int selectedMeshIndex;
 	private int rotationAngle;
 
-	public int CurrentLayer { get; private set; }
 	public bool IsSelectionActive { get; private set; }
-	public Vector3 CurrentLayerOffset => CurrentLayer * Vector3.Up * Properties.LayerHeight;
 
 	public void Enable()
 	{
 		inputHandler.OnDeselectRequested += OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested += OnPipetteRequestedHandler;
+		inputHandler.OnHeightChanged += OnHeightChangedHandler;
 		inputHandler.OnDisplayAllLayersRequested += OnDisplayAllLayersRequestedHandler;
 		view.MapResetButton.OnConfirmed += OnClearMapRequestedHandler;
-		view.LayerResetButton.OnConfirmed += OnClearLayerRequestedHandler;
 		view.OnMeshSelected += OnMeshSelectedHandler;
-		view.OnLayerChanged += OnLayerChangedHandler;
 		view.UpdateList(mapEditionProvider.MeshLibrary);
-		view.Initialize(CurrentLayer);
+		view.Initialize();
 	}
 	
 	public void Disable()
 	{
 		inputHandler.OnDeselectRequested -= OnDeselectRequestedHandler;
 		inputHandler.OnPipetteRequested -= OnPipetteRequestedHandler;
+		inputHandler.OnHeightChanged -= OnHeightChangedHandler;
 		inputHandler.OnDisplayAllLayersRequested -= OnDisplayAllLayersRequestedHandler;
 		view.MapResetButton.OnConfirmed -= OnClearMapRequestedHandler;
-		view.LayerResetButton.OnConfirmed -= OnClearLayerRequestedHandler;
 		view.OnMeshSelected -= OnMeshSelectedHandler;
-		view.OnLayerChanged -= OnLayerChangedHandler;
 		view.UpdateList(null);
 		view.Dispose();
 		
@@ -53,26 +48,20 @@ public class HexEditor(
 		OnDeselectRequestedHandler();
 	}
 	
-	private void OnLayerChangedHandler(int layer)
+	private void OnHeightChangedHandler()
 	{
-		CurrentLayer = layer;
 		if (inputHandler.IsDisplayAllLayersHeld) return;
-		mapEditionProvider.HideLayers(layerIndex => layerIndex > CurrentLayer);
+		mapEditionProvider.Occlude(position => position.H > inputHandler.HexPosition.H);
 	}
 
 	private void OnDisplayAllLayersRequestedHandler()
 	{
-		mapEditionProvider.HideLayers([]);
+		mapEditionProvider.Occlude(null);
 	}
 
 	private void OnClearMapRequestedHandler()
 	{
 		mapEditionProvider.ClearMaps();
-	}
-	
-	private void OnClearLayerRequestedHandler()
-	{
-		mapEditionProvider.ClearMap(CurrentLayer);
 	}
 	
 	private void OnMeshSelectedHandler(int index)
@@ -81,7 +70,7 @@ public class HexEditor(
 		
 		if (!inputHandler.IsDisplayAllLayersHeld)
 		{
-			mapEditionProvider.HideLayers(layerIndex => layerIndex > CurrentLayer);
+			mapEditionProvider.Occlude(position => position.H > inputHandler.HexPosition.H);
 		}
 		
 		IsSelectionActive = true;
@@ -99,7 +88,7 @@ public class HexEditor(
 
 	private void OnDeselectRequestedHandler()
 	{
-		mapEditionProvider.HideLayers([]);
+		mapEditionProvider.Occlude(null);
 		view.MeshList.DeselectAll();
 		inputHandler.OnHexCenterUpdated -= OnHexCenterUpdatedHandler;
 		inputHandler.OnAddHexRequested -= OnAddHexRequestedHandler;
@@ -122,10 +111,6 @@ public class HexEditor(
 		{
 			OnRemoveHexRequestHandler();
 		}
-		if (!inputHandler.IsDisplayAllLayersHeld)
-		{
-			mapEditionProvider.HideLayers(layerIndex => layerIndex > CurrentLayer);
-		}
 	}
 	
 	private void OnAddHexRequestedHandler()
@@ -134,14 +119,14 @@ public class HexEditor(
 		var position = inputHandler.HexPosition;
 		var meshData = new MeshData(selectedMeshIndex, -rotationAngle);
 		var properties = view.HexProperties.GetProperties();
-		var hex = new Hex(position.Q, position.R, properties, meshData);
-		mapEditionProvider.AddHex(hex, CurrentLayer);
+		var hex = new Hex(position.Q, position.R, inputHandler.HexPosition.H, properties, meshData);
+		mapEditionProvider.AddHex(hex);
 	}
 
 	private void OnRemoveHexRequestHandler()
 	{
 		if (!IsSelectionActive) return; // TODO: This might be useless, as the event is only triggered when selection is active
-		mapEditionProvider.RemoveHex(inputHandler.HexPosition, CurrentLayer);
+		mapEditionProvider.RemoveHex(inputHandler.HexPosition);
 	}
 	
 	private void OnRotateRequestedHandler()
@@ -153,13 +138,12 @@ public class HexEditor(
 	private void UpdateSelectedHexMesh()
 	{
 		RenderingServer.InstanceSetTransform(selectedMeshInstanceRid, 
-			new Transform3D(Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad(-rotationAngle)), 
-			inputHandler.HexCenter + CurrentLayerOffset));
+			new Transform3D(Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad(-rotationAngle)), inputHandler.HexCenter));
 	}
 	
 	private void OnPipetteRequestedHandler()
 	{
-		var hex = mapEditionProvider.GetHex(inputHandler.HexPosition, CurrentLayer);
+		var hex = mapEditionProvider.GetHex(inputHandler.HexPosition);
 		if (hex == null) return;
 
 		view.HexProperties.SetFromProperties(hex.Properties);

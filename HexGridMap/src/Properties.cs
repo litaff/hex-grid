@@ -20,15 +20,15 @@ public class Properties
 
     public static bool Exists => instance != null;
     public static float CellSize => Instance.cellSize;
-    public static float LayerHeight => Instance.layerHeight;
+    public static float HeightStep => Instance.heightStep;
 
     private readonly float cellSize;
-    private readonly float layerHeight;
+    private readonly float heightStep;
     
-    public Properties(float cellSize, float layerHeight)
+    public Properties(float cellSize, float heightStep)
     {
         this.cellSize = cellSize;
-        this.layerHeight = layerHeight;
+        this.heightStep = heightStep;
         instance = this;
     }
 }

@@ -5,17 +5,19 @@ using System.Text.Json.Serialization;
 
 public struct HexVector : IEquatable<HexVector>
 {
-    public int Q { get; private set; }
-    public int R { get; private set; }
+    public int Q { get; set; }
+    public int R { get; set; }
     [JsonIgnore]
-    public int S { get; private set; }
-    
+    public int S { get; set; }
+    public int H { get; set; }
+
     [JsonConstructor]
-    public HexVector(int q, int r)
+    public HexVector(int q, int r, int h = 0)
     {
         Q = q;
         R = r;
         S = -q - r;
+        H = h;
     }
 
     public static Dictionary<Direction, HexVector> Directions => new()
@@ -98,32 +100,32 @@ public struct HexVector : IEquatable<HexVector>
     
     public static HexVector operator +(HexVector a, HexVector b)
     {
-        return new HexVector(a.Q + b.Q, a.R + b.R);
+        return new HexVector(a.Q + b.Q, a.R + b.R, a.H + b.H);
     }
     
     public static HexVector operator -(HexVector a, HexVector b)
     {
-        return new HexVector(a.Q - b.Q, a.R - b.R);
+        return new HexVector(a.Q - b.Q, a.R - b.R, a.H - b.H);
     }
 
     public static HexVector operator -(HexVector a)
     {
-        return new HexVector(-a.Q, -a.R);
+        return new HexVector(-a.Q, -a.R, -a.H);
     }
     
     public static HexVector operator *(HexVector a, int b)
     {
-        return new HexVector(a.Q * b, a.R * b);
+        return new HexVector(a.Q * b, a.R * b, a.H * b);
     }
     
     public static HexVector operator /(HexVector a, int b)
     {
-        return new HexVector(a.Q / b, a.R / b);
+        return new HexVector(a.Q / b, a.R / b, a.H / b);
     }
     
     public static bool operator ==(HexVector a, HexVector b)
     {
-        return a.Q == b.Q && a.R == b.R && a.S == b.S;
+        return a.Q == b.Q && a.R == b.R && a.S == b.S && a.H == b.H;
     }
     
     public static bool operator !=(HexVector a, HexVector b)
@@ -133,12 +135,12 @@ public struct HexVector : IEquatable<HexVector>
 
     public override string ToString()
     {
-        return $"({Q}, {R}, {S})";
+        return $"({Q}, {R}, {S}, {H})";
     }
     
     public bool Equals(HexVector other)
     {
-        return Q == other.Q && R == other.R && S == other.S;
+        return Q == other.Q && R == other.R && S == other.S && H == other.H;
     }
 
     public override bool Equals(object? obj)
@@ -148,6 +150,6 @@ public struct HexVector : IEquatable<HexVector>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Q, R);
+        return HashCode.Combine(Q, R, H);
     }
 }

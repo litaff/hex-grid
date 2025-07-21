@@ -15,4 +15,5 @@ public interface IHexEditorInputProvider : IEditorHexPositionProvider
     public event Action OnDisplayAllLayersRequested;
     public event Action OnPipetteRequested;
     public event Action OnDeselectRequested;
+    public event Action OnHeightChanged;
 }

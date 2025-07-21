@@ -8,7 +8,6 @@ public class EditorGridIndicator
 {
     private readonly World3D world;
     private readonly EditorGridIndicatorView view;
-    private readonly ILayerDataProvider layerDataProvider;
     private readonly IEditorHexPositionProvider inputProvider;
     private readonly Material material;
 
@@ -16,12 +15,11 @@ public class EditorGridIndicator
     
     private int indicatorRadius;
 
-    public EditorGridIndicator(World3D world, EditorGridIndicatorView view, ILayerDataProvider layerDataProvider,
+    public EditorGridIndicator(World3D world, EditorGridIndicatorView view,
         IEditorHexPositionProvider inputProvider)
     {
         this.world = world;
         this.view = view;
-        this.layerDataProvider = layerDataProvider;
         this.inputProvider = inputProvider;
         material = WireMesh.GetStandardMaterial(new Color(0.8f, 0.5f, 0.1f));
     }
@@ -60,7 +58,7 @@ public class EditorGridIndicator
 
     private void UpdateIndicatorMesh(Vector3 position, int radius)
     {
-        indicatorMesh?.UpdateMesh(position + layerDataProvider.CurrentLayerOffset);
+        indicatorMesh?.UpdateMesh(position);
 		
         if (radius > 0) return;
 		

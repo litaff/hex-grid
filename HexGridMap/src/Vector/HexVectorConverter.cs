@@ -13,7 +13,7 @@ public static class HexVectorConverter
     {
         var q = 2f / 3f * worldPosition.X / CellSize;
         var r = (-1f / 3f * worldPosition.X + Mathf.Sqrt(3) / 3f * worldPosition.Z) / CellSize;
-        return new HexFracVector(q, r).Round();
+        return new HexFracVector(q, r, worldPosition.Y / Properties.HeightStep).Round();
     }
     
     /// <summary>
@@ -26,7 +26,7 @@ public static class HexVectorConverter
         
         var x = CellSize * (qBasis.X * hexPosition.Q + rBasis.X * hexPosition.R);
         var z = CellSize * (qBasis.Y * hexPosition.Q + rBasis.Y * hexPosition.R);
-        return new Vector3(x, 0, z);
+        return new Vector3(x, hexPosition.H * Properties.HeightStep, z);
     }
     
     /// <summary>
@@ -40,6 +40,6 @@ public static class HexVectorConverter
         
         var x = (qBasis.X * hexPosition.Q + rBasis.X * hexPosition.R);
         var z = (qBasis.Y * hexPosition.Q + rBasis.Y * hexPosition.R);
-        return new Vector3(x, 0, z);
+        return new Vector3(x, hexPosition.H, z);
     }
 }

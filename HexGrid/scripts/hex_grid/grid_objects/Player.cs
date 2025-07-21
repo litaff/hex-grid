@@ -17,7 +17,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     [Export]
     private float height;
     [Export]
-    private float stepHeight;
+    private int stepRange;
     [Export]
     private float speed;
     [Export]
@@ -84,7 +84,7 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     {
         if (entity != null) return entity;
         
-        var heightData = new HeightData(height, stepHeight);
+        var heightData = new HeightData(height, stepRange);
         var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
         var rotationProvider = new RotationProvider(HexVector.Directions[initialForward]);
         var translationHandler = new LinearPositionHandler(speed, this, heightData);

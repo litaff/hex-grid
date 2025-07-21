@@ -1,4 +1,4 @@
-namespace HexGrid.Entity.Tests.Handlers.Translation;
+namespace HexGrid.Entity.Tests.Handlers.Position;
 
 using Godot;
 using HexGrid.Entity;
@@ -13,11 +13,13 @@ public class InstantPositionHandlerTests
 {
     private InstantPositionHandler handler;
     private Mock<ITranslatable> mockTranslatable;
+    private Mock<IHexStateProvider> mockProvider;
 
     [SetUp]
     public void Setup()
     {
         mockTranslatable = new Mock<ITranslatable>();
+        mockProvider = new Mock<IHexStateProvider>();
         handler = new InstantPositionHandler(mockTranslatable.Object, new HeightData());
     }
 
@@ -31,7 +33,6 @@ public class InstantPositionHandlerTests
     public void TranslateTo_CallsTranslate_FromITranslatable_WithCorrectOffset()
     {
         var gridData = new Properties(1, 1);
-        var mockProvider = new Mock<IHexStateProvider>();
         var position = HexVector.Zero;
         mockProvider.Setup(m => m.GetHexHeight(position, null)).Returns(0);
         handler.Enable(mockProvider.Object);

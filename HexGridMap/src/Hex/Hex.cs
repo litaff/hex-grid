@@ -14,9 +14,9 @@ public class Hex
     [JsonIgnore]
     public bool IsOccluder => Properties.IsOccluder;
     
-    public Hex(int q, int r, Properties properties, MeshData meshData)
+    public Hex(int q, int r, int h, Properties properties, MeshData meshData)
     {
-        Position = new HexVector(q, r);
+        Position = new HexVector(q, r, h);
         Properties = properties;
         MeshData = meshData;
     }

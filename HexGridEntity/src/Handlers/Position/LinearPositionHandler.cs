@@ -29,16 +29,14 @@ public class LinearPositionHandler : IUpdateablePositionHandler
 
     public void TranslateTo(HexVector position)
     {
-        if (hexStateProvider == null) return;
-        
         if (!TranslationComplete) return;
         targetPosition = position.ToWorldPosition() + GetHexHeightVector(position);
         translationDirection = (targetPosition - translatable.Position).Normalized();
     }
 
-    public void Enable(IHexStateProvider provider)
+    public void Enable(IHexStateProvider hexStateProvider)
     {
-        hexStateProvider = provider;
+        this.hexStateProvider = hexStateProvider;
     }
 
     public void Disable()

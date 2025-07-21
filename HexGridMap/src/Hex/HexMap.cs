@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Vector;
 
-public class HexMap
+public class HexMap : IHexProvider
 {
     private readonly IHexMapData data;
 

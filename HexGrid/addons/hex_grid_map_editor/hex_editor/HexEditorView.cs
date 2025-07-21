@@ -14,23 +14,17 @@ public partial class HexEditorView : Control
     [Export]
     public EditorDoubleConfirmButton MapResetButton { get; private set; } = null!;
     [Export]
-    public SpinBox CurrentLayer { get; private set; } = null!;
-    [Export]
     public HexPropertiesView HexProperties { get; private set; } = null!;
     
     public event Action<int>? OnMeshSelected;
-    public event Action<int>? OnLayerChanged;
     
-    public void Initialize(int previousLayer)
+    public void Initialize()
     {
         MeshList.ItemSelected += OnMeshSelectedHandler;
-        CurrentLayer.ValueChanged += OnLayerChangedHandler;
-        CurrentLayer.Value = previousLayer;
     }
 
     public new void Dispose()
     {        
-        CurrentLayer.ValueChanged -= OnLayerChangedHandler;
         MeshList.ItemSelected -= OnMeshSelectedHandler;
     }
 
@@ -50,11 +44,6 @@ public partial class HexEditorView : Control
     {
         MeshList.Select(libraryIndex);
         OnMeshSelectedHandler(libraryIndex);
-    }
-
-    private void OnLayerChangedHandler(double value)
-    {
-        OnLayerChanged?.Invoke((int)value);
     }
 
     private void OnMeshSelectedHandler(long index)

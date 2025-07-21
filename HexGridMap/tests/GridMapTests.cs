@@ -10,7 +10,6 @@ public class GridMapTests
 {
     private GridMap gridMap;
     private Mock<IHexMapDataProvider> mockMapDataProvider;
-    private Mock<IRendererMapFactory> mockRendererMapFactory;
     private Mock<IRendererMap> mockRendererMap;
     private Mock<IHexMapData> mockHexMapData;
     
@@ -18,98 +17,77 @@ public class GridMapTests
     public void SetUp()
     {
         mockHexMapData = new Mock<IHexMapData>();
+        mockHexMapData.Setup(data => data.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
         mockRendererMap = new Mock<IRendererMap>();
         mockMapDataProvider = new Mock<IHexMapDataProvider>();
-        mockMapDataProvider.Setup(provider => provider.GetData()).Returns(new Dictionary<int, IHexMapData>());
-        mockRendererMapFactory = new Mock<IRendererMapFactory>();
-        gridMap = new GridMap(mockMapDataProvider.Object, mockRendererMapFactory.Object);
+        mockMapDataProvider.Setup(provider => provider.GetData()).Returns(mockHexMapData.Object);
+        gridMap = new GridMap(mockMapDataProvider.Object, mockRendererMap.Object);
     }
 
     [Test]
-    public void AddHex_CreatesLayer_WhenNoLayer()
+    public void AddHex_AddsHex_ToHexMap()
     {
         var hex = new Map.Hex.Hex(HexVector.Zero, new Properties(), new MeshData());
-        mockRendererMapFactory.Setup(factory => factory.New(0)).Returns(mockRendererMap.Object);
-        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
-        mockMapDataProvider.Setup(provider => provider.AddData(0)).Returns(mockHexMapData.Object);
-        Assert.That(gridMap.Layers, Is.Empty);
+    
+        gridMap.AddHex(hex);
         
-        gridMap.AddHex(hex, 0);
-        
-        Assert.That(gridMap.Layers, Is.Not.Empty);
+        Assert.That(gridMap.HexMap.Get(hex.Position), Is.Not.Null);
     }
 
     [Test]
-    public void AddHex_AddsHexToExistingLayer()
+    public void AddHex_AddsHex_ToRendererMap()
     {
         var hex = new Map.Hex.Hex(HexVector.Zero, new Properties(), new MeshData());
-        mockRendererMapFactory.Setup(factory => factory.New(0)).Returns(mockRendererMap.Object);
-        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
-        mockMapDataProvider.Setup(provider => provider.AddData(0)).Returns(mockHexMapData.Object);
-        Assert.That(gridMap.Layers, Is.Empty);
-        gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers, Is.Not.Empty);
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Zero), Is.EqualTo(hex));
-        hex = new Map.Hex.Hex(HexVector.Forward, new Properties(), new MeshData());
-
-        gridMap.AddHex(hex, 0);
+    
+        gridMap.AddHex(hex);
         
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.EqualTo(hex));
-    }
-
-    [Test]
-    public void RemoveHex_RemovesHexFromLayer()
-    {
-        var hex = new Map.Hex.Hex(HexVector.Zero, new Properties(), new MeshData());
-        mockRendererMapFactory.Setup(factory => factory.New(0)).Returns(mockRendererMap.Object);
-        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
-        mockMapDataProvider.Setup(provider => provider.AddData(0)).Returns(mockHexMapData.Object);
-        Assert.That(gridMap.Layers, Is.Empty);
-        gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers, Is.Not.Empty);
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Zero), Is.EqualTo(hex));
-        hex = new Map.Hex.Hex(HexVector.Forward, new Properties(), new MeshData());
-        gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.EqualTo(hex));
-        
-        gridMap.RemoveHex(HexVector.Forward, 0);
-        
-        Assert.That(gridMap.Layers.First().Value.GetHex(HexVector.Forward), Is.Null);
+        mockRendererMap.Verify(map => map.AddHex(hex), Times.Once);
     }
     
     [Test]
-    public void RemoveHex_RemovesLayerWhenEmpty()
+    public void RemoveHex_RemovesHex_FromHexMap()
     {
         var hex = new Map.Hex.Hex(HexVector.Zero, new Properties(), new MeshData());
-        mockRendererMapFactory.Setup(factory => factory.New(0)).Returns(mockRendererMap.Object);
-        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
-        mockMapDataProvider.Setup(provider => provider.AddData(0)).Returns(mockHexMapData.Object);
-        Assert.That(gridMap.Layers, Is.Empty);
-        gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers, Is.Not.Empty);
+        gridMap.AddHex(hex);
+        Assert.That(gridMap.HexMap.Get(hex.Position), Is.Not.Null);
         
-        gridMap.RemoveHex(HexVector.Zero, 0);
+        gridMap.RemoveHex(hex.Position);
         
-        Assert.That(gridMap.Layers, Is.Empty);
-    }
-    
-    [Test]
-    public void GetHex_DoesNotThrow_WhenNoLayer()
-    {
-        Assert.DoesNotThrow(() => gridMap.GetHex(HexVector.Zero, 0));
+        Assert.That(gridMap.HexMap.Get(hex.Position), Is.Null);
     }
 
     [Test]
-    public void GetHex_ReturnsNull_WhenIsLayerButNoHex()
+    public void RemoveHex_RemovesHex_FromRendererMap()
     {
-        var hex = new Map.Hex.Hex(HexVector.Zero, new Properties(), new MeshData());
-        mockRendererMapFactory.Setup(factory => factory.New(0)).Returns(mockRendererMap.Object);
-        mockHexMapData.Setup(mock => mock.Map).Returns(new Dictionary<int, Map.Hex.Hex>());
-        mockMapDataProvider.Setup(provider => provider.AddData(0)).Returns(mockHexMapData.Object);
-        Assert.That(gridMap.Layers, Is.Empty);
-        gridMap.AddHex(hex, 0);
-        Assert.That(gridMap.Layers, Is.Not.Empty);
+        var position = HexVector.Zero;
+        gridMap.RemoveHex(position);
         
-        Assert.That(gridMap.GetHex(HexVector.Forward, 0), Is.Null);
+        mockRendererMap.Verify(map => map.RemoveHex(position), Times.Once);
+    }
+    
+    [Test]
+    public void GetHex_DoesNotThrow_WhenNoHex()
+    {
+        Assert.DoesNotThrow(() => gridMap.GetHex(HexVector.Zero));
+    }
+
+    [Test]
+    public void GetHex_ReturnsNull_WhenNoHex()
+    {
+        Assert.That(gridMap.GetHex(HexVector.Zero), Is.Null);
+    }
+
+    [Test]
+    public void Dispose_Disposes_RendererMap()
+    {
+        gridMap.Dispose();
+        
+        mockRendererMap.Verify(map => map.Dispose(), Times.Once);
+    }
+
+    [Test]
+    public void Occlude_Works()
+    {
+        Assert.Fail();
     }
 }

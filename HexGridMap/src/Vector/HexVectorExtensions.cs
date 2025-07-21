@@ -20,7 +20,7 @@ public static class HexVectorExtensions
             var angle = Mathf.DegToRad(60 * i);
             var x = worldPosition.X + CellSize * Mathf.Cos(angle);
             var z = worldPosition.Z + CellSize * Mathf.Sin(angle);
-            vertices[i] = new Vector3(x, 0, z);
+            vertices[i] = new Vector3(x, worldPosition.Y, z);
         }
         return vertices;
     }
@@ -47,7 +47,7 @@ public static class HexVectorExtensions
             r = -q - s;
         }
 
-        return new HexVector(q, r);
+        return new HexVector(q, r, Mathf.RoundToInt(fraction.H));
     }
     
     /// <summary>
@@ -55,7 +55,7 @@ public static class HexVectorExtensions
     /// </summary>
     public static HexFracVector Lerp(HexVector a, HexVector b, float t)
     {
-        return new HexFracVector(a.Q + (b.Q - a.Q) * t, a.R + (b.R - a.R) * t);
+        return new HexFracVector(a.Q + (b.Q - a.Q) * t, a.R + (b.R - a.R) * t, a.H + (b.H - a.H) * t);
     }
     
     /// <summary>

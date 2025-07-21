@@ -75,7 +75,7 @@ public class HexMapTests
     [Test]
     public void Add_DoesNotThrow_WhenAddingSamePosition_Twice()
     {
-        var hex = new Hex(0,0, new Properties(), new MeshData());
+        var hex = new Hex(0, 0,0, new Properties(), new MeshData());
         map.Add(hex);
 
         Assert.DoesNotThrow(() => map.Add(hex));
@@ -139,7 +139,7 @@ public class HexMapTests
     [Test]
     public void GetMap_ReturnsAllHexes_IfNotEmpty()
     {
-        var hex = new Hex(0,0, new Properties(), new MeshData());
+        var hex = new Hex(0, 0, 0, new Properties(), new MeshData());
         map.Add(hex);
         
         var hexes = map.GetMap();

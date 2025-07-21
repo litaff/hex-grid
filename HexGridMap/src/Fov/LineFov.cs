@@ -22,7 +22,7 @@ public class LineFov : IFovProvider
         foreach (var edgePoint in edge)
         {
             var visionLine = origin.LineTo(edgePoint);
-            var hexes = visionLine.Select(position => hexProvider.GetHex(position)).Where(hex => hex != null);
+            var hexes = visionLine.Select(position => hexProvider.Get(position)).Where(hex => hex != null);
             var positions = hexes.TakeWhile(hex => !hex!.IsOccluder).Select(hex => hex!.Position);
             foreach (var position in positions)
             {

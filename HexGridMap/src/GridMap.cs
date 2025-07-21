@@ -3,100 +3,48 @@ namespace HexGrid.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using Hex;
 using Renderer;
 using Vector;
 
 public class GridMap
 {
-    private readonly IHexMapDataProvider hexMapDataProvider;
-    private readonly Dictionary<int, Layer> layers;
-    private readonly IRendererMapFactory rendererMapFactory;
+    public HexMap HexMap { get; }
+    public IRendererMap RendererMap { get; }
 
-    public IReadOnlyDictionary<int, Layer> Layers => layers;
-
-    public GridMap(IHexMapDataProvider hexMapDataProvider, IRendererMapFactory rendererMapFactory)
+    public GridMap(IHexMapDataProvider hexMapDataProvider, IRendererMap rendererMap)
     {
-        this.rendererMapFactory = rendererMapFactory;
-        this.hexMapDataProvider = hexMapDataProvider;
-
-        layers = new Dictionary<int, Layer>();
-        foreach (var data in hexMapDataProvider.GetData())
-        {
-            layers.Add(data.Key, CreateLayer(data.Key, data.Value));
-        }
+        var data = hexMapDataProvider.GetData();
+        HexMap = new HexMap(data);
+        RendererMap = rendererMap;
+        RendererMap.AddTo(HexMap.GetMap(), HexVector.Zero);
     }
     
-    public void AddHex(Hex.Hex hex, int layerIndex)
+    public void AddHex(Hex.Hex hex)
     {
-        if (layers.TryGetValue(layerIndex, out var layer))
-        {
-            layer.AddHex(hex);
-            return;
-        }
-
-        var data = hexMapDataProvider.AddData(layerIndex);
-        layer = CreateLayer(layerIndex, data);
-        layers.Add(layerIndex, layer);
-        layer.AddHex(hex);
+        HexMap.Add(hex);
+        RendererMap.AddHex(hex);
     }
     
-    public void RemoveHex(HexVector hexPosition, int layerIndex)
+    public void RemoveHex(HexVector position)
     {
-        if (!layers.TryGetValue(layerIndex, out var layer)) return;
-        layer.RemoveHex(hexPosition);
-        
-        if (!layer.IsEmpty()) return;
-        layers.Remove(layerIndex);
-        hexMapDataProvider.RemoveData(layerIndex);
+        HexMap.Remove(position);
+        RendererMap.RemoveHex(position);
     }
 
-    public Hex.Hex? GetHex(HexVector hexPosition, int layerIndex)
+    public Hex.Hex? GetHex(HexVector hexPosition)
     {
-        return layers.TryGetValue(layerIndex, out var layer) ? layer.GetHex(hexPosition) : null;
+        return HexMap.Get(hexPosition);
     }
     
-    public void HideLayers(int[] layerIndexes)
+    public void Occlude(Predicate<HexVector>? hexPositionPredicate)
     {
-        foreach (var layerIndex in layerIndexes)
-        {
-            if (!layers.TryGetValue(layerIndex, out var layer)) continue;
-            layer.Hide();
-        }
-        
-        foreach (var layer in layers.Where(layer => !layerIndexes.Contains(layer.Key)))
-        {
-            layer.Value.Display();
-        }
-    }
-    
-    public void HideLayers(Predicate<int> predicate)
-    {
-        foreach (var layer in layers.Where(layer => predicate(layer.Key)))
-        {
-            layer.Value.Hide();
-        }
-        
-        foreach (var layer in layers.Where(layer => !predicate(layer.Key)))
-        {
-            layer.Value.Display();
-        }
+        GD.Print("Implement layer hiding");
     }
 
     public void Dispose()
     {
-        foreach (var layer in layers.Values)
-        {
-            layer.Dispose();
-        }
-    }
-
-    private Layer CreateLayer(int layerIndex, IHexMapData mapData)
-    {
-        var rendererMap = rendererMapFactory.New(layerIndex);
-        mapData.Deserialize();
-        rendererMap.AddTo(mapData.Map.Values.ToArray(), HexVector.Zero);
-        var layerStorage = new Layer(mapData, rendererMap);
-        return layerStorage;
+        RendererMap.Dispose();
     }
 }

@@ -19,15 +19,13 @@ public class InstantPositionHandler : IPositionHandler
 
     public void TranslateTo(HexVector position)
     {
-        if (hexStateProvider == null) return;
-        
         var offset = position.ToWorldPosition() + GetHexHeightVector(position) - translatable.Position;
         translatable.Translate(offset);
     }
 
-    public void Enable(IHexStateProvider provider)
+    public void Enable(IHexStateProvider hexStateProvider)
     {
-        hexStateProvider = provider;
+        this.hexStateProvider = hexStateProvider;
     }
 
     public void Disable()

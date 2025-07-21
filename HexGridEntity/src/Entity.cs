@@ -2,7 +2,7 @@ namespace HexGrid.Entity;
 
 using Handlers.Position;
 using Handlers.Rotation;
-using Managers;
+using Manager;
 using Map.Vector;
 using Providers;
 using Providers.Block;
@@ -11,7 +11,7 @@ using Providers.Rotation;
 
 public class Entity
 {
-    private IEntityLayerManager? layerManager;
+    private IEntityManager? entityManager;
     
     public IPositionProvider PositionProvider { get; }
     public IPositionHandler PositionHandler { get; }
@@ -19,6 +19,7 @@ public class Entity
     public IRotationProvider RotationProvider { get; }
     public IRotationHandler RotationHandler { get; }
 
+    public bool Enabled { get; private set; }
     public HeightData HeightData { get; }
     public HexVector GridPosition => PositionProvider.Position;
 
@@ -33,16 +34,18 @@ public class Entity
         HeightData = heightData;
     }
 
-    public virtual void Enable(IEntityLayerManager layerManager, HexStateProviders hexStateProviders)
+    public virtual void Enable(IEntityManager entityManager, IHexStateProvider hexStateProvider)
     {
-        this.layerManager = layerManager;
-        PositionHandler.Enable(hexStateProviders.Providers[0]);
-        PositionProvider.Enable(hexStateProviders);
+        Enabled = true;
+        this.entityManager = entityManager;
+        PositionHandler.Enable(hexStateProvider);
+        PositionProvider.Enable(hexStateProvider);
         RotationProvider.Enable();
     }
 
     public virtual void Disable()
     {
+        Enabled = false;
         RotationProvider.Disable();
         PositionProvider.Disable();
         PositionHandler.Disable();
@@ -52,24 +55,17 @@ public class Entity
     {
         PositionProvider.OnPositionChanged += OnPositionChangedHandler;
         RotationProvider.OnRotationChanged += OnRotationChangedHandler;
-        PositionProvider.OnLayerChangeRequested += OnLayerChangeRequestedHandler;
     }
 
     public virtual void UnregisterHandlers()
     {
         PositionProvider.OnPositionChanged -= OnPositionChangedHandler;
         RotationProvider.OnRotationChanged -= OnRotationChangedHandler;
-        PositionProvider.OnLayerChangeRequested -= OnLayerChangeRequestedHandler;
-    }
-
-    private void OnLayerChangeRequestedHandler(int relativeIndex)
-    {
-        layerManager?.ChangeLayer(this, relativeIndex);
     }
 
     private void OnPositionChangedHandler(HexVector oldPosition)
     {
-        layerManager?.UpdatePosition(this, oldPosition);
+        entityManager?.MoveFrom(this, oldPosition);
         // Translation should always happen after the position change.
         PositionHandler.TranslateTo(PositionProvider.Position);
     }
