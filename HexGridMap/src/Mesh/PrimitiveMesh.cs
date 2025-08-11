@@ -9,12 +9,14 @@ using Vector;
 
 public class PrimitiveMesh
 {
+    private readonly HexVectorConverter converter;
     private readonly Material defaultMaterial;
     private Rid meshRid;
     private Rid instanceRid;
 
-    public PrimitiveMesh(MeshData meshData, Vector3 offset)
+    public PrimitiveMesh(MeshData meshData, Vector3 offset, HexVectorConverter converter)
     {
+        this.converter = converter;
         defaultMaterial = meshData.Material;
         instanceRid = RenderingServer.InstanceCreate();
         meshRid = RenderingServer.MeshCreate();
@@ -30,7 +32,7 @@ public class PrimitiveMesh
         var meshVertices = new List<Vector3[]>();
         foreach (var position in positions)
         {
-            var vertices = position.GetHexVertices();
+            var vertices = converter.GetHexVertices(position);
             meshVertices.Add([vertices[0], vertices[1], vertices[2]]);
             meshVertices.Add([vertices[2], vertices[3], vertices[4]]);
             meshVertices.Add([vertices[4], vertices[5], vertices[0]]);

@@ -85,7 +85,7 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 		this.mapEditionProvider = mapEditionProvider;
 		mapEditionProvider.Initialize();
 
-		hexGridEditorInputHandler = new HexGridEditorInputHandler();
+		hexGridEditorInputHandler = new HexGridEditorInputHandler(mapEditionProvider.Converter);
 
 		var world = mapEditionProvider.World3D;
 		
@@ -96,8 +96,8 @@ public partial class HexGridMapEditorPlugin : EditorPlugin
 			return;
 		}
 		hexEditor = new HexEditor(mapEditionProvider, view.HexEditor, hexGridEditorInputHandler);
-		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider, hexGridEditorInputHandler);
-		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, hexGridEditorInputHandler);
+		fovDisplay = new FovDisplay(world, view.FovDisplay, mapEditionProvider.Converter, mapEditionProvider, hexGridEditorInputHandler);
+		gridIndicator = new EditorGridIndicator(world, view.EditorGridIndicator, mapEditionProvider.Converter, hexGridEditorInputHandler);
 
 		hexEditor.Enable();
 		fovDisplay.Enable();

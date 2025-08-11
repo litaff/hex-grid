@@ -8,11 +8,15 @@ using Map.Vector;
 public class RoomMapTests
 {
     private RoomMap map;
+    private HexGrid.Map.Properties properties;
+    private HexVectorConverter converter;
     
     [SetUp]
     public void SetUp()
     {
-        map = new RoomMap();
+        properties = new HexGrid.Map.Properties(1, 1);
+        converter = new HexVectorConverter(properties);
+        map = new RoomMap(converter);
     }
 
     [Test]

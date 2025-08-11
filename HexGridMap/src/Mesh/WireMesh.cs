@@ -9,11 +9,14 @@ using Array = Godot.Collections.Array;
 
 public class WireMesh
 {
+	private readonly HexVectorConverter converter;
+	
 	private Rid meshRid;
 	private Rid instanceRid;
 	
-	public WireMesh(MeshData meshData, int radius, bool useAlphaFalloff)
+	public WireMesh(MeshData meshData, int radius, bool useAlphaFalloff, HexVectorConverter converter)
 	{
+		this.converter = converter;
 		instanceRid = RenderingServer.InstanceCreate();
 		meshRid = RenderingServer.MeshCreate();
 		RenderingServer.InstanceSetBase(instanceRid, meshRid);
@@ -58,7 +61,7 @@ public class WireMesh
 
 		foreach (var hex in hexes)
 		{
-			var vertices = hex.GetHexVertices();
+			var vertices = converter.GetHexVertices(hex);
 			meshVertices.Add([vertices[0], vertices[1]]);
 			meshColors.Add([
 				GetVertexColor(vertices[0], radius, useAlphaFalloff),
@@ -106,7 +109,7 @@ public class WireMesh
 	{
 		return new Color(1f, 1f, 1f, 
 			useAlphaFalloff ?
-				Mathf.Pow(Mathf.Max(0, 1f - vertex.DistanceTo(HexVector.Zero.ToWorldPosition()) / radius), 2) :
+				Mathf.Pow(Mathf.Max(0, 1f - vertex.DistanceTo(converter.ToWorldPosition(HexVector.Zero)) / radius), 2) :
 				1f);
 	}
 }

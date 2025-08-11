@@ -26,10 +26,10 @@ public class BlockerFactory : IEntityFactory
         entity.AddComponent(transform);
         var positionHandlerDescriptor = blueprint.Get<PositionHandlerDescriptor>();
         var positionHandler = new InstantPositionHandler(positionHandlerDescriptor.movable, 
-            context.ManagerRegistry.Get<HeightManager>());
+            context.ManagerRegistry.Get<HeightManager>(), context.Converter);
         transform.Position.SetHandler(positionHandler);
         var rotationHandlerDescriptor = blueprint.Get<RotationHandlerDescriptor>();
-        var rotationHandler = new RotationHandler(rotationHandlerDescriptor.Rotatable);
+        var rotationHandler = new RotationHandler(rotationHandlerDescriptor.Rotatable, context.Converter);
         transform.Rotation.SetHandler(rotationHandler);
         
         var blocker = new HexGrid.Entity.Components.Blocker.Blocker(entity, blueprint.Get<BlockerDescriptor>().Blocked);

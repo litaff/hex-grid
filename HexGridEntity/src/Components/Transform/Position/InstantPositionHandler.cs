@@ -9,14 +9,16 @@ public class InstantPositionHandler : IPositionHandler
 {
     private readonly IMovable movable;
     private readonly IHeightManager heightManager;
+    private readonly HexVectorConverter converter;
 
     public bool Enabled { get; private set; }
     public bool MoveComplete { get; private set; }
     
     public event Action? OnPositionReady;
 
-    public InstantPositionHandler(IMovable movable, IHeightManager heightManager)
+    public InstantPositionHandler(IMovable movable, IHeightManager heightManager, HexVectorConverter converter)
     {
+        this.converter = converter;
         this.heightManager = heightManager;
         this.movable = movable;
         MoveComplete = true;
@@ -26,7 +28,7 @@ public class InstantPositionHandler : IPositionHandler
     {
         if (!Enabled) return;
         MoveComplete = false;
-        var offset = position.ToWorldPosition() + heightManager.GetHeight(position) * Vector3.Up - movable.Position;
+        var offset = converter.ToWorldPosition(position) + heightManager.GetHeight(position) * Vector3.Up - movable.Position;
         movable.Translate(offset);
         OnPositionReady?.Invoke();
         MoveComplete = true;

@@ -9,18 +9,22 @@ public class RoomTests
 {
     private Room room;
     private HexVector roomPosition;
+    private HexGrid.Map.Properties properties;
+    private HexVectorConverter converter;
     
     [SetUp]
     public void SetUp()
     {
+        properties = new HexGrid.Map.Properties(1, 1);
+        converter = new HexVectorConverter(properties);
         roomPosition = HexVector.Zero;
-        room = new Room(roomPosition);
+        room = new Room(roomPosition, converter);
     }
 
     [Test]
     public void Overlaps_ReturnsTrue_IfAnyHexesOccupyTheSamePosition()
     {
-        var overlap = new Room(roomPosition);
+        var overlap = new Room(roomPosition, converter);
         var hex = new Hex(HexVector.Zero, new Properties(), new MeshData());
         room.Add(hex);
         overlap.Add(hex);
@@ -31,7 +35,7 @@ public class RoomTests
     [Test]
     public void Overlaps_ReturnsFalse_IfNoHexesOccupyTheSamePosition()
     {
-        var overlap = new Room(roomPosition);
+        var overlap = new Room(roomPosition, converter);
         var hex = new Hex(HexVector.Zero, new Properties(), new MeshData());
         room.Add(hex);
         hex = new Hex(HexVector.Forward, new Properties(), new MeshData());

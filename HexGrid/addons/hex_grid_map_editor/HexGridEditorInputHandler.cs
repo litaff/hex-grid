@@ -7,6 +7,7 @@ using HexGrid.Map.Vector;
 
 public class HexGridEditorInputHandler : IHexEditorInputProvider
 {
+    private readonly HexVectorConverter converter;
     private InputEventMouseMotion? previousMotion;
     
     public bool IsAddHexHeld { get; private set; }
@@ -26,6 +27,11 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
     public event Action? OnRemoveHexRequest;
     public event Action? OnHeightChanged;
 
+    public HexGridEditorInputHandler(HexVectorConverter converter)
+    {
+        this.converter = converter;
+    }
+    
     public void UpdateCursorPosition(Camera3D viewportCamera, InputEventMouseMotion? motion)
     {
         var currentMotion = motion ?? previousMotion;
@@ -44,8 +50,8 @@ public class HexGridEditorInputHandler : IHexEditorInputProvider
 
     private void UpdateCurrentHex()
     {
-        HexPosition = CursorPosition.ToHexPosition();
-        var hexCenter = HexPosition.ToWorldPosition();
+        HexPosition = converter.ToHexPosition(CursorPosition);
+        var hexCenter = converter.ToWorldPosition(HexPosition);
         if (hexCenter == HexCenter) return;
         HexCenter = hexCenter;
         OnHexCenterUpdated?.Invoke(HexCenter);

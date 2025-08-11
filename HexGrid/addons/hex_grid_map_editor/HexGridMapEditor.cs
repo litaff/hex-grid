@@ -14,10 +14,8 @@ using HexGrid.Entity.Managers;
 using HexGrid.Map;
 using HexGrid.Map.Fov;
 using HexGrid.Map.Hex;
-using HexGrid.Map.Renderer;
 using HexGrid.Map.Renderer.Room;
 using HexGrid.Map.Vector;
-using Blocker = HexGrid.Entity.Components.Blocker.Blocker;
 using GridMap = HexGrid.Map.GridMap;
 using Properties = HexGrid.Map.Properties;
 
@@ -61,7 +59,8 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     private float cellSize;
     private float heightStep;
     private Properties properties = null!;
-
+    
+    public HexVectorConverter? Converter { get; private set; }
     public GridMap? HexGridMap { get; private set; }
     public EntityContext? EntityContext { get; private set; }
     public World3D World3D => GetWorld3D();
@@ -85,7 +84,7 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
         var blockerManager = new BlockerManager(entityMap);
         managerRegistry.Add(blockerManager);
         
-        EntityContext = new EntityContext(hexManager, entityMap, managerRegistry);
+        EntityContext = new EntityContext(hexManager, entityMap, managerRegistry, Converter!);
 
         System.Collections.Generic.Dictionary<IFactoryKey, IEntityFactory> factories = [];
         factories.Add(new BlockerFactoryKey(), new BlockerFactory(EntityContext));
@@ -105,8 +104,9 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     public void Initialize()
     {
         properties = new Properties(CellSize, HeightStep);
+        Converter = new HexVectorConverter(properties);
         HexGridMap?.Dispose();
-        HexGridMap = new GridMap(this, new RoomMap(MeshLibrary, this));
+        HexGridMap = new GridMap(this, new RoomMap(Converter, MeshLibrary, this));
         InitializeFovProviders();
     }
 

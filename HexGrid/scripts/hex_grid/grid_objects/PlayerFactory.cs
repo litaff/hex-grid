@@ -25,10 +25,10 @@ public class PlayerFactory : IEntityFactory
             transformDescriptor.StepRange, transformDescriptor.Position, transformDescriptor.Forward);
         var positionHandlerDescriptor = blueprint.Get<PositionHandlerDescriptor>();
         var positionHandler = new LinearPositionHandler(positionHandlerDescriptor.movable,
-            context.ManagerRegistry.Get<HeightManager>(), positionHandlerDescriptor.Speed);
+            context.ManagerRegistry.Get<HeightManager>(), positionHandlerDescriptor.Speed, context.Converter);
         transform.Position.SetHandler(positionHandler);
         var rotationHandlerDescriptor = blueprint.Get<RotationHandlerDescriptor>();
-        var rotationHandler = new RotationHandler(rotationHandlerDescriptor.Rotatable);
+        var rotationHandler = new RotationHandler(rotationHandlerDescriptor.Rotatable, context.Converter);
         transform.Rotation.SetHandler(rotationHandler);
         entity.AddComponent(transform);
 

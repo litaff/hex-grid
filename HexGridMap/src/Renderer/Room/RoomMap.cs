@@ -9,13 +9,15 @@ public class RoomMap : IRendererMap
     private readonly Dictionary<int, Room> renderers;
     private readonly Node3D? mapParent;
     private readonly MeshLibrary? meshLibrary;
+    private readonly HexVectorConverter converter;
 
     public IReadOnlyDictionary<int, IRenderer> Renderers => renderers.ToDictionary(pair => pair.Key, IRenderer (pair) => pair.Value);
 
     private HexVector DefaultRenderer => HexVector.Zero;
     
-    public RoomMap(MeshLibrary? meshLibrary = null, Node3D? mapParent = null)
+    public RoomMap(HexVectorConverter converter, MeshLibrary? meshLibrary = null, Node3D? mapParent = null)
     {
+        this.converter = converter;
         renderers = new Dictionary<int, Room>();
         this.mapParent = mapParent;
         this.meshLibrary = meshLibrary;
@@ -25,7 +27,7 @@ public class RoomMap : IRendererMap
     {
         if (!renderers.TryGetValue(position.GetHashCode(), out var room))
         {
-            room = new Room(position, meshLibrary, mapParent);
+            room = new Room(position, converter, meshLibrary, mapParent);
             renderers.Add(position.GetHashCode(), room);
         }
 

@@ -14,13 +14,17 @@ public class InstantPositionProviderTests
     private InstantPositionHandler instantPositionHandler;
     private Mock<IHeightManager> mockHeightManager;
     private Mock<IMovable> mockMovable;
+    private Properties properties;
+    private HexVectorConverter converter;
 
     [SetUp]
     public void SetUp()
     {
+        properties = new Properties(1, 1);
+        converter = new HexVectorConverter(properties);
         mockMovable = new Mock<IMovable>();
         mockHeightManager = new Mock<IHeightManager>();
-        instantPositionHandler = new InstantPositionHandler(mockMovable.Object, mockHeightManager.Object);
+        instantPositionHandler = new InstantPositionHandler(mockMovable.Object, mockHeightManager.Object, converter);
     }
 
     [Test]
@@ -41,7 +45,6 @@ public class InstantPositionProviderTests
     [Test]
     public void MoveTo_LeavesMoveCompleteAtTrue()
     {
-        _ = new Properties(1, 1);
         Assert.That(instantPositionHandler.MoveComplete, Is.True);
         mockMovable.Setup(movable => movable.Position).Returns(Vector3.Zero);
         mockHeightManager.Setup(manager => manager.GetHeight(HexVector.Zero, null)).Returns(0);
@@ -55,10 +58,9 @@ public class InstantPositionProviderTests
     [Test]
     public void MoveTo_MovesMovableByOffsetFromGivenPositionAndMovablePosition()
     {
-        _ = new Properties(1, 1);
         var previousPosition = Vector3.Zero;
         var newPosition = HexVector.Forward;
-        var offset = newPosition.ToWorldPosition() - previousPosition;
+        var offset = converter.ToWorldPosition(newPosition) - previousPosition;
         mockMovable.Setup(movable => movable.Position).Returns(previousPosition);
         mockHeightManager.Setup(manager => manager.GetHeight(newPosition, null)).Returns(0);
         instantPositionHandler.Enable();
@@ -71,7 +73,6 @@ public class InstantPositionProviderTests
     [Test]
     public void MoveTo_InvokesOnPositionReadyWhenMoveToIsValid()
     {
-        _ = new Properties(1, 1);
         mockMovable.Setup(movable => movable.Position).Returns(Vector3.Zero);
         mockHeightManager.Setup(manager => manager.GetHeight(HexVector.Zero, null)).Returns(0);
         instantPositionHandler.Enable();

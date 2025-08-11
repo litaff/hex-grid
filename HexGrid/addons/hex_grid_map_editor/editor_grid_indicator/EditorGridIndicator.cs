@@ -2,6 +2,7 @@ namespace addons.hex_grid_map_editor.editor_grid_indicator;
 
 using Godot;
 using HexGrid.Map.Mesh;
+using HexGrid.Map.Vector;
 using provider;
 
 public class EditorGridIndicator
@@ -10,14 +11,16 @@ public class EditorGridIndicator
     private readonly EditorGridIndicatorView view;
     private readonly IEditorHexPositionProvider inputProvider;
     private readonly Material material;
+    private readonly HexVectorConverter converter;
 
     private WireMesh? indicatorMesh;
     
     private int indicatorRadius;
 
-    public EditorGridIndicator(World3D world, EditorGridIndicatorView view,
+    public EditorGridIndicator(World3D world, EditorGridIndicatorView view, HexVectorConverter converter,
         IEditorHexPositionProvider inputProvider)
     {
+        this.converter = converter;
         this.world = world;
         this.view = view;
         this.inputProvider = inputProvider;
@@ -51,7 +54,7 @@ public class EditorGridIndicator
         indicatorRadius = radius > 0 ? radius : indicatorRadius;
 		
         indicatorMesh?.Dispose();
-        indicatorMesh = new WireMesh(new MeshData(world, material), radius, true);
+        indicatorMesh = new WireMesh(new MeshData(world, material), radius, true, converter);
 		
         UpdateIndicatorMesh(inputProvider.HexCenter, radius);
     }

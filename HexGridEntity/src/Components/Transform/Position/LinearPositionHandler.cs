@@ -10,6 +10,7 @@ public class LinearPositionHandler : IPositionHandler
     private readonly IMovable movable;
     private readonly float translationSpeed;
     private readonly IHeightManager heightManager;
+    private readonly HexVectorConverter converter;
 
     private Vector3 targetPosition;
     private Vector3 translationDirection;
@@ -19,8 +20,10 @@ public class LinearPositionHandler : IPositionHandler
 
     public event Action? OnPositionReady;
 
-    public LinearPositionHandler(IMovable movable, IHeightManager heightManager, float translationSpeed)
+    public LinearPositionHandler(IMovable movable, IHeightManager heightManager, float translationSpeed, 
+        HexVectorConverter converter)
     {
+        this.converter = converter;
         this.movable = movable;
         this.heightManager = heightManager;
         this.translationSpeed = translationSpeed;
@@ -42,7 +45,7 @@ public class LinearPositionHandler : IPositionHandler
     public void MoveTo(HexVector position)
     {
         if (!Enabled || !MoveComplete) return;
-        targetPosition = position.ToWorldPosition() + heightManager.GetHeight(position) * Vector3.Up;
+        targetPosition = converter.ToWorldPosition(position) + heightManager.GetHeight(position) * Vector3.Up;
         translationDirection = (targetPosition - movable.Position).Normalized();
         OnPositionReady?.Invoke();
     }

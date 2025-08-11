@@ -11,19 +11,21 @@ public class Room : IRenderer
     private readonly GpuParticlesCollisionSdf3D? collisionSdf;
     private readonly List<MeshInstance3D> meshInstances = [];
     private readonly Dictionary<int, Hex> hexes = [];
+    private readonly HexVectorConverter converter;
 
     private int instanceIndex;
     
     public HexVector Position { get; }
     public IReadOnlyList<Hex> Hexes => hexes.Values.ToList();
 
-    public Room(HexVector position, MeshLibrary? meshLibrary = null, Node3D? parent = null)
+    public Room(HexVector position, HexVectorConverter converter, MeshLibrary? meshLibrary = null, Node3D? parent = null)
     {
+        this.converter = converter;
         Position = position;
         this.meshLibrary = meshLibrary;
         if (parent is null) return;
         this.parent = new Node3D();
-        this.parent.Position = position.ToWorldPosition();
+        this.parent.Position = converter.ToWorldPosition(position);
         this.parent.Name = position.ToString();
         parent.AddChild(this.parent);
         this.parent.Owner = parent.GetTree().EditedSceneRoot;
@@ -87,7 +89,7 @@ public class Room : IRenderer
             }
 
             var rotations = hexGroup.Value.Select(hex => hex.MeshData.Radians).ToList();
-            var positions = hexGroup.Value.Select(hex => hex.Position.ToWorldPosition()).ToList();
+            var positions = hexGroup.Value.Select(hex => converter.ToWorldPosition(hex.Position)).ToList();
             var transforms = positions.Zip(rotations, (position, rotation) => 
                 new Transform3D(Basis.Identity.Rotated(Vector3.Up, rotation), position)).ToList();
 

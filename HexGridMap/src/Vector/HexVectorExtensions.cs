@@ -6,25 +6,6 @@ using Godot;
 
 public static class HexVectorExtensions
 {
-    private static float CellSize => Properties.CellSize;
-    
-    /// <summary>
-    /// Returns the vertices of this hex position in world space.
-    /// </summary>
-    public static Vector3[] GetHexVertices(this HexVector hexPosition)
-    {
-        var worldPosition = hexPosition.ToWorldPosition();
-        var vertices = new Vector3[6];
-        for (var i = 0; i < 6; i++)
-        {
-            var angle = Mathf.DegToRad(60 * i);
-            var x = worldPosition.X + CellSize * Mathf.Cos(angle);
-            var z = worldPosition.Z + CellSize * Mathf.Sin(angle);
-            vertices[i] = new Vector3(x, worldPosition.Y, z);
-        }
-        return vertices;
-    }
-    
     /// <summary>
     /// Rounds a fraction hex position to the nearest hex position.
     /// </summary>
@@ -67,7 +48,7 @@ public static class HexVectorExtensions
         var lineHexes = new HexVector[distance + 1];
         for (var i = 0; i <= distance; i++)
         {
-            var vector = Lerp(source, target, 1f / distance * i).Round();
+            var vector = Round(Lerp(source, target, 1f / distance * i));
             lineHexes[i] = vector;
         }
         return lineHexes;
@@ -93,13 +74,13 @@ public static class HexVectorExtensions
             HexVector.ForLeft, HexVector.Forward, HexVector.ForRight
         };
         var results = new List<HexVector>();
-        var hex = center.GetNeighbor(HexVector.Forward * radius);
+        var hex = GetNeighbor(center, HexVector.Forward * radius);
         for (var i = 0; i < 6; i++)
         {
             for (var j = 0; j < radius; j++)
             {
                 results.Add(hex);
-                hex = hex.GetNeighbor(directions[i]);
+                hex = GetNeighbor(hex, directions[i]);
             }
         }
         return results.ToArray();
@@ -113,7 +94,7 @@ public static class HexVectorExtensions
         var results = new List<HexVector> {center};
         for (var i = 1; i <= radius; i++)
         {
-            results.AddRange(center.GetRing(i));
+            results.AddRange(GetRing(center, i));
         }
         return results.ToArray();
     }

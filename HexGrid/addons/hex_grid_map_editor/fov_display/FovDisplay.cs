@@ -2,6 +2,7 @@ namespace addons.hex_grid_map_editor.fov_display;
 
 using Godot;
 using HexGrid.Map.Mesh;
+using HexGrid.Map.Vector;
 using provider;
 using PrimitiveMesh = HexGrid.Map.Mesh.PrimitiveMesh;
 
@@ -12,19 +13,21 @@ public class FovDisplay
     private readonly IHexGridMapManager hexGridMapManager;
     private readonly IEditorHexPositionProvider inputProvider;
     private readonly Material material;
+    private readonly HexVectorConverter converter;
     
     private PrimitiveMesh? fovMesh;
     private int fovRadius;
     private bool fovEnabled;
 
-    public FovDisplay(World3D world, FovDisplayView displayView, IHexGridMapManager hexGridMapManager, 
-        IEditorHexPositionProvider inputProvider)
+    public FovDisplay(World3D world, FovDisplayView displayView, HexVectorConverter converter, 
+        IHexGridMapManager hexGridMapManager, IEditorHexPositionProvider inputProvider)
     {
         this.world = world;
         this.displayView = displayView;
         this.hexGridMapManager = hexGridMapManager;
         this.inputProvider = inputProvider;
         material = PrimitiveMesh.GetStandardMaterial(new Color(0f, 1f, 0f, 0.5f));
+        this.converter = converter;
     }
 
     public void Enable()
@@ -59,8 +62,9 @@ public class FovDisplay
             return;
         }
 		
-        fovMesh ??= new PrimitiveMesh(new MeshData(world, material), Vector3.Up * (0.01f + inputProvider.HexPosition.H));
-        fovMesh.UpdateMesh(hexGridMapManager.FovProvider.GetVisiblePositions(inputProvider.HexPosition, radius));
+        fovMesh ??= new PrimitiveMesh(new MeshData(world, material), Vector3.Up * (0.01f + inputProvider.HexPosition.H), converter);
+        var positions = hexGridMapManager.FovProvider.GetVisiblePositions(inputProvider.HexPosition, radius);
+        fovMesh.UpdateMesh(positions);
     }
 
     private void OnHexCenterUpdatedHandler(Vector3 position)

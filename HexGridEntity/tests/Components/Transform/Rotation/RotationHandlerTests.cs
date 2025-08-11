@@ -8,20 +8,23 @@ using Moq;
 [TestFixture]
 public class RotationHandlerTests
 {
+    private Properties properties;
+    private HexVectorConverter converter;
     private Mock<IRotatable> mockRotatable;
     private RotationHandler rotationHandler;
 
     [SetUp]
     public void SetUp()
     {
+        properties = new Properties(1, 1);
+        converter = new HexVectorConverter(properties);
         mockRotatable = new Mock<IRotatable>();
-        rotationHandler = new RotationHandler(mockRotatable.Object);
+        rotationHandler = new RotationHandler(mockRotatable.Object, converter);
     }
 
     [Test]
     public void RotateTowards_KeepsRotationCompleteTrue()
     {
-        _ = new Properties(1, 1);   
         Assert.That(rotationHandler.RotationComplete, Is.True);
         
         rotationHandler.RotateTowards(HexVector.Forward);
@@ -32,11 +35,9 @@ public class RotationHandlerTests
     [Test]
     public void RotateTowards_CallsRotatableLookTowards()
     {
-        _ = new Properties(1, 1);   
-        
         rotationHandler.RotateTowards(HexVector.Forward);
         
-        mockRotatable.Verify(mock => mock.LookTowards(HexVector.Forward.ToWorldPosition()), Times.Once);
+        mockRotatable.Verify(mock => mock.LookTowards(converter.ToWorldPosition(HexVector.Forward)), Times.Once);
     }
 
     [Test]
@@ -44,7 +45,6 @@ public class RotationHandlerTests
     {
         var called = false;
         rotationHandler.OnRotationHandled += () => called = true;
-        _ = new Properties(1, 1);
 
         rotationHandler.RotateTowards(HexVector.Forward);
         
