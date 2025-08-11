@@ -14,7 +14,7 @@ public partial class HexPropertiesView : Control
     
     public Properties GetProperties()
     {
-        return new Properties((float)HexHeight.Value, IsOccluderButton.ButtonPressed);
+        return new Properties((int)HexHeight.Value, IsOccluderButton.ButtonPressed);
     }
 
     public void SetFromProperties(Properties properties)

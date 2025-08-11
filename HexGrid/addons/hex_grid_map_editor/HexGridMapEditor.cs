@@ -4,16 +4,20 @@ using System;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using hex_grid.grid_objects;
 using hex_grid.hex_grid_map;
 using HexGrid.Entity;
-using HexGrid.Entity.Manager;
-using HexGrid.Entity.Providers;
+using HexGrid.Entity.Components;
+using HexGrid.Entity.Components.Blocker;
+using HexGrid.Entity.Components.Height;
+using HexGrid.Entity.Managers;
 using HexGrid.Map;
 using HexGrid.Map.Fov;
 using HexGrid.Map.Hex;
 using HexGrid.Map.Renderer;
 using HexGrid.Map.Renderer.Room;
 using HexGrid.Map.Vector;
+using Blocker = HexGrid.Entity.Components.Blocker.Blocker;
 using GridMap = HexGrid.Map.GridMap;
 using Properties = HexGrid.Map.Properties;
 
@@ -59,7 +63,7 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
     private Properties properties = null!;
 
     public GridMap? HexGridMap { get; private set; }
-    public EntityManager? EntityManager { get; private set; }
+    public EntityContext? EntityContext { get; private set; }
     public World3D World3D => GetWorld3D();
     public IFovProvider FovProvider { get; private set; }
 
@@ -72,15 +76,29 @@ public partial class HexGridMapEditor : Node3D, IHexMapDataProvider, IHexGridMap
         
         if (HexGridMap == null) return;
 
-        var entityStorage = new EntityStorage();
-        var hexStateProvider = new HexStateProvider(HexGridMap.HexMap, entityStorage);
-        EntityManager = new EntityManager(hexStateProvider, entityStorage);
+        var entityMap = new EntityManager();
+        var hexManager = new HexManager(HexGridMap.HexMap);
+        
+        var managerRegistry = new ManagerRegistry();
+        var heightManager = new HeightManager(entityMap);
+        managerRegistry.Add(heightManager);
+        var blockerManager = new BlockerManager(entityMap);
+        managerRegistry.Add(blockerManager);
+        
+        EntityContext = new EntityContext(hexManager, entityMap, managerRegistry);
+
+        System.Collections.Generic.Dictionary<IFactoryKey, IEntityFactory> factories = [];
+        factories.Add(new BlockerFactoryKey(), new BlockerFactory(EntityContext));
+        factories.Add(new PlayerFactoryKey(), new PlayerFactory(EntityContext));
         
         // Temp
-        foreach (var entity in Entities)
+        foreach (var node in Entities)
         {
-            if(entity is not IEntityProvider entityProvider) continue;
-            EntityManager.Add(entityProvider.Entity);
+            if(node is not IEntityHolder holder) continue;
+            var blueprint = holder.Get();
+            var entity = factories[holder.FactoryKey].New(blueprint);
+            holder.Set(entity);
+            entityMap.Add(entity);
         }
     }
 

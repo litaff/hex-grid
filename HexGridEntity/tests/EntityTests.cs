@@ -1,105 +1,143 @@
 namespace HexGrid.Entity.Tests;
 
-using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Position;
-using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Providers;
-using HexGrid.Entity.Providers.Block;
-using HexGrid.Entity.Providers.Position;
-using HexGrid.Entity.Providers.Rotation;
-using Map.Vector;
-using Moq;
-
 [TestFixture]
 public class EntityTests
 {
-    // TODO: Most will be reworked when the shift to components happens.
-    /*
-    private Mock<IPositionProvider> mockPositionProvider;
-    private Mock<IRotationProvider> mockRotationProvider;
-    private Mock<IPositionHandler> mockTranslationHandler;
-    private Mock<IRotationHandler> mockRotationHandler;
-    private Mock<IBlockProvider> mockBlockProvider;
-    private Mock<IEntityLayerManager> mockLayerManager;
     private Entity entity;
-    private HeightData heightData;
-    private HexStateProviders hexStateProviders;
 
     [SetUp]
     public void SetUp()
     {
-        mockPositionProvider = new Mock<IPositionProvider>();
-        mockRotationProvider = new Mock<IRotationProvider>();
-        mockTranslationHandler = new Mock<IPositionHandler>();
-        mockRotationHandler = new Mock<IRotationHandler>();
-        mockBlockProvider = new Mock<IBlockProvider>();
-        mockLayerManager = new Mock<IEntityLayerManager>();
-        hexStateProviders = new HexStateProviders(new Dictionary<int, IHexStateProvider>
-        {
-            { 0, new Mock<IHexStateProvider>().Object }
-        });
-        heightData = new HeightData();
-        entity = new Entity(mockPositionProvider.Object, mockRotationProvider.Object, mockTranslationHandler.Object, mockRotationHandler.Object, mockBlockProvider.Object, heightData);
+        entity = new Entity();
     }
 
     [Test]
-    public void Enable_EnablesHexGridPositionProvider_WithHexStateProviders()
+    public void AddComponent_AssignsComponentAtType()
     {
-        entity.Enable(mockLayerManager.Object, hexStateProviders);
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
         
-        mockPositionProvider.Verify(p => p.Enable(hexStateProviders), Times.Once);
+        entity.AddComponent(component);
+        
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+    }
+
+    [Test]
+    public void AddComponent_OverridesExistingComponent()
+    {
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+        entity.AddComponent(component);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+        var overrideComponent = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(overrideComponent.GetType()), Is.True);
+        
+        entity.AddComponent(overrideComponent);
+        
+        Assert.That(entity.Components.ContainsKey(overrideComponent.GetType()), Is.True);
+        Assert.That(entity.Components[overrideComponent.GetType()], Is.EqualTo(overrideComponent));
+    }
+
+    [Test]
+    public void RemoveComponent_DoesNotThrowWhenNoComponentFound()
+    {
+        var absentComponent = new MockComponent(entity);
+        Assert.DoesNotThrow(() => entity.RemoveComponent(absentComponent));
+    }
+
+    [Test]
+    public void RemoveComponent_RemovesExistingComponent()
+    {
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+        entity.AddComponent(component);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+        
+        entity.RemoveComponent(component);
+        
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+    }
+
+    [Test]
+    public void GetComponent_ReturnsPresentComponentOfType()
+    {
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+        entity.AddComponent(component);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+
+        var getComponent = entity.GetComponent<MockComponent>();
+        
+        Assert.That(getComponent, Is.Not.Null);
+        Assert.That(getComponent.GetType(), Is.EqualTo(component.GetType()));
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(getComponent));
     }
     
     [Test]
-    public void Enable_EnablesTranslationProvider_WithHexStateProvider_At0()
+    public void GetComponent_ReturnsNullWhenComponentNotFound()
     {
-        entity.Enable(mockLayerManager.Object, hexStateProviders);
+        Assert.That(entity.Components.ContainsKey(typeof(MockComponent)), Is.False);
+
+        var getComponent = entity.GetComponent<MockComponent>();
         
-        mockTranslationHandler.Verify(p => p.Enable(hexStateProviders.Providers[0]), Times.Once);
+        Assert.That(getComponent, Is.Null);
     }
 
     [Test]
-    public void Disable_DisablesHexGridPositionProvider()
+    public void Enable_AssignsEnabledTrue()
     {
+        Assert.That(entity.Enabled, Is.False);
+        
+        entity.Enable();
+        
+        Assert.That(entity.Enabled, Is.True);
+    }
+
+    [Test]
+    public void Enable_CallsEnableOnComponents()
+    {
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+        entity.AddComponent(component);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+        var enableCalled = false;
+        component.EnableCalled += () => enableCalled = true;
+        
+        entity.Enable();
+        
+        Assert.That(enableCalled, Is.True);
+    }
+    
+    [Test]
+    public void Disable_AssignsEnableFalse()
+    {
+        Assert.That(entity.Enabled, Is.False);
+        entity.Enable();
+        Assert.That(entity.Enabled, Is.True);
+        
         entity.Disable();
-
-        mockPositionProvider.Verify(p => p.Disable(), Times.Once);
+        
+        Assert.That(entity.Enabled, Is.False);
     }
 
     [Test]
-    public void Disable_DisablesTranslationProvider()
+    public void Disable_CallsDisableOnComponents()
     {
+        var component = new MockComponent(entity);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.False);
+        entity.AddComponent(component);
+        Assert.That(entity.Components.ContainsKey(component.GetType()), Is.True);
+        Assert.That(entity.Components[component.GetType()], Is.EqualTo(component));
+        var disableCalled = false;
+        component.DisableCalled += () => disableCalled = true;
+        
         entity.Disable();
-
-        mockTranslationHandler.Verify(p => p.Disable(), Times.Once);
+        
+        Assert.That(disableCalled, Is.True);
     }
-
-    [Test]
-    public void OnLayerChangeRequestedHandler_IsCalled_WithLayerChange()
-    {
-        entity.Enable(mockLayerManager.Object, hexStateProviders);
-        entity.RegisterHandlers();
-
-        const int relativeIndex = 1;
-        mockPositionProvider.Raise(p => p.OnLayerChangeRequested += null, relativeIndex);
-
-        mockLayerManager.Verify(m => m.ChangeLayer(entity, relativeIndex), Times.Once);
-    }
-
-    [Test]
-    public void OnPositionChangedHandler_IsCalled_WithPositionAndTranslationUpdates()
-    {
-        entity.Enable(mockLayerManager.Object, hexStateProviders);
-        entity.RegisterHandlers();
-
-        var oldPosition = new HexVector(0, 0);
-        var newPosition = new HexVector(1, 1);
-        mockPositionProvider.Setup(p => p.Position).Returns(newPosition);
-
-        mockPositionProvider.Raise(p => p.OnPositionChanged += null, oldPosition);
-
-        mockLayerManager.Verify(m => m.UpdatePosition(entity, oldPosition), Times.Once);
-        mockTranslationHandler.Verify(t => t.TranslateTo(newPosition), Times.Once);
-    }
-*/
 }

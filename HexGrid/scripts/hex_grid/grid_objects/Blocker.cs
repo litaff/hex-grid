@@ -3,14 +3,14 @@ namespace hex_grid.grid_objects;
 using System.Linq;
 using Godot;
 using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Position;
-using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Providers.Block;
-using HexGrid.Entity.Providers.Position;
-using HexGrid.Entity.Providers.Rotation;
+using HexGrid.Entity.Components.Blocker;
+using HexGrid.Entity.Components.Transform;
+using HexGrid.Entity.Components.Transform.Position;
+using HexGrid.Entity.Components.Transform.Position.Interfaces;
+using HexGrid.Entity.Components.Transform.Rotation;
 using HexGrid.Map.Vector;
 
-public partial class Blocker : Node3D, ITranslatable, IEntityProvider, IRotatable
+public partial class Blocker : Node3D, IMovable, IEntityHolder, IRotatable
 {
     [Export]
     private Vector2I awakePosition;
@@ -19,11 +19,13 @@ public partial class Blocker : Node3D, ITranslatable, IEntityProvider, IRotatabl
     [Export]
     private Godot.Collections.Array<Direction> blocks = [];
 
-    public Entity Entity => GetEntity();
-
     private Entity? entity;
 
-    void ITranslatable.Translate(Vector3 offset)
+    public HexVector InitialPosition => new(awakePosition.X, awakePosition.Y);
+    public HexVector InitialRotation => HexVector.Directions[Direction.Forward];
+    public IFactoryKey FactoryKey => new BlockerFactoryKey();
+
+    void IMovable.Translate(Vector3 offset)
     {
         Position += offset;
     }
@@ -33,18 +35,19 @@ public partial class Blocker : Node3D, ITranslatable, IEntityProvider, IRotatabl
         
     }
 
-    private Entity GetEntity()
+    public EntityBlueprint Get()
     {
-        if (entity != null) return entity;
-        
-        var heightData = new HeightData(height, 0);
-        var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
-        var rotationProvider = new RotationProvider();
-        var translationHandler = new InstantPositionHandler(this, heightData);
-        var rotationHandler = new InstantRotationHandler(this);
-        var blockProvider = new BlockProvider(blocks.Select(dir => HexVector.Directions[dir]).ToList());
-        entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, blockProvider, heightData);
-        
-        return entity;
+        var blueprint = new EntityBlueprint();
+        blueprint.Add(new TransformDescriptor(0, InitialPosition, InitialRotation));
+        blueprint.Add(new BlockerDescriptor(blocks.Select(dir => HexVector.Directions[dir]).ToList()));
+        blueprint.Add(new PositionHandlerDescriptor(this, 0));
+        blueprint.Add(new RotationHandlerDescriptor(this));
+        return blueprint;
+    }
+
+    public void Set(Entity entity)
+    {
+        this.entity = entity;
+        entity.Enable();
     }
 }

@@ -1,77 +1,50 @@
 namespace HexGrid.Entity;
 
-using Handlers.Position;
-using Handlers.Rotation;
-using Manager;
-using Map.Vector;
-using Providers;
-using Providers.Block;
-using Providers.Position;
-using Providers.Rotation;
+using Components;
 
 public class Entity
 {
-    private IEntityManager? entityManager;
-    
-    public IPositionProvider PositionProvider { get; }
-    public IPositionHandler PositionHandler { get; }
-    public IBlockProvider BlockProvider { get; }
-    public IRotationProvider RotationProvider { get; }
-    public IRotationHandler RotationHandler { get; }
+    private readonly Dictionary<Type, Component> components;
+
+    public IReadOnlyDictionary<Type, Component> Components => components;
 
     public bool Enabled { get; private set; }
-    public HeightData HeightData { get; }
-    public HexVector GridPosition => PositionProvider.Position;
 
-    public Entity(IPositionProvider positionProvider, IRotationProvider rotationProvider, 
-        IPositionHandler positionHandler, IRotationHandler rotationHandler, IBlockProvider blockProvider, HeightData heightData)
+    public Entity()
     {
-        PositionProvider = positionProvider;
-        RotationProvider = rotationProvider;
-        PositionHandler = positionHandler;
-        RotationHandler = rotationHandler;
-        BlockProvider = blockProvider;
-        HeightData = heightData;
+        components = [];
+    }
+    
+    public void AddComponent(Component component)
+    {
+        components[component.GetType()] = component;
     }
 
-    public virtual void Enable(IEntityManager entityManager, IHexStateProvider hexStateProvider)
+    public void RemoveComponent(Component component)
+    {
+        components.Remove(component.GetType());
+    }
+
+    public T? GetComponent<T>() where T : Component
+    {
+        return (T?)components.GetValueOrDefault(typeof(T));
+    }
+
+    public virtual void Enable()
     {
         Enabled = true;
-        this.entityManager = entityManager;
-        PositionHandler.Enable(hexStateProvider);
-        PositionProvider.Enable(hexStateProvider);
-        RotationProvider.Enable();
+        foreach (var component in components.Values)
+        {
+            component.Enable();
+        }
     }
 
     public virtual void Disable()
     {
         Enabled = false;
-        RotationProvider.Disable();
-        PositionProvider.Disable();
-        PositionHandler.Disable();
-    }
-
-    public virtual void RegisterHandlers()
-    {
-        PositionProvider.OnPositionChanged += OnPositionChangedHandler;
-        RotationProvider.OnRotationChanged += OnRotationChangedHandler;
-    }
-
-    public virtual void UnregisterHandlers()
-    {
-        PositionProvider.OnPositionChanged -= OnPositionChangedHandler;
-        RotationProvider.OnRotationChanged -= OnRotationChangedHandler;
-    }
-
-    private void OnPositionChangedHandler(HexVector oldPosition)
-    {
-        entityManager?.MoveFrom(this, oldPosition);
-        // Translation should always happen after the position change.
-        PositionHandler.TranslateTo(PositionProvider.Position);
-    }
-
-    private void OnRotationChangedHandler()
-    {
-        RotationHandler.RotateTowards(RotationProvider.Forward);
+        foreach (var component in components.Values)
+        {
+            component.Disable();
+        }
     }
 }

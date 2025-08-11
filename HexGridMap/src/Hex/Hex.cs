@@ -10,7 +10,7 @@ public class Hex
     public MeshData MeshData { get; private set; }
 
     [JsonIgnore]
-    public float Height => Properties.Height;
+    public int Elevation => Properties.Height + Position.H;
     [JsonIgnore]
     public bool IsOccluder => Properties.IsOccluder;
     

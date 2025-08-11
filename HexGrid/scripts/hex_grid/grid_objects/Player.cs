@@ -1,21 +1,23 @@
 namespace hex_grid.grid_objects;
 
 using HexGrid.Entity;
-using HexGrid.Entity.Handlers.Rotation;
-using HexGrid.Entity.Providers.Position;
-using HexGrid.Entity.Providers.Rotation;
 using HexGrid.Map.Vector;
 using Godot;
-using HexGrid.Entity.Handlers.Position;
-using HexGrid.Entity.Providers.Block;
+using HexGrid.Entity.Components.Blocker;
+using HexGrid.Entity.Components.Height;
+using HexGrid.Entity.Components.Transform;
+using HexGrid.Entity.Components.Transform.Position;
+using HexGrid.Entity.Components.Transform.Position.Interfaces;
+using HexGrid.Entity.Components.Transform.Rotation;
+using HexGrid.Entity.Managers;
 
 [GlobalClass]
-public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
+public partial class Player : Node3D, IMovable, IEntityHolder, IRotatable
 {
     [Export]
     private Vector2I awakePosition;
     [Export]
-    private float height;
+    private int height;
     [Export]
     private int stepRange;
     [Export]
@@ -23,23 +25,25 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
     [Export]
     private Direction initialForward;
 
-    public Entity Entity => GetEntity();
-
     private Entity? entity;
+    private Transform? transform;
+    
+    public HexVector InitialPosition => new(awakePosition.X, awakePosition.Y);
+    public HexVector InitialRotation => HexVector.Directions[Direction.Forward];
+    public IFactoryKey FactoryKey => new PlayerFactoryKey();
 
     public override void _Process(double delta)
     {
         base._Process(delta);
-        if (Entity.PositionHandler is IUpdateablePositionHandler updateable)
-        {
-            updateable.Update(delta);
-        }
+        transform?.Update(delta);
     }
 
     public override void _Input(InputEvent @event)
     {
+        if (entity is null || transform is null) return;
+        
         // Lock input before translation is complete.
-        if (Entity.PositionHandler is IUpdateablePositionHandler { TranslationComplete: false }) return;
+        if (transform.Position.IsMoving) return;
         base._Input(@event);
         OnMovementKeyPressedHandler(@event);
     }
@@ -62,15 +66,16 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         MoveTowards(direction, eventKey.CtrlPressed);
         
     }
-    
+
     private void MoveTowards(HexVector direction, bool inPlace)
     {
-        entity?.RotationProvider.RotateTowards(direction);
+        if (entity is null || transform is null) return;
+        transform.Rotation.RotateTowards(direction);
         if (inPlace) return;
-        entity?.PositionProvider.Translate(direction);
+        transform.Position.Translate(direction);
     }
 
-    void ITranslatable.Translate(Vector3 offset)
+    void IMovable.Translate(Vector3 offset)
     {
         Position += offset;
     }
@@ -80,18 +85,20 @@ public partial class Player : Node3D, ITranslatable, IEntityProvider, IRotatable
         LookAt(Position + direction, useModelFront: true);
     }
 
-    private Entity GetEntity()
+    public EntityBlueprint Get()
     {
-        if (entity != null) return entity;
-        
-        var heightData = new HeightData(height, stepRange);
-        var positionProvider = new PositionProvider(new HexVector(awakePosition.X, awakePosition.Y), heightData);
-        var rotationProvider = new RotationProvider(HexVector.Directions[initialForward]);
-        var translationHandler = new LinearPositionHandler(speed, this, heightData);
-        var rotationHandler = new InstantRotationHandler(this);
-        var blockProvider = new BlockProvider();
-        entity = new Entity(positionProvider, rotationProvider, translationHandler, rotationHandler, blockProvider, heightData);
-        
-        return entity;
+        var blueprint = new EntityBlueprint();
+        blueprint.Add(new TransformDescriptor(stepRange, InitialPosition, InitialRotation));
+        blueprint.Add(new HeightDescriptor(height));
+        blueprint.Add(new PositionHandlerDescriptor(this, speed));
+        blueprint.Add(new RotationHandlerDescriptor(this));
+        return blueprint;
+    }
+
+    public void Set(Entity entity)
+    {
+        this.entity = entity;
+        transform = entity.GetComponent<Transform>();
+        entity.Enable();
     }
 }
